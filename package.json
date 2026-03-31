@@ -1,6 +1,6 @@
 {
   "name": "@laith-wallace/crisp",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "CRISP design intelligence skills for AI agents",
   "type": "module",
   "bin": {
@@ -8,11 +8,17 @@
   },
   "files": [
     "bin/",
+    "files/",
+    "scripts/",
     ".claude/skills/",
     ".cursor/rules/",
     ".agents/skills/",
     ".gemini/skills/"
   ],
+  "scripts": {
+    "sync": "node scripts/sync.mjs",
+    "prepublishOnly": "node scripts/sync.mjs"
+  },
   "engines": {
     "node": ">=18.0.0"
   },
@@ -28,7 +34,9 @@
     "skills",
     "claude",
     "cursor",
-    "crisp"
+    "crisp",
+    "accessibility",
+    "microcopy"
   ],
   "author": "Laith Wallace",
   "license": "MIT",

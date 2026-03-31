@@ -82,3 +82,18 @@ Keep it tight. No lengthy explanations.
 ## Tone
 
 Direct. Specific. Actionable. No softening. If the design fails, say it fails and say exactly why. The goal is to make the next iteration better, not to protect feelings.
+
+## Longitudinal Tracking
+
+After delivering the review output, append a one-line summary to the `## History` section in `.crisp.md` (if it exists):
+
+```
+- [YYYY-MM-DD] | /crisp-review | Grade: [A–F] | Top issue: [top issue in <10 words]
+```
+
+Example:
+```
+- 2026-03-31 | /crisp-review | Grade: C | Top issue: [R] No loading states on filter interactions
+```
+
+If `.crisp.md` has prior History entries, note whether the grade has improved or regressed since the last entry.

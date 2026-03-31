@@ -2,7 +2,7 @@
 import * as p from '@clack/prompts';
 import chalk from 'chalk';
 import figlet from 'figlet';
-import { existsSync, mkdirSync, copyFileSync } from 'node:fs';
+import { existsSync, mkdirSync, copyFileSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -11,12 +11,25 @@ const LIME = '#c8ff3c';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PKG_ROOT = join(__dirname, '..');
 
+// Handle --version flag before any interactive code
+if (process.argv.includes('--version') || process.argv.includes('-v')) {
+  const pkg = JSON.parse(readFileSync(join(PKG_ROOT, 'package.json'), 'utf8'));
+  console.log(`@laith-wallace/crisp v${pkg.version}`);
+  process.exit(0);
+}
+
 const SKILLS = [
+  // Core skills
   { value: 'crisp-teach',    label: '/crisp-teach',    hint: 'Onboard your AI to your product — writes .crisp.md' },
   { value: 'crisp-review',   label: '/crisp-review',   hint: '30-second design scan, A–F grade, top 3 issues' },
   { value: 'crisp-audit',    label: '/crisp-audit',    hint: 'Full CRISP evaluation across 5 dimensions' },
   { value: 'feature-design', label: '/feature-design', hint: 'Design new features using CRISP principles' },
   { value: 'handoff',        label: '/handoff',        hint: 'Convert designs to developer-ready specs' },
+  // CRISP Extensions
+  { value: 'crisp-brief',    label: '/crisp-brief',    hint: 'Turn vague requests into structured design briefs' },
+  { value: 'crisp-copy',     label: '/crisp-copy',     hint: 'Write and evaluate all UI microcopy' },
+  { value: 'crisp-a11y',     label: '/crisp-a11y',     hint: 'Full WCAG 2.2 AA accessibility audit' },
+  { value: 'crisp-ai',       label: '/crisp-ai',       hint: 'Evaluate and design AI-native UI surfaces' },
 ];
 
 const AGENTS = [

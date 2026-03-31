@@ -22,7 +22,31 @@ Ask:
 
 ---
 
-### Section 2: Users
+### Section 2: Product Type
+Ask:
+- "Which of these best describes your product?"
+  - **B2B SaaS** — sold to businesses, used by teams (project management, CRM, analytics, devtools)
+  - **Consumer App** — downloaded or used by individuals for personal goals
+  - **E-commerce** — buying, selling, payments, marketplace
+  - **Internal Tool** — used by employees, not public-facing (dashboards, admin, ops tooling)
+  - **AI-Native Product** — AI is a primary feature, not a supporting one (AI assistant, agent, generative UI)
+  - **Other** — describe it
+
+Use their answer to pre-configure defaults in `.crisp.md`:
+
+| Type | Priority CRISP dimensions | Default benchmarks |
+|------|--------------------------|-------------------|
+| B2B SaaS | S (Seamless) + P (Powerful) | Linear, Retool, Notion |
+| Consumer App | C (Contextual) + R (Responsive) | Duolingo, Spotify, Cash App |
+| E-commerce | I (Intelligent) + C (Contextual) | Stripe, Shopify, Airbnb |
+| Internal Tool | P (Powerful) + S (Seamless) | Retool, Airtable, Metabase |
+| AI-Native | C (Contextual) + I (Intelligent) | Perplexity, Claude.ai, Vercel v0, Cursor |
+
+For AI-Native products, also note in `.crisp.md`: `Extensions: CRISP + AI` — this activates `/crisp-ai` evaluation automatically when running audits.
+
+---
+
+### Section 3: Users
 Ask:
 - "Who is your primary user? Describe them — their role, their day, their level of technical sophistication."
 - "What is the job they're hiring your product to do? What were they doing before?"
@@ -30,7 +54,7 @@ Ask:
 
 ---
 
-### Section 3: Design System
+### Section 4: Design System
 Ask:
 - "Do you have a design system or component library? If so, name it or describe it briefly."
 - "What design tokens or visual constraints should I know about? (colours, type scale, spacing)"
@@ -38,15 +62,15 @@ Ask:
 
 ---
 
-### Section 4: Benchmarks
+### Section 5: Benchmarks
 Ask:
-- "Which products do you most admire from a design perspective? These become your positive references."
+- "Which products do you most admire from a design perspective? These become your positive references. (Press Enter to accept the defaults for your product type)"
 - "Which products do you NOT want to look or feel like? These become your anti-references."
-- "Of the CRISP dimensions — Contextual, Responsive, Intelligent, Seamless, Powerful — which matters most for your users right now?"
+- "Of the CRISP dimensions — Contextual, Responsive, Intelligent, Seamless, Powerful — which matters most for your users right now? (Press Enter to accept the product-type default)"
 
 ---
 
-### Section 5: Known Weaknesses
+### Section 6: Known Weaknesses
 Ask:
 - "What's the biggest UX problem you already know exists?"
 - "Which user flows feel most broken or incomplete?"
@@ -66,6 +90,7 @@ Once the interview is complete, write a `.crisp.md` file to the project root wit
 [One-sentence product description]
 Stage: [Pre-launch / Early / Growth / Mature]
 Primary action: [What users mainly do]
+Type: [B2B SaaS / Consumer / E-commerce / Internal Tool / AI-Native / Other]
 
 ## Users
 Primary user: [Role + sophistication level]
@@ -82,9 +107,16 @@ Positive references: [Products to aspire to]
 Anti-references: [Products to avoid resembling]
 Priority CRISP dimension: [C / R / I / S / P]
 
+## Extensions
+[e.g. "CRISP + AI" for AI-Native products — activates /crisp-ai automatically]
+
 ## Known Issues
 [List of acknowledged UX problems]
 [Off-limits areas]
+
+## History
+<!-- CRISP appends a summary line here after each /crisp-audit or /crisp-review run. -->
+<!-- Format: - YYYY-MM-DD | /command | C:x R:x I:x S:x P:x | Grade: X | Top issue: [summary] -->
 ```
 
 Confirm to the user that `.crisp.md` has been written and that all CRISP commands will now use this context automatically.

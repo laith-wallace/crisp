@@ -156,3 +156,19 @@ Compared against [Stripe / Linear / Notion / project benchmark]:
 - Every violation should have a specific fix, not a direction.
 - Prioritise by user impact, not by what's easiest to say.
 - Reference the user context from `.crisp.md` if available — a violation matters more or less depending on who the user is.
+- If `.crisp.md` lists `Extensions: CRISP + AI`, note AI-specific dimension violations using the `/crisp-ai` lens.
+
+## Longitudinal Tracking
+
+After delivering the audit output, append a one-line summary to the `## History` section in `.crisp.md`:
+
+```
+- [YYYY-MM-DD] | /crisp-audit | C:[score] R:[score] I:[score] S:[score] P:[score] | Grade: [A–F] | Top issue: [P0/P1 summary in <10 words]
+```
+
+Example:
+```
+- 2026-03-31 | /crisp-audit | C:7 R:8 I:5 S:9 P:6 | Grade: B | Top issue: [I] Numbers without context on dashboard
+```
+
+If `.crisp.md` has prior History entries, call out any dimension regressions: "Your I score has dropped from 7 to 5 since the last audit — the Intelligent dimension has regressed."
