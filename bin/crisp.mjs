@@ -30,6 +30,7 @@ const SKILLS = [
   { value: 'crisp-copy',     label: '/crisp-copy',     hint: 'Write and evaluate all UI microcopy' },
   { value: 'crisp-a11y',     label: '/crisp-a11y',     hint: 'Full WCAG 2.2 AA accessibility audit' },
   { value: 'crisp-ai',       label: '/crisp-ai',       hint: 'Evaluate and design AI-native UI surfaces' },
+  { value: 'crisp-research', label: '/crisp-research', hint: 'Research synthesis — patterns, anti-patterns, brief gaps' },
 ];
 
 const AGENTS = [
