@@ -35,10 +35,10 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ---
 
-## [1.0.1] — 2025-12-XX
+## [1.0.1] — 2026-03-31
 
 - **P3** Fixed: Restructured skills to use `SKILL.md` subdirectory format for Claude Code compatibility.
 
-## [1.0.0] — 2025-12-XX
+## [1.0.0] — 2026-03-31
 
 Initial release with five skills: `/crisp-teach`, `/crisp-review`, `/crisp-audit`, `/feature-design`, `/handoff`.
