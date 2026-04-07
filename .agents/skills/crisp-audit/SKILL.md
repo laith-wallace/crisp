@@ -8,6 +8,8 @@ user-invocable: true
 
 Analyse the provided design (screenshot, Figma link, or description) with the critical eye of a senior product designer. If `.crisp.md` exists in the project root, load it before beginning — your analysis should be grounded in the specific product context, users, and benchmarks documented there.
 
+**Figma selection tip:** When auditing a Figma file, break large screens into smaller focused selections (individual sections, components, or flows) rather than auditing an entire page at once. Smaller selections produce more reliable, detailed analysis and prevent context overload.
+
 ## Step 1: 30-Second Scan
 
 Before structured analysis, capture first impressions:

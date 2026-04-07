@@ -60,6 +60,17 @@ Ask:
 - "What design tokens or visual constraints should I know about? (colours, type scale, spacing)"
 - "Are there any components that are off-limits to change?"
 
+#### Figma File Structure (if using Figma)
+Ask:
+- "Do you use Figma for your designs?"
+
+If yes, note these best practices in `.crisp.md` under Design System so the team gets reliable AI-assisted reviews:
+- **Use Auto Layout** to convey responsive intent — absolute positioning loses layout semantics
+- **Use variables for design tokens** (spacing, colours, typography, radius) — raw hex values can't be mapped to a token system
+- **Use components for reusable elements** and link them via Code Connect where possible
+- **Use semantic layer names** ("primary-nav", "hero-card") instead of generic group names ("Frame 47", "Group 12")
+- **Add annotations** explaining design behaviour that isn't self-evident from the layout
+
 ---
 
 ### Section 5: Benchmarks
@@ -101,6 +112,7 @@ Failure mode: [What happens if the product lets them down]
 [System name or description]
 Key tokens: [Colours, type, spacing constraints]
 Constraints: [What can't be changed]
+Figma: [Yes/No — if yes, note file structure quality: Auto Layout, variables, semantic naming, Code Connect]
 
 ## Benchmarks
 Positive references: [Products to aspire to]
