@@ -1,6 +1,6 @@
 # CRISP — Design Intelligence for AI Agents
 
-Five skills that give your AI agent a senior product designer's eye. Drop them into Claude, Cursor, Copilot, or Gemini and get structured design reviews, feature specs, and developer handoffs grounded in the CRISP framework.
+Eleven skills that give your AI agent a senior product designer's eye. Drop them into Claude, Cursor, Copilot, or Gemini and get structured design reviews, feature specs, developer handoffs, accessibility audits, AI surface evaluations, and craft-level motion polish — all grounded in the CRISP framework.
 
 **CRISP** = Contextual · Responsive · Intelligent · Seamless · Powerful
 
@@ -27,6 +27,7 @@ Five skills that give your AI agent a senior product designer's eye. Drop them i
 | `/crisp-copy` | Audits and generates all UI microcopy — labels, empty states, errors, tooltips, CTAs, and success messages. |
 | `/crisp-a11y` | Full WCAG 2.2 AA accessibility audit with exact code-level fixes, P0–P3 severity, and a committable `a11y-checklist.md`. |
 | `/crisp-ai` | Evaluates AI-native UI surfaces — chat interfaces, streaming responses, generative UI, inline assist — across 6 AI-specific dimensions. |
+| `/crisp-design-eng` | Design engineering craft layer — motion decisions, micro-interaction quality, component polish, and the invisible details that make an interface feel right. Maps every craft fix to a CRISP dimension. |
 
 ---
 
@@ -53,21 +54,24 @@ Run `/crisp-teach` first. The AI interviews you about your product, users, and d
 
 **Reviewing existing UI:**
 ```
-/crisp-teach   →  writes .crisp.md (run once)
-/crisp-review  →  quick scan, grade A–F + top 3 issues
-/crisp-audit   →  full scored evaluation across all 5 dimensions
-/crisp-copy    →  microcopy audit and generation (optional pass)
-/crisp-a11y    →  accessibility audit (optional pass)
-/handoff       →  developer-ready spec from the reviewed design
+/crisp-teach       →  writes .crisp.md (run once)
+/crisp-review      →  quick scan, grade A–F + top 3 issues
+/crisp-audit       →  full scored evaluation across all 5 dimensions
+/crisp-design-eng  →  motion, micro-interaction + craft polish (optional pass)
+/crisp-copy        →  microcopy audit and generation (optional pass)
+/crisp-a11y        →  accessibility audit (optional pass)
+/handoff           →  developer-ready spec from the reviewed design
 ```
 
 **Designing a new feature:**
 ```
-/crisp-teach      →  writes .crisp.md (run once)
-/crisp-brief      →  structures your idea into a .brief.md
-/crisp-research   →  competitor patterns, anti-patterns, brief gaps
-/feature-design   →  user flows + component decisions, reads .crisp.md + .brief.md
-/handoff          →  developer-ready spec
+/crisp-teach       →  writes .crisp.md (run once)
+/crisp-brief       →  structures your idea into a .brief.md
+/crisp-research    →  competitor patterns, anti-patterns, brief gaps
+/feature-design    →  user flows + component decisions, reads .crisp.md + .brief.md
+/crisp-design-eng  →  motion, micro-interaction + craft polish (optional pass)
+/crisp-ai          →  AI surface evaluation if feature includes AI interactions (optional pass)
+/handoff           →  developer-ready spec
 ```
 
 ---
