@@ -10,6 +10,31 @@ Design a new feature from scratch, grounded in CRISP principles. This is not wir
 
 If `.crisp.md` exists, load it before beginning. The design should be grounded in the specific users, design system, and benchmarks documented there.
 
+## Step 0: Visual Direction (when applicable)
+
+Before writing flows or specs, establish visual direction. This step prevents technically correct specs from being discarded because the aesthetic was wrong.
+
+**Trigger this step when:**
+- The feature is greenfield (no existing visual reference in the product)
+- The `.brief.md` CRISP priority is **C (Contextual)** or **I (Intelligent)** — these dimensions are most visually dependent
+- The user explicitly requests a direction exploration
+
+**How to run it:**
+1. Read `.crisp.md` for register (Brand/Product), Creative North Star, and named rules
+2. Describe 2–3 distinct layout/density approaches in plain language — vary hierarchy, density, and type voice, not just colour. Each should be distinct enough that "a bit of both" is not a reasonable answer.
+
+Example directions for a data table feature:
+- **Dense + functional**: Full-width table, data-forward, toolbar at top, minimal chrome
+- **Card-forward**: Grouped records as expandable cards, progressive disclosure per row
+- **Split-view**: List column left, detail panel right, no full-page navigation
+
+3. Ask the user to confirm which direction (or what combination) to carry forward.
+4. Write the rest of the spec to preserve the confirmed direction's major ingredients: layout structure, density, navigation model.
+
+**If the user skips this step:** proceed, but note in Open Questions which visual direction assumptions you made and why.
+
+---
+
 ## Step 1: Problem Framing
 
 Before designing anything, clarify the problem. If the user hasn't provided these, ask:

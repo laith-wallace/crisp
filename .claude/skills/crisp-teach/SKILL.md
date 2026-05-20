@@ -22,8 +22,21 @@ Ask:
 
 ---
 
-### Section 2: Product Type
+### Section 2: Product Type & Register
+
+First, establish the register — this shapes every downstream CRISP command:
+
 Ask:
+- "Is this primarily a **brand surface** (marketing pages, landing pages, campaigns — where the design IS the product) or a **product surface** (app UI, dashboards, authenticated features — where the design SERVES the product)?"
+
+| Register | Goal | Default stance |
+|----------|------|----------------|
+| **Brand** | Distinctiveness — the interface is what's being sold | Typographic risk, ambitious colour, asymmetric layouts are appropriate |
+| **Product** | Earned familiarity — the tool should disappear into the task | Consistency, density, familiar patterns are the priority |
+
+Record the register in `.crisp.md`. Every subsequent CRISP command reads it to adjust its evaluation criteria.
+
+Then ask:
 - "Which of these best describes your product?"
   - **B2B SaaS** — sold to businesses, used by teams (project management, CRM, analytics, devtools)
   - **Consumer App** — downloaded or used by individuals for personal goals
@@ -55,10 +68,27 @@ Ask:
 ---
 
 ### Section 4: Design System
+
 Ask:
 - "Do you have a design system or component library? If so, name it or describe it briefly."
 - "What design tokens or visual constraints should I know about? (colours, type scale, spacing)"
 - "Are there any components that are off-limits to change?"
+
+When writing the design system section of `.crisp.md`, format constraints as **named rules** rather than bullet lists. Named rules are more memorable, more citable, and more consistently enforced than generic bullets.
+
+Format: `**The [Name] Rule.** [Short doctrine, one sentence.]`
+
+Examples of good named rules:
+- `**The One Accent Rule.** Only the primary brand colour appears at high saturation — everything else is neutral.`
+- `**The Flat-By-Default Rule.** Surfaces are flat at rest. Elevation tokens appear only on hover or when something is raised above the page.`
+- `**The No-Custom-Dropdown Rule.** All select inputs use the system library component — no custom-built replacements.`
+
+Also ask:
+- "How would you describe the visual personality of this product in three words — ideally physical objects or specific feelings, not adjectives like 'modern' or 'clean'?"
+
+Use the answer to write a **Creative North Star** — a single named metaphor for the visual identity that anchors all CRISP skills. More specific than "clean and modern."
+
+Example: "The Lab Notebook" (precise, structured, always slightly imperfect), "The Corner Bookshop" (warm, unhurried, browsable), "The SRE Console" (information-dense, high-contrast, fast).
 
 ---
 
@@ -91,6 +121,7 @@ Once the interview is complete, write a `.crisp.md` file to the project root wit
 Stage: [Pre-launch / Early / Growth / Mature]
 Primary action: [What users mainly do]
 Type: [B2B SaaS / Consumer / E-commerce / Internal Tool / AI-Native / Other]
+Register: [Brand / Product]
 
 ## Users
 Primary user: [Role + sophistication level]
@@ -98,9 +129,14 @@ Job-to-be-done: [What they're hiring the product for]
 Failure mode: [What happens if the product lets them down]
 
 ## Design System
-[System name or description]
+Creative North Star: [Named metaphor — e.g. "The Lab Notebook", "The SRE Console"]
+System: [System name or description]
 Key tokens: [Colours, type, spacing constraints]
-Constraints: [What can't be changed]
+
+Named Rules:
+- **The [Name] Rule.** [Short doctrine.]
+- **The [Name] Rule.** [Short doctrine.]
+[Add one named rule per major design constraint — minimum two, maximum six]
 
 ## Benchmarks
 Positive references: [Products to aspire to]

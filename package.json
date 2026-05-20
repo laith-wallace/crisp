@@ -17,6 +17,7 @@
   ],
   "scripts": {
     "sync": "node scripts/sync.mjs",
+    "install-global": "node scripts/install.mjs",
     "prepublishOnly": "node scripts/sync.mjs"
   },
   "engines": {

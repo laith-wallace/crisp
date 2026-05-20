@@ -70,6 +70,31 @@ Map the brief to one of these feature types. This determines source priority and
 
 If the feature does not match a type above, classify it as **General** and flag all five dimensions for risk assessment.
 
+### Saturated lane check
+
+After classifying the feature type, check whether the brief points toward a currently monoculture aesthetic. AI-generated designs converge on specific visual lanes — designing into one produces output that reads as generic, regardless of how technically correct it is.
+
+Flag a saturated lane warning if the brief + feature type predict one of these combinations:
+
+| Feature + aesthetic signal | Saturated lane | Warning |
+|---|---|---|
+| Landing page + "editorial feel" | Editorial-typographic (italic display serif + mono labels + ruled separators) | Flooded by 2025. Requires active departure. |
+| SaaS dashboard + "clean, minimal" | Generic SaaS cream (off-white + Inter/DM Sans + subtle shadows) | Default AI output. Zero differentiation. |
+| Dark dashboard + "data-focused" | Dark blue / slate + gradient accents + hero metrics | Training-data default for "analytics". |
+| AI product + "futuristic" | Dark + glowing accents + glassmorphism | AI UI cliché. Users have seen 500 of these. |
+| Consumer app + "friendly" | Rounded corners + pastel gradients + Instrument Sans | Converged consumer aesthetic. |
+
+If a saturated lane is detected, add a warning to the output:
+
+```
+SATURATED LANE WARNING
+Aesthetic: [Name]
+Risk: This direction risks blending into current AI-generated defaults.
+Differentiate by: [1-2 specific departure directions — different topology, unexpected palette, unconventional type voice]
+```
+
+This does not block the research — it informs the `/feature-design` step to make a conscious aesthetic choice.
+
 ---
 
 ## Step 3 — Search designated sources

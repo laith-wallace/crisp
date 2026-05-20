@@ -44,15 +44,26 @@ Do not write the brief until flagged items are resolved or the user explicitly a
 
 ## CRISP Dimension Mapping
 
-Before writing the brief, identify which CRISP dimension is most implicated by the problem:
+Read the request, determine the most likely primary CRISP dimension, then **assert it and ask for confirmation** rather than presenting a menu. This is faster and treats the user as a collaborator.
 
+Dimension signals:
 - **C (Contextual)** — users are confused about where they are, what happened, or what to do next
 - **R (Responsive)** — interactions feel slow, unresponsive, or have no feedback
 - **I (Intelligent)** — data is shown without context, insight, or next-best-action
 - **S (Seamless)** — users are interrupted, redirected, or forced out of their workflow
 - **P (Powerful)** — complexity is poorly managed, or expert users can't work efficiently
 
-Use the product type from `.crisp.md` to weight dimension priority (e.g. B2B SaaS should weight S + P; Consumer App weights C + R).
+Assert-then-confirm format:
+```
+Primary dimension: S (Seamless) — this is a workflow interruption problem. Confirm, or tell me which dimension is more relevant.
+```
+
+Not a menu:
+```
+Which dimension applies? C / R / I / S / P
+```
+
+Use the register and product type from `.crisp.md` to weight dimension priority (Brand register weights C + I; Product register B2B weights S + P; Consumer weights C + R).
 
 ---
 
@@ -101,6 +112,12 @@ Use: "Account manager identifies at-risk accounts in under 30 seconds from the p
 - Timeline: [If provided]
 - Dependencies: [What this work depends on or blocks]
 - Known off-limits: [From .crisp.md Known Issues, or stated by user]
+
+## Anti-Goals
+What this design should NOT be or do — explicit exclusions prevent the wrong reference product being used:
+- Not: [e.g. "Not a settings page — stays in the user's current context"]
+- Not: [e.g. "Not a modal — must be inline"]
+- Not: [e.g. "Not optimised for first-time users — this is for power users only"]
 
 ## CRISP Priority
 Primary dimension: **[C / R / I / S / P]** — [One sentence on why this dimension matters most for this problem]
