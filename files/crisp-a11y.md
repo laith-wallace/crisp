@@ -57,6 +57,7 @@ For every **Fail**, provide:
 - Body text (< 18pt normal, < 14pt bold): 4.5:1 minimum ratio
 - Large text (≥ 18pt normal, ≥ 14pt bold): 3:1 minimum ratio
 - Calculate exact ratio when tokens are available; flag approximate when only colours described
+- **Prefer [APCA](https://apcacontrast.com/) over WCAG 2 ratios** — APCA is more perceptually accurate and better reflects how humans actually read text in real interfaces. Use WCAG 2 ratios as the compliance floor when standards require it, but APCA as the design truth.
 
 **1.4.4 Resize Text**
 - Page remains functional and readable at 200% browser zoom without horizontal scrolling
@@ -131,6 +132,19 @@ For every **Fail**, provide:
 - Status messages (success, error, loading) are announced to screen readers without receiving focus
 - Use `role="status"` (polite) for success/info, `role="alert"` (assertive) for errors
 - Fix example: `<div role="status" aria-live="polite">Changes saved</div>`
+
+---
+
+### Principle: Semantics Before ARIA
+
+Prefer native HTML elements over ARIA attributes. A native `<button>` is keyboard-accessible, focusable, and carries the correct role with no extra code. A `<div role="button">` requires explicit `tabindex`, `role`, and keyboard handlers to replicate what the browser provides for free.
+
+Order of preference:
+1. Native HTML element (`<button>`, `<a>`, `<label>`, `<select>`, `<table>`)
+2. Native element with ARIA state (`<button aria-expanded="true">`)
+3. Non-semantic element with full ARIA and keyboard handling — only when no native element is appropriate
+
+Flag any `<div>` or `<span>` acting as an interactive control. The fix is almost always to replace it with the correct native element, not to ARIA-patch it.
 
 ---
 

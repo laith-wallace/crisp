@@ -10,6 +10,18 @@ A fast, high-signal design pass. Not a full audit — a diagnostic. Use this dur
 
 If `.crisp.md` exists in the project root, load it. Your review should be grounded in the specific product, users, and priorities documented there.
 
+## Pre-Scan: Slop Check
+
+Before evaluating CRISP dimensions, run one fast check:
+
+**Would someone look at this and immediately say "AI made that"?**
+
+If yes — flag it at the top of your output before the grade. It is a disqualifier, not a dimension. Specific tells: hero metric template (big number + gradient accent), identical card grid, side-stripe borders, gradient text, glassmorphism as default surface, generic sans-serif + off-white with no design decision evident.
+
+This takes 5 seconds. Do it before anything else.
+
+---
+
 ## What to Evaluate
 
 Scan the design against all five CRISP dimensions, but don't score each one individually. Instead:
@@ -38,12 +50,21 @@ Use these as your diagnostic lens during the scan:
 - **S** — Does the user stay in their flow, or get pushed out of it?
 - **P** — Is complexity hidden from those who don't need it?
 
+Additional craft checks — flag any as issues or Quick Wins:
+
+- **No dead zones** — if any part of a control looks interactive, it must be interactive; no decoy hit areas
+- **All states present** — every component has empty, sparse, dense, and error states; missing states become developer inventions
+- **Stable skeletons** — loading skeletons must match the final layout exactly; a skeleton that shifts on load is worse than no skeleton
+- **Don't pre-disable submit** — forms allow submission before all fields are filled so validation errors can surface; a pre-disabled button hides which fields are required
+
 ## Output Format
 
 Keep it tight. No lengthy explanations.
 
 ```
 ## CRISP Review: [Screen/Feature Name]
+
+**Slop Check: [Pass / Fail]** — [If Fail, one line naming the specific tell]
 
 **Grade: [A–F]** — [One punchy verdict sentence]
 

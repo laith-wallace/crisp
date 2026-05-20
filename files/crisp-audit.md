@@ -8,6 +8,40 @@ user-invocable: true
 
 Analyse the provided design (screenshot, Figma link, or description) with the critical eye of a senior product designer. If `.crisp.md` exists in the project root, load it before beginning — your analysis should be grounded in the specific product context, users, and benchmarks documented there.
 
+## Step 0: AI Slop Check
+
+Before evaluating CRISP dimensions, run a rapid anti-monoculture check. This is a disqualifier, not a dimension — it fires before scoring.
+
+**Question: Would someone look at this and immediately say "AI made that"?**
+
+Check for these specific tells:
+
+| Tell | What it looks like |
+|------|--------------------|
+| Hero metric template | Big number, small label, supporting stats below, gradient accent |
+| Identical card grid | Same-sized cards repeating icon + heading + text with equal visual weight |
+| Side-stripe borders | Coloured left or right border (>1px) on cards or alerts as the primary decorative element |
+| Gradient text | `background-clip: text` treatment on headings or CTAs |
+| Glassmorphism default | Blur + transparency used as the primary surface treatment, not as a specific elevated element |
+| SaaS cream + generic sans | Off-white background with no tint, Inter or DM Sans, zero distinctive colour decision |
+| Saturated aesthetic lane | Editorial-typographic (italic display serif + mono labels + ruled separators) used as a default not a deliberate choice |
+
+If any tells are present:
+- Name them explicitly in the audit output
+- Flag which CRISP dimension they affect (usually I — lack of insight over raw display, or C — user can't differentiate this from any other product)
+- Register-aware: a "saturated aesthetic lane" failure is more serious in Brand register (distinctiveness is the goal); in Product register, over-decoration is the primary failure mode
+
+```
+## AI Slop Check
+Result: [Pass / Fail]
+Tells identified: [List specific tells, or "None"]
+Dimension impact: [Which dimensions are affected]
+```
+
+If Fail — note it at the top of the audit output, before the grade.
+
+---
+
 ## Step 1: 30-Second Scan
 
 Before structured analysis, capture first impressions:
@@ -27,6 +61,7 @@ Fail indicators:
 - Missing breadcrumbs or location signals on deep pages
 - Page title or heading doesn't reflect what the user is doing
 - No orientation after a user action ("What just happened?")
+- Missing states — empty, sparse, dense, or error states are undesigned; developers will invent them, and invented states are always wrong
 
 Violation examples:
 - Generic "Success" message → Fails C. Tell the user exactly what changed.
@@ -40,6 +75,8 @@ Fail indicators:
 - Click-wait-update patterns where the user has to wait to see their action reflected
 - No hover feedback on interactive elements
 - No loading skeleton — blank space appears while content loads
+- Dead zones — areas that look interactive are not clickable; misleads intent and wastes user actions
+- Unstable skeletons — loading skeleton layout differs from the final content, causing layout shift on load
 
 Violation examples:
 - Spinner on search → Fails R. Use debounced optimistic filtering.
@@ -66,6 +103,7 @@ Fail indicators:
 - Forced login to complete an action that could be handled inline or via email
 - Custom UI components that break familiar mental models (e.g. a custom dropdown that doesn't behave like a dropdown)
 - Unnecessary page reloads for contextual tasks
+- Pre-disabled submit — the submit button is disabled until all fields are filled, hiding which fields are required and preventing error discovery
 
 Violation examples:
 - "Open in portal to approve" → Fails S. Inline approval card, one click.
@@ -95,6 +133,33 @@ Rate each violation using this scale:
 | P2 | Noticeable degradation in experience | Generic empty state copy |
 | P3 | Minor polish issue | Missing hover state on secondary action |
 
+## Step 3b: Emotional Journey Check
+
+After scoring the CRISP dimensions, check the emotional arc of the user's experience. This is a short, targeted check — not a full journey map.
+
+**Peak-end rule**: Users judge an experience primarily by its emotional peak (highest or lowest point) and its ending. A technically competent design can fail if the highest-anxiety moment gets no reassurance, or if the flow ends without confirming success.
+
+Ask:
+- **Where does user anxiety peak?** (Destructive action, payment, form submission, irreversible decision)
+- **Does the design provide reassurance at that exact moment?** (Confirmation copy, undo, preview, progress indicator)
+- **What does the user feel when the flow ends?** (Success state — specific or generic? Any signal of what changed?)
+
+Flag as a violation if:
+- A high-stakes action has no reassurance mechanism (no confirmation, no preview, no undo)
+- The success state is generic ("Done" rather than what specifically changed)
+- The ending leaves the user uncertain about what happened
+
+Add to output:
+```
+### Emotional Journey
+Anxiety peak: [Where in the flow does anxiety spike]
+Reassurance present: [Yes / No — and what form it takes]
+Ending quality: [What the user feels when the flow completes]
+Gap: [Any moment that feels unaddressed — or "None identified"]
+```
+
+---
+
 ## Step 4: Benchmark Comparison
 
 Compare against one or more of these exemplars (or the benchmarks from `.crisp.md`):
@@ -111,6 +176,10 @@ Structure the audit as:
 ```
 ## CRISP Audit: [Screen/Feature Name]
 
+### AI Slop Check
+Result: [Pass / Fail]
+[If Fail — list specific tells before anything else]
+
 **Grade: [A–F]** — [One-line verdict]
 
 ### 30-Second Impression
@@ -126,6 +195,12 @@ Red Flags: [2–3 bullet points]
 | Seamless    | /10   | [Most critical S failure]            |
 | Powerful    | /10   | [Most critical P failure]            |
 | **Total**   | **/50** |                                    |
+
+### Emotional Journey
+Anxiety peak: [Where in the flow does anxiety spike]
+Reassurance present: [Yes / No — and what form it takes]
+Ending quality: [What the user feels when the flow completes]
+Gap: [Any moment that feels unaddressed, or "None identified"]
 
 ### Violations by Priority
 **P0 — Fix immediately**

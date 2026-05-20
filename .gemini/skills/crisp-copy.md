@@ -10,6 +10,19 @@ Copy is the most underestimated design material. A spinner with "Loading..." is 
 
 Load `.crisp.md` if it exists — product context informs voice, terminology, and user expectations.
 
+## Register Detection
+
+Before writing or auditing any copy, read the register from `.crisp.md`:
+
+| Register | Copy stance |
+|----------|-------------|
+| **Brand** | Lead with personality. Voice is the product. Tolerance for unexpected word choices, metaphor, rhythm. |
+| **Product** | Lead with clarity and recovery. Voice disappears into the task. No clever language at high-stakes moments. |
+
+If `.crisp.md` is absent, ask: "Is this a marketing page or a product UI?" The answer changes the voice entirely.
+
+---
+
 ## Mode Detection
 
 Ask the user: **"Are you auditing existing copy or generating new copy?"**
@@ -34,6 +47,27 @@ Must have two parts:
 1. **What went wrong — specifically** — "Your session expired" (not "Something went wrong"), "File too large — maximum is 5MB" (not "Upload failed")
 2. **What the user can do next — specifically** — "Sign in again →", "Compress the file and try again"
 
+Match the failure type to the recovery action. Generic "Something went wrong" always fails — name the failure:
+
+| Failure type | What to say | Recovery action |
+|---|---|---|
+| Session expired | "Your session expired" | "Sign in again →" |
+| Network / connection | "Connection lost — check your internet" | "Try again" button |
+| Permission denied | "You don't have access to [X]" | "Request access →" or "Contact your admin" |
+| Rate limit | "You've reached the limit — [upgrade or wait X mins]" | Clear action with ETA |
+| File / input error | "[Specific reason] — [constraint]" (e.g. "File too large — max 5MB") | Specific resolution |
+| Server error | "Something went wrong on our end" | "Try again" — never expose technical detail |
+
+Errors must **guide the exit**, not just name the problem. If the error is fixable, the message tells the user exactly how to fix it — not just that something went wrong.
+
+| Weak | Strong |
+|------|--------|
+| "Invalid API key" | "Your API key is incorrect or expired. Generate a new key in your account settings." |
+| "Your deployment failed" | "Something went wrong - try again or contact support." |
+| "Payment error" | "Your card was declined. Try a different card or contact your bank." |
+
+Frame errors in a **problem-solving tone**, not a failure tone. Even when something goes wrong, the copy should feel like a hand pointing toward the solution — not a finger pointing at the user.
+
 ### CTA Labels
 Describe the **outcome**, not the action:
 - "Save draft" not "Save"
@@ -41,6 +75,7 @@ Describe the **outcome**, not the action:
 - "Delete campaign" not "Delete" ← always name what's being destroyed
 - "Export as CSV" not "Export"
 - "Continue to payment" not "Next"
+- "Save API Key" not "Continue" ← generic verbs hide the consequence of clicking
 
 ### Success Confirmations
 Name what happened specifically:
@@ -62,6 +97,13 @@ Name what happened specifically:
 - Always name the specific thing being destroyed
 - Always state irreversibility if true: "Delete campaign — this can't be undone"
 - Offer a safer alternative when possible: "Archive instead →"
+
+### Loading States & Further-Input Signals
+End with `…` (the ellipsis character `…`, not three periods `...`):
+- Menu items that open a follow-up dialog — "Rename…", "Move to…", "Export as…"
+- Active loading or processing states — "Loading…", "Saving…", "Generating…"
+
+This convention signals: **something more is coming**. It primes the user and eliminates the jarring gap between action and result.
 
 ---
 

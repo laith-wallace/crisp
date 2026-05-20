@@ -1,0 +1,832 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import Base from '../../layouts/Base.astro';
+import '../../styles/sub-pages.css';
+import '../../styles/detector-lab.css';
+import {
+  createDetectorProfile,
+  detectHtml,
+  summarizeDetectorProfile,
+} from '../../../cli/engine/detect-antipatterns.mjs';
+
+const ROOT = process.cwd();
+const FIXTURES_DIR = path.join(ROOT, 'tests', 'fixtures', 'antipatterns');
+
+const FIXTURES = [
+  {
+    file: 'border-baseline.html',
+    group: 'Borders',
+    title: 'Border side tabs',
+    summary: 'Side-by-side positive and negative cases for colored side borders and rounded accent borders.',
+  },
+  {
+    file: 'partial-component.html',
+    group: 'Baseline',
+    title: 'Partial component',
+    summary: 'Component-like HTML where page-level rules must stay quiet.',
+  },
+  {
+    file: 'linked-stylesheet.html',
+    group: 'Static CSS',
+    title: 'Linked stylesheet',
+    summary: 'Local CSS inlining, selector matching, and cascade coverage.',
+  },
+  {
+    file: 'modern-color-borders.html',
+    group: 'Borders',
+    title: 'Modern color borders',
+    summary: 'OKLCH, LAB, LCH, HSL, HWB, and custom-property border cases.',
+  },
+  {
+    file: 'color.html',
+    group: 'Color',
+    title: 'Color and contrast',
+    summary: 'Solid contrast, gray-on-color, gradient stops, links, buttons, and emoji skips.',
+  },
+  {
+    file: 'visual-contrast.html',
+    group: 'Color',
+    title: 'Visual contrast fallback',
+    summary: 'Image-background text cases for the Puppeteer pixel-diff contrast pass.',
+  },
+  {
+    file: 'legitimate-borders.html',
+    group: 'Borders',
+    title: 'Legitimate borders',
+    summary: 'Border patterns that should pass despite being visually close to side tabs.',
+  },
+  {
+    file: 'typography.html',
+    group: 'Typography',
+    title: 'Typography side by side',
+    summary: 'Element-level typography checks with visible flag/pass highlights.',
+  },
+  {
+    file: 'quality.html',
+    group: 'Typography',
+    title: 'Quality and readability',
+    summary: 'Text quality checks, plus browser-only line length in the live pane.',
+  },
+  {
+    file: 'italic-serif-display.html',
+    group: 'Typography',
+    title: 'Italic serif display',
+    summary: 'Large decorative serif italics versus legitimate emphasis.',
+  },
+  {
+    file: 'hero-eyebrow-chip.html',
+    group: 'Typography',
+    title: 'Hero eyebrow chip',
+    summary: 'Uppercase micro-labels and pills above hero headings.',
+  },
+  {
+    file: 'layout.html',
+    group: 'Layout',
+    title: 'Layout',
+    summary: 'Nested cards and page-level layout patterns.',
+  },
+  {
+    file: 'repeated-section-kickers.html',
+    group: 'Layout',
+    title: 'Repeated section kickers',
+    summary: 'Repeated scaffolding labels that create AI-page rhythm.',
+  },
+  {
+    file: 'icon-tile-stack.html',
+    group: 'Layout',
+    title: 'Icon tile stack',
+    summary: 'Large icon tiles stacked over headings.',
+  },
+  {
+    file: 'cramped-padding.html',
+    group: 'Browser layout',
+    title: 'Cramped padding',
+    summary: 'Browser-only padding checks that need real element rectangles.',
+  },
+  {
+    file: 'body-text-viewport-edge.html',
+    group: 'Browser layout',
+    title: 'Viewport-edge body text',
+    summary: 'Browser-only body text that bleeds to the viewport edge.',
+  },
+  {
+    file: 'motion.html',
+    group: 'Motion',
+    title: 'Motion',
+    summary: 'Bounce easing and layout-property transitions.',
+  },
+  {
+    file: 'glow.html',
+    group: 'Motion',
+    title: 'Dark glow',
+    summary: 'Chromatic shadows on dark surfaces versus safe shadows.',
+  },
+  {
+    file: 'overlay-positioning.html',
+    group: 'Overlay',
+    title: 'Overlay positioning',
+    summary: 'Edge cases for the browser overlay itself.',
+  },
+];
+
+function nowMs() {
+  return typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
+}
+
+function roundMs(value: number) {
+  return Number(value.toFixed(3));
+}
+
+function displayMs(value: number) {
+  if (!Number.isFinite(value)) return '0 ms';
+  if (value >= 1000) return `${(value / 1000).toFixed(2)} s`;
+  if (value < 10) return `${value.toFixed(2)} ms`;
+  return `${value.toFixed(1)} ms`;
+}
+
+function slug(file: string) {
+  return file.replace(/\.html$/, '');
+}
+
+function routeFor(file: string) {
+  return `/detector/fixtures/antipatterns/${file}`;
+}
+
+function countByRule(findings: Array<{ antipattern: string }>) {
+  const counts = new Map<string, number>();
+  for (const finding of findings) {
+    counts.set(finding.antipattern, (counts.get(finding.antipattern) || 0) + 1);
+  }
+  return [...counts.entries()]
+    .map(([ruleId, count]) => ({ ruleId, count }))
+    .sort((a, b) => b.count - a.count || a.ruleId.localeCompare(b.ruleId));
+}
+
+async function measureFixture(meta: typeof FIXTURES[number]) {
+  const filePath = path.join(FIXTURES_DIR, meta.file);
+  const profile = createDetectorProfile();
+  const started = nowMs();
+  const findings = await detectHtml(filePath, { profile });
+  const totalMs = roundMs(nowMs() - started);
+  return {
+    ...meta,
+    id: slug(meta.file),
+    url: routeFor(meta.file),
+    bytes: fs.statSync(filePath).size,
+    staticTotalMs: totalMs,
+    staticFindings: findings.length,
+    findingsByRule: countByRule(findings),
+    profile: summarizeDetectorProfile(profile)
+      .map(row => ({
+        engine: row.engine,
+        phase: row.phase,
+        ruleId: row.ruleId,
+        calls: row.calls,
+        totalMs: row.totalMs,
+        avgMs: row.avgMs,
+        p50: row.p50,
+        p95: row.p95,
+        findings: row.findings,
+      })),
+  };
+}
+
+function percentile(values: number[], pct: number) {
+  if (values.length === 0) return 0;
+  const sorted = [...values].sort((a, b) => a - b);
+  const idx = Math.min(sorted.length - 1, Math.max(0, Math.ceil((pct / 100) * sorted.length) - 1));
+  return sorted[idx];
+}
+
+function aggregateProfile(fixtures: Awaited<ReturnType<typeof measureFixture>>[]) {
+  const groups = new Map<string, {
+    engine: string;
+    phase: string;
+    ruleId: string;
+    calls: number;
+    totalMs: number;
+    findings: number;
+    samples: number[];
+  }>();
+  for (const fixture of fixtures) {
+    for (const row of fixture.profile) {
+      const key = `${row.engine}\u0000${row.phase}\u0000${row.ruleId}`;
+      let group = groups.get(key);
+      if (!group) {
+        group = {
+          engine: row.engine,
+          phase: row.phase,
+          ruleId: row.ruleId,
+          calls: 0,
+          totalMs: 0,
+          findings: 0,
+          samples: [],
+        };
+        groups.set(key, group);
+      }
+      group.calls += row.calls;
+      group.totalMs += row.totalMs;
+      group.findings += row.findings;
+      group.samples.push(row.p50);
+    }
+  }
+  return [...groups.values()]
+    .map(group => ({
+      engine: group.engine,
+      phase: group.phase,
+      ruleId: group.ruleId,
+      calls: group.calls,
+      totalMs: roundMs(group.totalMs),
+      avgMs: roundMs(group.totalMs / Math.max(1, group.calls)),
+      p50: roundMs(percentile(group.samples, 50)),
+      p95: roundMs(percentile(group.samples, 95)),
+      findings: group.findings,
+    }))
+    .sort((a, b) => b.totalMs - a.totalMs);
+}
+
+await detectHtml(path.join(FIXTURES_DIR, 'should-pass.html'), { profile: createDetectorProfile() });
+const fixtureData = [];
+for (const fixture of FIXTURES) {
+  fixtureData.push(await measureFixture(fixture));
+}
+const globalProfile = aggregateProfile(fixtureData);
+const totalStaticMs = roundMs(fixtureData.reduce((sum, item) => sum + item.staticTotalMs, 0));
+const totalFindings = fixtureData.reduce((sum, item) => sum + item.staticFindings, 0);
+const slowestRow = globalProfile[0];
+const groups = [...new Set(fixtureData.map(item => item.group))];
+const dashboardData = {
+  generatedAt: new Date().toISOString(),
+  fixtures: fixtureData,
+  globalProfile,
+};
+const dashboardJson = JSON.stringify(dashboardData).replace(/</g, '\\u003c');
+---
+
+<Base
+  title="Detector Lab | Impeccable"
+  description="A fixture browser and timing dashboard for Impeccable's anti-pattern detector."
+  bodyClass="sub-page detector-lab-page"
+  mainClass="detector-main-shell"
+  noIndex
+  hideHeader
+  hideFooter
+>
+  <section class="detector-workbench" aria-label="Detector fixture explorer">
+    <aside class="detector-fixture-nav" aria-label="Fixture navigation">
+      <div class="detector-nav-head">
+        <a class="detector-home-link" href="/" aria-label="Back to Impeccable">
+          <span>/</span>
+          <strong>Impeccable</strong>
+        </a>
+        <h1>Detector Lab</h1>
+        <p>Internal fixture browser and speed surface.</p>
+        <dl class="detector-summary-grid" aria-label="Detector benchmark summary">
+          <div>
+            <dt>Fixtures</dt>
+            <dd>{fixtureData.length}</dd>
+          </div>
+          <div>
+            <dt>Static</dt>
+            <dd>{displayMs(totalStaticMs)}</dd>
+          </div>
+          <div>
+            <dt>Findings</dt>
+            <dd>{totalFindings}</dd>
+          </div>
+          <div>
+            <dt>Slowest</dt>
+            <dd>{slowestRow?.ruleId || 'none'}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <nav class="detector-nav-scroll">
+        {groups.map(group => (
+          <div class="detector-nav-group">
+            <h2>{group}</h2>
+            <div class="detector-nav-list">
+              {fixtureData.filter(item => item.group === group).map(item => (
+                <button
+                  type="button"
+                  class="detector-fixture-button"
+                  data-fixture-id={item.id}
+                  aria-pressed={item.id === fixtureData[0].id ? 'true' : 'false'}
+                >
+                  <span>{item.title}</span>
+                  <span>{item.staticFindings}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </nav>
+    </aside>
+
+    <div class="detector-workspace">
+      <header class="detector-preview-head">
+        <div>
+          <p class="detector-panel-label" data-fixture-group>{fixtureData[0].group}</p>
+          <h2 data-fixture-title>{fixtureData[0].title}</h2>
+          <p data-fixture-summary>{fixtureData[0].summary}</p>
+        </div>
+        <div class="detector-preview-actions">
+          <a href={fixtureData[0].url} target="_blank" rel="noopener" data-open-fixture>Open fixture</a>
+          <button type="button" data-rerun-browser>Run browser scan</button>
+        </div>
+      </header>
+
+      <div class="detector-workspace-scroll">
+        <div class="detector-content-grid">
+          <div class="detector-preview-column">
+            <div class="detector-frame-wrap">
+              <iframe
+                src={fixtureData[0].url}
+                title={`${fixtureData[0].title} detector fixture`}
+                data-fixture-frame
+              ></iframe>
+            </div>
+          </div>
+
+          <aside class="detector-metrics" aria-label="Detector timings">
+            <section class="detector-metric-panel" aria-labelledby="browser-timing-title">
+              <div class="detector-panel-head">
+                <p class="detector-panel-label">Live browser</p>
+                <h2 id="browser-timing-title">Current iframe scan</h2>
+              </div>
+              <dl class="detector-live-stats">
+                <div>
+                  <dt>Pure detect</dt>
+                  <dd data-browser-ms>waiting</dd>
+                </div>
+                <div>
+                  <dt>Findings</dt>
+                  <dd data-browser-findings>waiting</dd>
+                </div>
+                <div>
+                  <dt>Visual candidates</dt>
+                  <dd data-browser-visual-candidates>waiting</dd>
+                </div>
+              </dl>
+              <div class="detector-rule-pills" data-browser-rules aria-label="Browser findings by rule"></div>
+            </section>
+
+            <section class="detector-metric-panel" aria-labelledby="static-fixture-title">
+              <div class="detector-panel-head">
+                <p class="detector-panel-label">Static HTML/CSS</p>
+                <h2 id="static-fixture-title">Selected fixture</h2>
+              </div>
+              <dl class="detector-live-stats">
+                <div>
+                  <dt>Total</dt>
+                  <dd data-static-ms>{displayMs(fixtureData[0].staticTotalMs)}</dd>
+                </div>
+                <div>
+                  <dt>Findings</dt>
+                  <dd data-static-findings>{fixtureData[0].staticFindings}</dd>
+                </div>
+              </dl>
+              <div class="detector-rule-pills" data-static-rules aria-label="Static findings by rule"></div>
+            </section>
+          </aside>
+        </div>
+
+        <section class="detector-tables" aria-label="Detector timing tables">
+          <div class="detector-table-panel">
+            <header>
+              <div>
+                <p class="detector-panel-label">Per fixture</p>
+                <h2 data-selected-table-title>{fixtureData[0].title} timings</h2>
+              </div>
+              <p>Rows come directly from the profiling API.</p>
+            </header>
+            <div class="detector-table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Phase</th>
+                    <th>Check</th>
+                    <th>Calls</th>
+                    <th>Total</th>
+                    <th>P95</th>
+                    <th>Findings</th>
+                  </tr>
+                </thead>
+                <tbody data-selected-timings></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="detector-table-panel">
+            <header>
+              <div>
+                <p class="detector-panel-label">All fixtures</p>
+                <h2>Slowest checks</h2>
+              </div>
+              <p>Aggregated across every fixture in this lab.</p>
+            </header>
+            <div class="detector-table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Engine</th>
+                    <th>Phase</th>
+                    <th>Check</th>
+                    <th>Calls</th>
+                    <th>Total</th>
+                    <th>P95</th>
+                    <th>Findings</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {globalProfile.slice(0, 24).map(row => (
+                    <tr>
+                      <td>{row.engine}</td>
+                      <td>{row.phase}</td>
+                      <td><code>{row.ruleId}</code></td>
+                      <td>{row.calls}</td>
+                      <td>{row.totalMs} ms</td>
+                      <td>{row.p95} ms</td>
+                      <td>{row.findings}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <script id="detector-dashboard-data" type="application/json" set:html={dashboardJson}></script>
+  <script>
+    const data = JSON.parse(document.getElementById('detector-dashboard-data').textContent);
+    const fixtures = data.fixtures;
+    const byId = new Map(fixtures.map(item => [item.id, item]));
+
+    const workspaceScrollEl = document.querySelector('.detector-workspace-scroll');
+    const frame = document.querySelector('[data-fixture-frame]');
+    const titleEl = document.querySelector('[data-fixture-title]');
+    const groupEl = document.querySelector('[data-fixture-group]');
+    const summaryEl = document.querySelector('[data-fixture-summary]');
+    const openLink = document.querySelector('[data-open-fixture]');
+    const staticMsEl = document.querySelector('[data-static-ms]');
+    const staticFindingsEl = document.querySelector('[data-static-findings]');
+    const staticRulesEl = document.querySelector('[data-static-rules]');
+    const browserMsEl = document.querySelector('[data-browser-ms]');
+    const browserFindingsEl = document.querySelector('[data-browser-findings]');
+    const browserVisualCandidatesEl = document.querySelector('[data-browser-visual-candidates]');
+    const browserRulesEl = document.querySelector('[data-browser-rules]');
+    const selectedTimingBody = document.querySelector('[data-selected-timings]');
+    const selectedTableTitle = document.querySelector('[data-selected-table-title]');
+    let currentFixtureId = fixtures[0]?.id || '';
+    let latestBrowserSummary = null;
+    let detachVisualResolutionListener = null;
+
+    function formatMs(value) {
+      if (!Number.isFinite(value)) return '0 ms';
+      if (value < 1) return `${value.toFixed(3)} ms`;
+      if (value < 10) return `${value.toFixed(2)} ms`;
+      return `${value.toFixed(1)} ms`;
+    }
+
+    function renderPills(container, rows, emptyText) {
+      container.replaceChildren();
+      if (!rows || rows.length === 0) {
+        const empty = document.createElement('span');
+        empty.className = 'detector-empty-pill';
+        empty.textContent = emptyText;
+        container.append(empty);
+        return;
+      }
+      for (const row of rows.slice(0, 12)) {
+        const pill = document.createElement('span');
+        pill.className = 'detector-rule-pill';
+        pill.innerHTML = `<code></code><span></span>`;
+        pill.querySelector('code').textContent = row.ruleId;
+        pill.querySelector('span').textContent = row.count;
+        container.append(pill);
+      }
+    }
+
+    function countBrowserRules(groups) {
+      const counts = new Map();
+      for (const group of groups || []) {
+        for (const finding of group.findings || []) {
+          counts.set(finding.type, (counts.get(finding.type) || 0) + 1);
+        }
+      }
+      return [...counts.entries()]
+        .map(([ruleId, count]) => ({ ruleId, count }))
+        .sort((a, b) => b.count - a.count || a.ruleId.localeCompare(b.ruleId));
+    }
+
+    function countBrowserFindings(groups) {
+      return (groups || []).reduce((sum, group) => sum + (group.findings?.length || 0), 0);
+    }
+
+    function renderBrowserSummary(summary) {
+      const visualAnalyses = summary.visualAnalyses || [];
+      const visualCandidates = visualAnalyses.length > 0 ? visualAnalyses : (summary.visualCandidates || []);
+      const visualFailures = visualAnalyses.filter(result => result.status === 'fail').length;
+      const visualPasses = visualAnalyses.filter(result => result.status === 'pass').length;
+      const visualUnresolved = visualAnalyses.filter(result => result.status === 'unresolved').length;
+      const groupFindingCount = countBrowserFindings(summary.groups);
+      const count = summary.useVisualPipeline
+        ? (summary.nonVisualFindingCount + visualFailures)
+        : (groupFindingCount + visualFailures);
+      const ruleRows = countBrowserRules(summary.groups)
+        .filter(row => !(summary.useVisualPipeline && row.ruleId === 'low-contrast'));
+
+      if (visualUnresolved > 0) {
+        ruleRows.unshift({ ruleId: 'visual-contrast-unresolved', count: visualUnresolved });
+      }
+      if (visualPasses > 0) {
+        ruleRows.unshift({ ruleId: 'visual-contrast-pass', count: visualPasses });
+      }
+      if (visualFailures > 0) {
+        ruleRows.unshift({ ruleId: 'low-contrast:visual', count: visualFailures });
+      }
+      if (visualCandidates.length > 0) {
+        ruleRows.unshift({ ruleId: 'visual-contrast-candidate', count: visualCandidates.length });
+      }
+
+      browserMsEl.textContent = formatMs(summary.elapsed);
+      browserFindingsEl.textContent = String(count);
+      browserVisualCandidatesEl.textContent = visualAnalyses.length > 0
+        ? `${visualCandidates.length} (${visualFailures} fail, ${visualPasses} pass, ${visualUnresolved} unresolved, ${formatMs(summary.visualElapsed)})`
+        : String(visualCandidates.length);
+      renderPills(browserRulesEl, ruleRows, 'No browser findings');
+    }
+
+    function bindVisualResolutionUpdates(win) {
+      if (detachVisualResolutionListener) {
+        detachVisualResolutionListener();
+        detachVisualResolutionListener = null;
+      }
+      const updateSummary = () => {
+        if (!latestBrowserSummary || latestBrowserSummary.win !== win) return;
+        const visualAnalyses = typeof win.impeccableGetLastVisualContrastAnalyses === 'function'
+          ? win.impeccableGetLastVisualContrastAnalyses()
+          : latestBrowserSummary.visualAnalyses;
+        latestBrowserSummary = {
+          ...latestBrowserSummary,
+          visualAnalyses,
+          visualCandidates: visualAnalyses.length > 0 ? visualAnalyses : latestBrowserSummary.visualCandidates,
+        };
+        renderBrowserSummary(latestBrowserSummary);
+      };
+      win.addEventListener('impeccable-visual-contrast-resolved', updateSummary);
+      detachVisualResolutionListener = () => {
+        win.removeEventListener('impeccable-visual-contrast-resolved', updateSummary);
+      };
+    }
+
+    function renderTimingRows(fixture) {
+      selectedTimingBody.replaceChildren();
+      for (const row of fixture.profile.slice(0, 36)) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td></td>
+          <td><code></code></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        `;
+        tr.children[0].textContent = row.phase;
+        tr.querySelector('code').textContent = row.ruleId;
+        tr.children[2].textContent = row.calls;
+        tr.children[3].textContent = `${row.totalMs} ms`;
+        tr.children[4].textContent = `${row.p95} ms`;
+        tr.children[5].textContent = row.findings;
+        selectedTimingBody.append(tr);
+      }
+    }
+
+    function waitForDetector(win, attempts = 30) {
+      return new Promise((resolve, reject) => {
+        const tick = () => {
+          if (win && typeof win.impeccableDetect === 'function') {
+            resolve(win);
+            return;
+          }
+          attempts -= 1;
+          if (attempts <= 0) {
+            reject(new Error('Detector script did not initialize'));
+            return;
+          }
+          setTimeout(tick, 100);
+        };
+        tick();
+      });
+    }
+
+    function clearLabOverlays(win) {
+      const doc = win?.document;
+      if (!doc) return;
+      for (const node of doc.querySelectorAll('[data-impeccable-lab-overlay]')) {
+        node.remove();
+      }
+    }
+
+    function ensureLabOverlayStyle(win) {
+      const doc = win?.document;
+      if (!doc || doc.getElementById('impeccable-detector-lab-overlay-style')) return;
+      const style = doc.createElement('style');
+      style.id = 'impeccable-detector-lab-overlay-style';
+      style.setAttribute('data-impeccable-lab-overlay', 'style');
+      style.textContent = `
+        [data-impeccable-lab-overlay="box"] {
+          position: absolute;
+          z-index: 2147483646;
+          box-sizing: border-box;
+          border: 2px solid oklch(65% 0.28 350);
+          border-radius: 6px;
+          background: color-mix(in oklch, oklch(65% 0.28 350), transparent 88%);
+          box-shadow: 0 0 0 1px rgb(255 255 255 / 0.92), 0 0 0 5px rgb(218 0 132 / 0.14);
+          pointer-events: none;
+        }
+        [data-impeccable-lab-overlay="label"] {
+          position: absolute;
+          z-index: 2147483647;
+          max-width: 260px;
+          padding: 4px 7px;
+          border-radius: 6px;
+          background: oklch(42% 0.24 350);
+          color: white;
+          font: 700 11px/1.25 system-ui, sans-serif;
+          letter-spacing: 0;
+          box-shadow: 0 8px 20px rgb(0 0 0 / 0.22);
+          pointer-events: none;
+        }
+      `;
+      doc.head.append(style);
+    }
+
+    function overlayLabelFor(row) {
+      if (row.kind === 'visual') return 'low-contrast visual';
+      const types = (row.findings || []).map(finding => finding.type).filter(Boolean);
+      return [...new Set(types)].slice(0, 2).join(', ') || 'finding';
+    }
+
+    function renderLabOverlays(win, groups, visualAnalyses, options = {}) {
+      const doc = win?.document;
+      if (!doc?.body) return;
+      clearLabOverlays(win);
+      if (!options.showVisualOverlays) return;
+      ensureLabOverlayStyle(win);
+      const existingFindingSelectors = new Set(
+        (groups || [])
+          .filter(group => group.selector && group.findings?.length)
+          .map(group => group.selector)
+      );
+      const rows = [];
+      for (const result of visualAnalyses || []) {
+        if (result.status !== 'fail' || !result.selector) continue;
+        if (existingFindingSelectors.has(result.selector)) continue;
+        rows.push({ selector: result.selector, kind: 'visual' });
+      }
+
+      for (const row of rows) {
+        let el = null;
+        try {
+          el = doc.querySelector(row.selector);
+        } catch {
+          el = null;
+        }
+        if (el?._impeccableOverlay) continue;
+        if (!el || !el.getBoundingClientRect) continue;
+        const rect = el.getBoundingClientRect();
+        if (rect.width < 2 || rect.height < 2) continue;
+        const left = rect.left + win.scrollX;
+        const top = rect.top + win.scrollY;
+        const box = doc.createElement('div');
+        box.setAttribute('data-impeccable-lab-overlay', 'box');
+        box.style.left = `${Math.max(0, left - 3)}px`;
+        box.style.top = `${Math.max(0, top - 3)}px`;
+        box.style.width = `${Math.max(4, rect.width + 6)}px`;
+        box.style.height = `${Math.max(4, rect.height + 6)}px`;
+        doc.body.append(box);
+
+        const label = doc.createElement('div');
+        label.setAttribute('data-impeccable-lab-overlay', 'label');
+        label.textContent = overlayLabelFor(row);
+        label.style.left = `${Math.max(0, left - 3)}px`;
+        label.style.top = `${Math.max(0, top - 28)}px`;
+        doc.body.append(label);
+      }
+    }
+
+    async function runBrowserScan() {
+      browserMsEl.textContent = 'scanning';
+      browserFindingsEl.textContent = 'scanning';
+      browserVisualCandidatesEl.textContent = 'scanning';
+      browserRulesEl.replaceChildren();
+      try {
+        const win = await waitForDetector(frame.contentWindow);
+        const restoreWorkspaceScroll = workspaceScrollEl?.scrollTop || 0;
+        const restoreFrameScroll = { x: win.scrollX, y: win.scrollY };
+        clearLabOverlays(win);
+        const useVisualPipeline = currentFixtureId === 'visual-contrast';
+        const started = performance.now();
+        const groups = useVisualPipeline && typeof win.impeccableScanAsync === 'function'
+          ? await win.impeccableScanAsync({ visualContrast: true, visualContrastMaxCandidates: 99 })
+          : await win.impeccableDetect({ decorate: false, serialize: true });
+        const elapsed = performance.now() - started;
+        const visualStarted = performance.now();
+        const visualAnalyses = useVisualPipeline && typeof win.impeccableGetLastVisualContrastAnalyses === 'function'
+          ? win.impeccableGetLastVisualContrastAnalyses()
+          : (typeof win.impeccableAnalyzeVisualContrast === 'function'
+              ? await win.impeccableAnalyzeVisualContrast({ maxCandidates: 99, scrollOffscreen: false })
+              : []);
+        const visualElapsed = useVisualPipeline ? elapsed : performance.now() - visualStarted;
+        const visualCandidates = visualAnalyses.length > 0
+          ? visualAnalyses
+          : (typeof win.impeccableCollectVisualContrastCandidates === 'function'
+              ? win.impeccableCollectVisualContrastCandidates({ maxCandidates: 99 })
+              : []);
+        const visualFailures = visualAnalyses.filter(result => result.status === 'fail').length;
+        const nonVisualFindingCount = useVisualPipeline
+          ? Math.max(0, countBrowserFindings(groups) - visualFailures)
+          : countBrowserFindings(groups);
+        if (workspaceScrollEl) workspaceScrollEl.scrollTop = restoreWorkspaceScroll;
+        win.scrollTo(restoreFrameScroll.x, restoreFrameScroll.y);
+        latestBrowserSummary = {
+          win,
+          groups,
+          visualAnalyses,
+          visualCandidates,
+          elapsed,
+          visualElapsed,
+          useVisualPipeline,
+          nonVisualFindingCount,
+        };
+        bindVisualResolutionUpdates(win);
+        renderBrowserSummary(latestBrowserSummary);
+        renderLabOverlays(win, groups, visualAnalyses, {
+          showVisualOverlays: currentFixtureId === 'visual-contrast',
+        });
+      } catch (err) {
+        browserMsEl.textContent = 'unavailable';
+        browserFindingsEl.textContent = '0';
+        browserVisualCandidatesEl.textContent = '0';
+        renderPills(browserRulesEl, [], err.message || 'No browser data');
+      }
+    }
+
+    function selectFixture(id, updateHash = true) {
+      const fixture = byId.get(id) || fixtures[0];
+      currentFixtureId = fixture.id;
+      for (const button of document.querySelectorAll('[data-fixture-id]')) {
+        button.setAttribute('aria-pressed', button.dataset.fixtureId === fixture.id ? 'true' : 'false');
+      }
+      titleEl.textContent = fixture.title;
+      groupEl.textContent = fixture.group;
+      summaryEl.textContent = fixture.summary;
+      openLink.href = fixture.url;
+      staticMsEl.textContent = formatMs(fixture.staticTotalMs);
+      staticFindingsEl.textContent = String(fixture.staticFindings);
+      selectedTableTitle.textContent = `${fixture.title} timings`;
+      renderPills(staticRulesEl, fixture.findingsByRule, 'No static findings');
+      renderTimingRows(fixture);
+      if (workspaceScrollEl) workspaceScrollEl.scrollTop = 0;
+      browserMsEl.textContent = 'loading';
+      browserFindingsEl.textContent = 'loading';
+      browserVisualCandidatesEl.textContent = 'loading';
+      browserRulesEl.replaceChildren();
+      latestBrowserSummary = null;
+      if (detachVisualResolutionListener) {
+        detachVisualResolutionListener();
+        detachVisualResolutionListener = null;
+      }
+      frame.title = `${fixture.title} detector fixture`;
+      frame.src = fixture.url;
+      if (updateHash) history.replaceState(null, '', `#${fixture.id}`);
+    }
+
+    frame.addEventListener('load', () => {
+      try {
+        frame.contentWindow?.scrollTo(0, 0);
+      } catch {
+        // Ignore iframe scroll reset failures.
+      }
+      setTimeout(runBrowserScan, 160);
+    });
+
+    document.querySelector('[data-rerun-browser]').addEventListener('click', runBrowserScan);
+    for (const button of document.querySelectorAll('[data-fixture-id]')) {
+      button.addEventListener('click', () => selectFixture(button.dataset.fixtureId));
+    }
+
+    window.addEventListener('hashchange', () => {
+      const nextId = location.hash ? location.hash.slice(1) : fixtures[0].id;
+      selectFixture(byId.has(nextId) ? nextId : fixtures[0].id, false);
+    });
+
+    const initialId = location.hash ? location.hash.slice(1) : fixtures[0].id;
+    selectFixture(byId.has(initialId) ? initialId : fixtures[0].id, false);
+  </script>
+</Base>

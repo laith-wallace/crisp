@@ -126,6 +126,8 @@ Reference the design system from `.crisp.md` or document the values directly:
 | Modal open | Fade + scale from 95% | 200ms | ease-out | |
 ```
 
+**Form submission rule:** Keep submit enabled until submission starts. On submit: disable the button, show a spinner alongside the original label (never replace the label with only a spinner), and include an idempotency key to prevent duplicate submissions on retry.
+
 ---
 
 ## Section 6: Edge Cases
@@ -144,6 +146,7 @@ Document the cases that aren't shown in the main design but must be handled:
 | Long text / content | [How labels, headings, descriptions handle overflow] |
 | Slow connection | [Loading state — duration before skeleton appears] |
 | User lacks permission | [What they see — not a blank page] |
+| User navigates away with unsaved changes | Warn before navigation — "You have unsaved changes. Leave anyway?" with explicit confirm/cancel |
 ```
 
 ---
@@ -194,6 +197,11 @@ Document every string that appears in this design:
 | Error message | "[exact copy]" | [What error condition triggers this] |
 ```
 
+**Copy implementation note:** Use non-breaking spaces (`&nbsp;`) to keep units, shortcuts, and brand names together and prevent awkward line breaks:
+- Numbers + units: `10 MB` → `10&nbsp;MB`
+- Keyboard shortcuts: `⌘ + K` → `⌘&nbsp;+&nbsp;K`
+- Brand or product names: `Vercel SDK` → `Vercel&nbsp;SDK`
+
 ---
 
 ## Section 9: Open Questions
@@ -217,3 +225,20 @@ Document every string that appears in this design:
 - Every string should be exact. No "TBD" in copy.
 - Every error state needs a recovery action, not just an error message.
 - If a state isn't documented, a developer will invent it. That's a design decision you've abdicated.
+
+## Real Content Mandate
+
+Every string in this spec is production copy. No Lorem ipsum. No `[Username]` placeholders. No "Click here" CTAs. No "Sample data" in table previews.
+
+Before delivering the spec, check:
+
+| Check | Requirement |
+|-------|-------------|
+| Heading copy | Exact production string, not placeholder |
+| CTA labels | Outcome-oriented, not "Submit" or "Click here" |
+| Empty states | All three parts: name the missing thing, explain why, one recovery CTA |
+| Error messages | Specific failure type + specific recovery action |
+| Success confirmations | Name exactly what changed, not "Success" or "Done" |
+| Table/list preview data | Realistic production-representative values, not "John Doe / example@email.com" |
+
+If real copy is unavailable for a section, flag it explicitly as an Open Question for Product — do not use placeholder copy as a stand-in.
