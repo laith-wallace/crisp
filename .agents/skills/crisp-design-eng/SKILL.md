@@ -29,6 +29,8 @@ These are engineering problems. They have engineering solutions. This skill name
 
 The details users never consciously notice are the ones that matter most. When a feature functions exactly as someone expects, they proceed without thought. That is the goal. A thousand invisible details, each correct, produce something that feels right without the user being able to say why. This skill exists to make those details explicit.
 
+**B2B benchmarks:** Stripe (payment ops, approval flows) · Linear (keyboard-first, command palette) · Clay (data tables, bulk actions) · Rippling (HR/finance workflows) · Ramp (spend management - tightest interaction craft in B2B SaaS for approval and categorisation flows)
+
 ---
 
 ## Step 0 — Read context
@@ -43,6 +45,23 @@ Before evaluating any component or interaction:
 2. Check for `CRISP-STYLE-KIT.md`. If present, use its CSS tokens as the implementation ground truth. Do not introduce tokens not defined there.
 
 3. If neither file exists, proceed without product context and flag this gap in output.
+
+### Step 0.3 — Classify the surface
+
+Before applying any craft rule, identify the surface type. Motion posture follows surface classification.
+
+| Surface type | Motion posture |
+|---|---|
+| Operational dashboard / data table | Minimal - confirm-only. No reveals, no stagger on data rows. |
+| Detail / approval / form view | Standard - transitions earn their place |
+| Onboarding / first-run | Generous - motion explains and orients |
+| Marketing / report / summary | Expressive - motion conveys quality |
+
+Apply stagger, scroll reveal, and decorative motion only to onboarding and marketing surfaces. Never to operational or data-heavy surfaces.
+
+### Step 0.4 — Validate unfamiliar patterns against Mobbin
+
+For any interaction pattern not explicitly covered by this skill, check Mobbin before writing implementation code. Search the relevant product category and interaction type. Best-in-class B2B references: Stripe, Linear, Clay, Rippling, Ramp.
 
 ---
 
@@ -122,12 +141,13 @@ Determine how often a user will trigger this interaction:
 
 | Trigger frequency | Decision |
 |---|---|
-| 100+ times/day — keyboard shortcuts, command palette, nav toggle | No animation. Remove it. |
+| 100+ times/day — keyboard shortcuts, nav toggle | No animation. Remove it. |
+| Command palette open (10–20×/day) | Minimal animation permitted: 80ms, `scale(0.97)`, ease-out only |
 | Tens of times/day — hover states, list navigation, tab switching | Reduce or remove |
 | Occasional — modals, drawers, toasts, confirmations | Standard animation |
 | Rare or first-time — onboarding, empty state first load, celebrations | Can carry more weight |
 
-**Never animate keyboard-initiated actions.** These are repeated hundreds of times daily. Animation here fails R — it makes the interface feel slower than it is, which is a perception problem masquerading as a performance one. Raycast has no open/close animation. That is the correct decision for something used hundreds of times a day.
+**Never animate repetitive keyboard actions.** These fire hundreds of times daily. Animation here fails R — it makes the interface feel slower than it is, which is a perception problem masquerading as a performance one. Command palette is the exception: it opens 10–20× per session, not 200×. Raycast and Linear both animate command palette open at ~80ms. That is the correct call for something used frequently but not constantly.
 
 **CRISP dimension at risk:** R — Responsive. An animation on a frequent interaction is not delight. It is delay.
 
@@ -229,6 +249,89 @@ Add `transform: scale(0.97)` on `:active`. No exceptions for interactive element
 ```
 
 **Fails if absent:** R — the user receives no confirmation the interface registered their press.
+
+---
+
+### Buttons must communicate async state
+
+Three-phase transition: idle - loading - resolved. Never dismiss loading before the server responds. Optimistic UI is for lists — buttons wait.
+
+```css
+.btn-label {
+  transition: opacity 150ms var(--ease-out),
+              transform 150ms var(--ease-out);
+}
+
+.btn[data-loading] .btn-label {
+  opacity: 0;
+  transform: scale(0.85);
+}
+
+.btn[data-loading] .btn-spinner {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Success: morph the icon in-place, don't fire a separate toast */
+.btn[data-success] .btn-label { opacity: 1; }
+```
+
+**CRISP: R** — a button that appears to succeed and then reverts is worse than one that waited.
+
+---
+
+### Floating bulk action bar
+
+When rows are selected, a contextual bar floats in. Timing: enter `translateY(100%)` to `translateY(0)` at 200ms ease-out, simultaneous with the checkbox animation - not after it. Exit at 150ms. The most common craft failure is the bar appearing after the row selection animation completes rather than simultaneously.
+
+```css
+.bulk-bar {
+  transform: translateY(100%);
+  transition: transform 200ms var(--ease-out);
+}
+
+.bulk-bar[data-visible] { transform: translateY(0); }
+.bulk-bar[data-hiding]  { transition-duration: 150ms; }
+```
+
+**CRISP: R** — delayed bar appearance signals the UI is one step behind the user's intent.
+
+---
+
+### Skeleton loaders for layout-stable content; spinners for unknown duration
+
+| Use | When |
+|---|---|
+| Skeleton | Table rows, card grids, lists where final structure is known |
+| Spinner | Button feedback, inline saves, single-element async |
+| Progress bar | File uploads, multi-step operations with measurable progress |
+
+Never use a skeleton when you don't know the final layout. An unexpected content shift after skeleton load fails C — the user built a mental model the content then violated.
+
+---
+
+### Status chip transition
+
+Status changes (Pending → Approved → Rejected) are meaningful events. Use the blur crossfade technique on both background AND label text simultaneously, not just a colour transition.
+
+```css
+.status-chip {
+  transition: background 200ms var(--ease-out),
+              filter 200ms var(--ease-out),
+              opacity 200ms var(--ease-out);
+}
+
+.status-chip.is-transitioning {
+  filter: blur(2px);
+  opacity: 0.7;
+}
+```
+
+Duration: 200ms. Easing: `var(--ease-out)`. Blur peak: 2px at midpoint.
+
+Never animate status badges on page load. Only on user-triggered or server-pushed state changes.
+
+**CRISP: C** — a twitching background colour does not communicate a state change. A full crossfade does.
 
 ---
 
@@ -385,6 +488,8 @@ When multiple elements appear together, stagger them. Everything appearing at on
 }
 ```
 
+**Do not apply stagger to virtualised lists.** Elements outside the viewport are not in the DOM - stagger has nothing to animate. Apply stagger only to initial page loads of known-length, non-virtualised lists.
+
 ---
 
 ### Asymmetric enter/exit timing
@@ -448,6 +553,19 @@ Use `clip-path: inset(0 100% 0 0)` on a coloured overlay. On `:active`, transiti
 
 **CRISP dimension:** P — destructive actions must require deliberate, sustained intent.
 
+### Hold-to-confirm vs. undo toast - decision criteria
+
+| Scenario | Pattern |
+|---|---|
+| Irreversible (delete account, purge data) | Hold-to-confirm |
+| Recoverable (archive, remove, disconnect) | Optimistic action + undo toast |
+| High-frequency recoverable action | Undo toast (hold is too slow per-rep) |
+
+Undo toast rules:
+- Enter from the same screen edge every time
+- Show a countdown progress bar (not static duration)
+- Dismiss immediately on undo - no exit animation on intentional dismiss
+
 ### Image and content reveals on scroll
 
 ```css
@@ -462,6 +580,9 @@ Use `clip-path: inset(0 100% 0 0)` on a coloured overlay. On `:active`, transiti
 ```
 
 Trigger `.is-visible` with `IntersectionObserver` at `{ rootMargin: '-80px' }`. Use `once: true` — the reveal should not replay on scroll-back.
+
+**Restrict to:** marketing pages, onboarding flows, reports, and summary surfaces.
+**Prohibit on:** data tables, approval queues, operational dashboards. Scroll reveals on transactional surfaces fail R - they delay access to content the user is there to act on.
 
 ---
 

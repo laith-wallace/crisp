@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRISP Design Engineering</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:          oklch(0.12 0.008 260);
+  --surface:     oklch(0.16 0.008 260);
+  --surface-2:   oklch(0.20 0.008 260);
+  --surface-3:   oklch(0.24 0.008 260);
+  --border:      oklch(0.28 0.006 260);
+  --border-light:oklch(0.22 0.006 260);
+  --text:        oklch(0.92 0.008 80);
+  --text-2:      oklch(0.68 0.008 80);
+  --text-3:      oklch(0.48 0.008 260);
+  --accent:      oklch(0.75 0.16 65);
+  --accent-dim:  oklch(0.55 0.12 65);
+  --accent-bg:   oklch(0.20 0.04 65);
+  --green:       oklch(0.72 0.14 155);
+  --green-bg:    oklch(0.18 0.03 155);
+  --red:         oklch(0.68 0.16 25);
+  --red-bg:      oklch(0.18 0.04 25);
+  --blue:        oklch(0.72 0.12 240);
+  --blue-bg:     oklch(0.18 0.03 240);
+  --purple:      oklch(0.70 0.14 300);
+  --purple-bg:   oklch(0.18 0.03 300);
+  --font-display:'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body:   -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono:   'Source Code Pro', 'SF Mono', 'Fira Code', monospace;
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 150ms;
+  --duration-base: 300ms;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:          oklch(0.97 0.005 80);
+    --surface:     oklch(0.99 0.003 80);
+    --surface-2:   oklch(0.94 0.005 80);
+    --surface-3:   oklch(0.90 0.005 80);
+    --border:      oklch(0.88 0.005 80);
+    --border-light:oklch(0.92 0.005 80);
+    --text:        oklch(0.15 0.01 260);
+    --text-2:      oklch(0.42 0.01 260);
+    --text-3:      oklch(0.62 0.008 260);
+    --accent:      oklch(0.52 0.16 55);
+    --accent-dim:  oklch(0.45 0.12 55);
+    --accent-bg:   oklch(0.94 0.04 55);
+    --green:       oklch(0.42 0.14 155);
+    --green-bg:    oklch(0.95 0.03 155);
+    --red:         oklch(0.48 0.16 25);
+    --red-bg:      oklch(0.95 0.04 25);
+    --blue:        oklch(0.45 0.12 240);
+    --blue-bg:     oklch(0.95 0.03 240);
+    --purple:      oklch(0.48 0.14 300);
+    --purple-bg:   oklch(0.95 0.03 300);
+  }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── NAV ─── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-light);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.nav-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  height: 56px;
+  gap: 1.5rem;
+  overflow-x: auto;
+}
+.nav-brand {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+}
+.nav-brand span { color: var(--text-3); }
+.nav-links {
+  display: flex;
+  gap: 0;
+  list-style: none;
+}
+.nav-links a {
+  display: block;
+  padding: 6px 12px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-3);
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: 6px;
+  transition: color var(--duration-fast) var(--ease-out),
+              background var(--duration-fast) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .nav-links a:hover { color: var(--text); background: var(--surface); }
+}
+.nav-links a:active { transform: scale(0.97); }
+
+/* ─── LAYOUT ─── */
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 3rem;
+}
+@media (max-width: 860px) {
+  .page { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+}
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  position: sticky;
+  top: 72px;
+  align-self: start;
+  max-height: calc(100vh - 88px);
+  overflow-y: auto;
+  padding: 1.5rem 0;
+}
+.sidebar-section {
+  margin-bottom: 1.5rem;
+}
+.sidebar-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
+  padding: 0 0 6px;
+}
+.sidebar a {
+  display: block;
+  padding: 4px 0;
+  font-size: 12.5px;
+  color: var(--text-3);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+  line-height: 1.5;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sidebar a:hover { color: var(--text); }
+}
+
+/* ─── CONTENT ─── */
+.content {
+  padding: 2.5rem 0 6rem;
+  min-width: 0;
+}
+
+/* Hero */
+.hero {
+  margin-bottom: 3.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--border-light);
+}
+.hero-tag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+  margin-bottom: 1rem;
+  letter-spacing: 0.02em;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+.hero-sub {
+  font-size: 16px;
+  color: var(--text-2);
+  max-width: 580px;
+  line-height: 1.7;
+}
+
+/* Section */
+.section {
+  margin-bottom: 3rem;
+  scroll-margin-top: 80px;
+}
+.section h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text);
+}
+.section h3 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  margin: 1.5rem 0 0.5rem;
+  color: var(--text);
+}
+.section p {
+  margin-bottom: 0.75rem;
+  color: var(--text-2);
+}
+.section p strong { color: var(--text); font-weight: 500; }
+
+/* Callout */
+.callout {
+  background: var(--surface);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0 1.25rem;
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.65;
+}
+.callout.warn {
+  border-left-color: var(--red);
+  background: var(--red-bg);
+}
+.callout.good {
+  border-left-color: var(--green);
+  background: var(--green-bg);
+}
+.callout code {
+  background: var(--surface-2);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}
+
+/* CRISP dimension badge */
+.dim {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 1px 7px;
+  border-radius: 4px;
+  vertical-align: 1px;
+}
+.dim-r { background: var(--red-bg); color: var(--red); }
+.dim-s { background: var(--blue-bg); color: var(--blue); }
+.dim-c { background: var(--purple-bg); color: var(--purple); }
+.dim-p { background: var(--green-bg); color: var(--green); }
+.dim-i { background: var(--accent-bg); color: var(--accent); }
+
+/* Tables */
+.table-wrap {
+  overflow-x: auto;
+  margin: 1rem 0 1.25rem;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+thead th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  padding: 10px 14px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+tbody td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-2);
+  vertical-align: top;
+  line-height: 1.5;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody td:first-child { color: var(--text); font-weight: 500; }
+tbody td code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--surface-2);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* Code blocks */
+.code-block {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  margin: 1rem 0 1.25rem;
+  overflow-x: auto;
+}
+.code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border-light);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-3);
+}
+.code-lang {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+}
+.code-copy {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out);
+}
+.code-copy:active { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) {
+  .code-copy:hover { color: var(--text); border-color: var(--text-3); }
+}
+.code-body {
+  padding: 14px 16px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--text-2);
+  white-space: pre;
+  overflow-x: auto;
+}
+.code-body .kw { color: var(--purple); }
+.code-body .fn { color: var(--blue); }
+.code-body .str { color: var(--green); }
+.code-body .cm { color: var(--text-3); font-style: italic; }
+.code-body .num { color: var(--accent); }
+.code-body .prop { color: var(--red); }
+
+/* Before/After comparison */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 1rem 0 1.25rem;
+}
+@media (max-width: 600px) { .compare { grid-template-columns: 1fr; } }
+.compare-item {
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 13px;
+}
+.compare-item.bad {
+  background: var(--red-bg);
+  border: 1px solid color-mix(in oklch, var(--red) 30%, transparent);
+}
+.compare-item.good {
+  background: var(--green-bg);
+  border: 1px solid color-mix(in oklch, var(--green) 30%, transparent);
+}
+.compare-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+.compare-item.bad .compare-label { color: var(--red); }
+.compare-item.good .compare-label { color: var(--green); }
+.compare-item code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  display: block;
+  white-space: pre;
+  color: var(--text-2);
+}
+
+/* Review table */
+.review-table {
+  margin: 1rem 0 1.25rem;
+}
+.review-table table { font-size: 12.5px; }
+.review-table td { font-family: var(--font-mono); font-size: 11.5px; }
+.review-table td:nth-child(3) { font-family: var(--font-body); text-align: center; }
+.review-table td:nth-child(4) { font-family: var(--font-body); color: var(--text-3); font-size: 12px; }
+
+/* Skill graph */
+.skill-graph {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1rem 0;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 2;
+  color: var(--text-3);
+}
+.skill-graph .active { color: var(--accent); font-weight: 500; }
+.skill-graph .arrow { color: var(--text-3); }
+
+/* Footer */
+.footer {
+  margin-top: 4rem;
+  padding: 2rem 0;
+  border-top: 1px solid var(--border-light);
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.7;
+}
+.footer a {
+  color: var(--accent-dim);
+  text-decoration: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .footer a:hover { color: var(--accent); }
+}
+
+/* Animations */
+.section { opacity: 0; transform: translateY(12px); animation: fadeUp 500ms var(--ease-out) both; }
+.section:nth-child(1) { animation-delay: 0ms; }
+.section:nth-child(2) { animation-delay: 60ms; }
+.section:nth-child(3) { animation-delay: 120ms; }
+.section:nth-child(4) { animation-delay: 180ms; }
+.section:nth-child(5) { animation-delay: 240ms; }
+.section:nth-child(n+6) { animation-delay: 300ms; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section { animation: none; opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">/crisp-design-eng <span>v1</span></div>
+    <ul class="nav-links">
+      <li><a href="#core">Core</a></li>
+      <li><a href="#color">Color</a></li>
+      <li><a href="#type">Type</a></li>
+      <li><a href="#motion">Motion</a></li>
+      <li><a href="#components">Components</a></li>
+      <li><a href="#clip">Clip-path</a></li>
+      <li><a href="#springs">Springs</a></li>
+      <li><a href="#gestures">Gestures</a></li>
+      <li><a href="#perf">Performance</a></li>
+      <li><a href="#review">Review</a></li>
+      <li><a href="#a11y">A11y</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="page">
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Foundations</div>
+      <a href="#core">Core principle</a>
+      <a href="#color">Color strategy</a>
+      <a href="#type">Font selection</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Motion</div>
+      <a href="#motion">Decision framework</a>
+      <a href="#components">Component craft</a>
+      <a href="#clip">Clip-path animations</a>
+      <a href="#springs">Spring physics</a>
+      <a href="#gestures">Gesture and drag</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Quality</div>
+      <a href="#perf">Performance rules</a>
+      <a href="#review">Review format</a>
+      <a href="#debug">Debugging</a>
+      <a href="#a11y">Accessibility</a>
+      <a href="#tokens">Token reference</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="hero">
+      <div class="hero-tag">/crisp-design-eng</div>
+      <h1>CRISP Design Engineering</h1>
+      <p class="hero-sub">The craft intelligence layer of the CRISP framework. Closes the gap between an interface that works and an interface that feels right. Every decision maps to a CRISP dimension.</p>
+    </div>
+
+    <!-- CORE -->
+    <div class="section" id="core">
+      <h2>Core principle</h2>
+      <p>The CRISP framework scores five dimensions. Design engineering asks a sixth question the framework does not score:</p>
+      <div class="callout">Does it feel the way it should?</div>
+      <p>This is not a soft question. An interface fails to feel right when:</p>
+      <p>Feedback is delayed relative to the user's action. Elements appear or disappear without physical logic. Motion runs at the wrong frequency for how often users trigger it. Easing creates a perception of slowness the system does not deserve. Invisible details are wrong enough, in aggregate, to erode trust without the user being able to say why.</p>
+      <p>These are engineering problems. They have engineering solutions. This document names and fixes them.</p>
+      <div class="callout good">The details users never consciously notice are the ones that matter most. A thousand invisible details, each correct, produce something that feels right without the user being able to say why.</div>
+    </div>
+
+    <!-- COLOR -->
+    <div class="section" id="color">
+      <h2>Color strategy framework</h2>
+      <p>Color decisions made after implementation has started are corrective, not intentional. Make the strategy decision first.</p>
+
+      <h3>Step 1: Pick a commitment level</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Level</th><th>What it means</th><th>When to use</th></tr></thead>
+          <tbody>
+            <tr><td>Restrained</td><td>One accent on 10% of screen or less</td><td>Product UIs, data-dense dashboards</td></tr>
+            <tr><td>Committed</td><td>Accent on 30-60% of screen</td><td>Consumer apps, surfaces needing warmth</td></tr>
+            <tr><td>Full palette</td><td>3-4 colour roles</td><td>Brand surfaces, marketing pages</td></tr>
+            <tr><td>Drenched</td><td>The surface IS the colour</td><td>Hero moments, onboarding splash</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Step 2: Write the scene sentence</h3>
+      <p>One sentence of physical context. It must force the dark-vs-light decision by itself.</p>
+      <div class="compare">
+        <div class="compare-item bad">
+          <div class="compare-label">Weak</div>
+          <code>"An analytics dashboard."</code>
+        </div>
+        <div class="compare-item good">
+          <div class="compare-label">Strong</div>
+          <code>"A finance analyst reviewing
+end-of-quarter risk on a
+27-inch monitor at 6am."</code>
+        </div>
+      </div>
+
+      <h3>Step 3: Color rules</h3>
+      <p><strong>OKLCH for all new colour values.</strong> <code>oklch(0.65 0.18 142)</code> not <code>#4caf50</code>. OKLCH is perceptually uniform. sRGB hex is forbidden for new tokens.</p>
+      <p><strong>Never pure black or pure white.</strong> Always tint neutrals. Dark backgrounds: <code>oklch(10% 0.01 240)</code>. Light backgrounds: <code>oklch(98% 0.005 90)</code>.</p>
+      <p><strong>High chroma only at lightness extremes.</strong> Saturated colours at middle lightness (40-60% L) are hard to use accessibly.</p>
+    </div>
+
+    <!-- TYPE -->
+    <div class="section" id="type">
+      <h2>Font selection doctrine</h2>
+      <p>Typography shapes emotional register before a single word is read. Most AI-assisted design reaches for the same training-data defaults.</p>
+
+      <h3>Reflex-reject list</h3>
+      <p>Do not select these without a specific, documented reason:</p>
+      <div class="callout warn">Fraunces, Newsreader, Lora, Crimson Pro, Playfair Display, Cormorant Garamond, Syne, IBM Plex Sans, IBM Plex Mono, Space Mono, Space Grotesk, Inter, DM Sans, DM Serif Display, Outfit, Plus Jakarta Sans, Instrument Sans, Instrument Serif</div>
+      <p>These are not bad fonts. They are fonts so frequently reached for by AI systems that selecting them produces a legible design signal: AI made this.</p>
+
+      <h3>Font selection procedure (Brand register)</h3>
+      <p>1. Write three voice words as physical objects, not adjectives. "Worn leather, index card, CRT glow" not "modern, friendly, professional."</p>
+      <p>2. List fonts you would naturally reach for. Reject any on the reflex-reject list.</p>
+      <p>3. Find a font by its physical object: the typeface on a 1970s technical manual, a museum caption card, a pharmaceutical insert.</p>
+      <p>4. Reject the first pick that "looks designy." That instinct is the training-data default.</p>
+      <p>5. Cross-check: elegant does not equal serif. Technical does not equal sans. The automatic association is the trap.</p>
+
+      <h3>Product register</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">CSS</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-body"><span class="cm">/* Product register body */</span>
+<span class="prop">font-family</span>: -apple-system, BlinkMacSystemFont,
+  <span class="str">'Segoe UI'</span>, sans-serif;</div>
+      </div>
+    </div>
+
+    <!-- MOTION -->
+    <div class="section" id="motion">
+      <h2>Motion decision framework</h2>
+      <p>Before writing any animation code, answer these questions in sequence.</p>
+
+      <h3>Question 1: Should this animate at all?</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Trigger frequency</th><th>Decision</th></tr></thead>
+          <tbody>
+            <tr><td>100+/day (shortcuts, nav toggle)</td><td>No animation. Remove it.</td></tr>
+            <tr><td>Tens/day (hover, tabs)</td><td>Reduce or remove</td></tr>
+            <tr><td>Occasional (modals, drawers, toasts)</td><td>Standard animation</td></tr>
+            <tr><td>Rare (onboarding, celebrations)</td><td>Can carry more weight</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout warn"><strong>Never animate keyboard-initiated actions.</strong> These fire hundreds of times daily. Animation here fails <span class="dim dim-r">R</span> . It makes the interface feel slower than it is.</div>
+
+      <h3>Question 2: What is this animation for?</h3>
+      <p>Every motion must pass at least one test: <strong>clarifies cause and effect</strong>, or <strong>adds deliberate delight on a low-frequency surface</strong>. If it passes neither, remove it.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Purpose</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td>Spatial orientation</td><td>Toast enters and exits from same direction</td></tr>
+            <tr><td>State confirmation</td><td>Button scales on press</td></tr>
+            <tr><td>State transition</td><td>Morphing feedback icon</td></tr>
+            <tr><td>Preventing jarring discontinuity</td><td>Element appearing without transition feels broken</td></tr>
+            <tr><td>Explanatory</td><td>First-run animation showing how a feature works</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Question 3: What easing?</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Context</th><th>Easing</th></tr></thead>
+          <tbody>
+            <tr><td>Entering or exiting</td><td><code>ease-out</code></td></tr>
+            <tr><td>Moving between two states</td><td><code>ease-in-out</code></td></tr>
+            <tr><td>Hover state or colour change</td><td><code>ease</code></td></tr>
+            <tr><td>Constant/looping motion</td><td><code>linear</code></td></tr>
+            <tr><td>Default</td><td><code>ease-out</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout warn"><strong>Never use ease-in on UI elements.</strong> Ease-in starts slowly. The moment the user takes action is the moment they watch most closely. A dropdown at 300ms ease-in <em>feels</em> slower than the same dropdown at 300ms ease-out.</div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">CSS</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-body"><span class="cm">/* CRISP motion tokens */</span>
+<span class="prop">--ease-out</span>:    <span class="fn">cubic-bezier</span>(<span class="num">0.16</span>, <span class="num">1</span>, <span class="num">0.3</span>, <span class="num">1</span>);
+<span class="prop">--ease-in-out</span>: <span class="fn">cubic-bezier</span>(<span class="num">0.45</span>, <span class="num">0</span>, <span class="num">0.55</span>, <span class="num">1</span>);
+<span class="prop">--ease-drawer</span>: <span class="fn">cubic-bezier</span>(<span class="num">0.32</span>, <span class="num">0.72</span>, <span class="num">0</span>, <span class="num">1</span>);</div>
+      </div>
+
+      <h3>Question 4: How long?</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Element</th><th>Duration</th></tr></thead>
+          <tbody>
+            <tr><td>Button press feedback</td><td>100-160ms</td></tr>
+            <tr><td>Tooltips, small popovers</td><td>125-200ms</td></tr>
+            <tr><td>Dropdowns, selects</td><td>150-250ms</td></tr>
+            <tr><td>Modals, drawers</td><td>200-500ms</td></tr>
+            <tr><td>Marketing / explanatory</td><td>May be longer</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>UI animations: stay under 300ms.</strong> A 180ms dropdown feels more responsive than a 400ms one. Perceived performance is real performance from the user's point of view. <span class="dim dim-r">R</span></p>
+    </div>
+
+    <!-- COMPONENTS -->
+    <div class="section" id="components">
+      <h2>Component craft rules</h2>
+      <p>These are not suggestions. Each has a CRISP dimension it protects.</p>
+
+      <h3>Buttons must confirm they were pressed <span class="dim dim-r">R</span></h3>
+      <p>Add <code>transform: scale(0.97)</code> on <code>:active</code>. No exceptions for interactive elements.</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">CSS</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-body"><span class="kw">.btn-primary</span>,
+<span class="kw">.btn-ghost</span> {
+  <span class="prop">transition</span>: transform <span class="fn">var</span>(<span class="prop">--duration-fast</span>) <span class="fn">var</span>(<span class="prop">--ease-out</span>),
+              opacity  <span class="fn">var</span>(<span class="prop">--duration-fast</span>) <span class="fn">var</span>(<span class="prop">--ease-out</span>);
+}
+<span class="kw">.btn-primary:active</span>,
+<span class="kw">.btn-ghost:active</span> {
+  <span class="prop">transform</span>: <span class="fn">scale</span>(<span class="num">0.97</span>);
+}</div>
+      </div>
+
+      <h3>Nothing enters from scale(0) <span class="dim dim-r">R</span></h3>
+      <p>Nothing in the physical world appears from nothing. Start from <code>scale(0.95)</code> combined with <code>opacity: 0</code>.</p>
+      <div class="compare">
+        <div class="compare-item bad">
+          <div class="compare-label">Fails R</div>
+          <code>.entering {
+  transform: scale(0);
+}</code>
+        </div>
+        <div class="compare-item good">
+          <div class="compare-label">Correct</div>
+          <code>.entering {
+  transform: scale(0.95);
+  opacity: 0;
+}</code>
+        </div>
+      </div>
+
+      <h3>Popovers scale from their trigger <span class="dim dim-c">C</span></h3>
+      <p>A popover expanding from centre looks like a modal. It breaks spatial orientation.</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">CSS</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-body"><span class="kw">.popover-content</span> {
+  <span class="prop">transform-origin</span>: <span class="fn">var</span>(<span class="prop">--radix-popover-content-transform-origin</span>);
+}</div>
+      </div>
+
+      <h3>Never use transition: all <span class="dim dim-r">R</span></h3>
+      <p>Always list only the properties you intend to animate. <code>transition: all</code> accidentally animates layout-affecting properties causing reflows and jank.</p>
+      <div class="compare">
+        <div class="compare-item bad">
+          <div class="compare-label">Fails</div>
+          <code>.btn {
+  transition: all 200ms;
+}</code>
+        </div>
+        <div class="compare-item good">
+          <div class="compare-label">Correct</div>
+          <code>.btn {
+  transition:
+    transform 150ms ease-out,
+    opacity 150ms ease-out;
+}</code>
+        </div>
+      </div>
+
+      <h3>Animations must be interruptible <span class="dim dim-r">R</span></h3>
+      <p>Every animation must be cancellable by user input. CSS transitions handle interruption correctly. They retarget mid-animation. Keyframe animations restart from zero and should not block input.</p>
+
+      <h3>Stagger list entries <span class="dim dim-s">S</span></h3>
+      <p>Everything appearing at once reads as a page refresh. Keep stagger increments short: 30-80ms per item. Never block interaction while stagger animations run.</p>
+
+      <h3>Asymmetric enter/exit timing <span class="dim dim-r">R</span></h3>
+      <p>Enter can be measured. Exit must be fast. When a user dismisses something, the system responds to clear intent. Delay here is friction.</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">CSS</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-body"><span class="kw">.drawer</span> {
+  <span class="prop">transition</span>: transform <span class="num">300ms</span> <span class="fn">var</span>(<span class="prop">--ease-drawer</span>);
+}
+<span class="kw">.drawer.is-closing</span> {
+  <span class="prop">transition</span>: transform <span class="num">150ms</span> <span class="fn">var</span>(<span class="prop">--ease-out</span>);
+}</div>
+      </div>
+    </div>
+
+    <!-- CLIP-PATH -->
+    <div class="section" id="clip">
+      <h2>Clip-path as animation tool</h2>
+      <p><code>clip-path</code> animates on the GPU and enables patterns that opacity and transform cannot produce.</p>
+
+      <h3>The inset shape</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">CSS</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-body"><span class="kw">.hidden</span>  { <span class="prop">clip-path</span>: <span class="fn">inset</span>(<span class="num">0</span> <span class="num">100%</span> <span class="num">0</span> <span class="num">0</span>); }
+<span class="kw">.visible</span> { <span class="prop">clip-path</span>: <span class="fn">inset</span>(<span class="num">0</span> <span class="num">0</span> <span class="num">0</span> <span class="num">0</span>); }</div>
+      </div>
+
+      <h3>Hold-to-confirm pattern <span class="dim dim-p">P</span></h3>
+      <p>Use <code>clip-path: inset(0 100% 0 0)</code> on a coloured overlay. On <code>:active</code>, transition to <code>inset(0)</code> over 2s with linear timing. On release, snap back at 200ms ease-out. The hold duration signals intentional action. The fast release signals responsiveness.</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">CSS</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-body"><span class="kw">.btn-danger .overlay</span> {
+  <span class="prop">clip-path</span>: <span class="fn">inset</span>(<span class="num">0</span> <span class="num">100%</span> <span class="num">0</span> <span class="num">0</span>);
+  <span class="prop">transition</span>: clip-path <span class="num">200ms</span> <span class="fn">var</span>(<span class="prop">--ease-out</span>);
+  <span class="prop">background</span>: <span class="fn">rgba</span>(<span class="num">255</span>, <span class="num">60</span>, <span class="num">60</span>, <span class="num">0.15</span>);
+  <span class="prop">border-radius</span>: inherit;
+}
+<span class="kw">.btn-danger:active .overlay</span> {
+  <span class="prop">clip-path</span>: <span class="fn">inset</span>(<span class="num">0</span>);
+  <span class="prop">transition</span>: clip-path <span class="num">2s</span> linear;
+}</div>
+      </div>
+
+      <h3>Scroll reveals</h3>
+      <p>Trigger <code>.is-visible</code> with <code>IntersectionObserver</code> at <code>rootMargin: '-80px'</code>. Use <code>once: true</code>. The reveal should not replay on scroll-back.</p>
+    </div>
+
+    <!-- SPRINGS -->
+    <div class="section" id="springs">
+      <h2>Spring physics</h2>
+      <p>Springs simulate real physics. They settle rather than stop. They maintain velocity when interrupted. Use for gesture-driven interactions. Do not use for standard UI state transitions.</p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">JS</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-body"><span class="cm">// Readable (Apple's approach)</span>
+{ <span class="prop">type</span>: <span class="str">'spring'</span>, <span class="prop">duration</span>: <span class="num">0.4</span>, <span class="prop">bounce</span>: <span class="num">0.15</span> }
+
+<span class="cm">// More control</span>
+{ <span class="prop">type</span>: <span class="str">'spring'</span>, <span class="prop">stiffness</span>: <span class="num">300</span>, <span class="prop">damping</span>: <span class="num">30</span> }</div>
+      </div>
+      <p>Keep bounce below 0.25 for product UI. Reserve higher values for onboarding or explicitly playful contexts.</p>
+    </div>
+
+    <!-- GESTURES -->
+    <div class="section" id="gestures">
+      <h2>Gesture and drag craft</h2>
+
+      <h3>Dismiss on velocity, not distance <span class="dim dim-s">S</span></h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">JS</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-body"><span class="kw">const</span> velocity = Math.<span class="fn">abs</span>(dragDistance) / elapsedMs;
+
+<span class="kw">if</span> (Math.<span class="fn">abs</span>(dragDistance) > THRESHOLD || velocity > <span class="num">0.11</span>) {
+  <span class="fn">dismiss</span>();
+}</div>
+      </div>
+
+      <h3>Damping at boundaries</h3>
+      <p>When a user drags past the natural boundary, apply damping. The more they drag, the less the element moves. Hard stops feel broken.</p>
+
+      <h3>Pointer capture</h3>
+      <p>Once dragging starts, capture all pointer events. Drag continues even if the pointer leaves the element bounds.</p>
+
+      <h3>Multi-touch protection</h3>
+      <p>Ignore additional touch points after the initial drag begins. Without this, switching fingers mid-drag causes the element to jump.</p>
+    </div>
+
+    <!-- PERFORMANCE -->
+    <div class="section" id="perf">
+      <h2>Performance rules</h2>
+
+      <h3>Animate transform and opacity only</h3>
+      <p><code>transform</code> and <code>opacity</code> bypass layout and paint and run on the GPU. Animating <code>padding</code>, <code>height</code>, <code>width</code>, or <code>margin</code> triggers the full rendering pipeline. <span class="dim dim-r">R</span></p>
+
+      <h3>Do not update CSS variables in gesture handlers</h3>
+      <p>CSS variables on a parent recalculate styles for all children. Updating <code>--drag-offset</code> on a container during <code>pointermove</code> recalculates every child on every frame.</p>
+      <div class="compare">
+        <div class="compare-item bad">
+          <div class="compare-label">Recalculates all children</div>
+          <code>element.style.setProperty(
+  '--drag-offset',
+  `${distance}px`
+);</code>
+        </div>
+        <div class="compare-item good">
+          <div class="compare-label">Only affects this element</div>
+          <code>element.style.transform =
+  `translateY(${distance}px)`;</code>
+        </div>
+      </div>
+
+      <h3>Framer Motion shorthand is not GPU-accelerated</h3>
+      <div class="compare">
+        <div class="compare-item bad">
+          <div class="compare-label">Main thread</div>
+          <code>&lt;motion.div
+  animate={{ x: 100 }}
+/&gt;</code>
+        </div>
+        <div class="compare-item good">
+          <div class="compare-label">GPU-accelerated</div>
+          <code>&lt;motion.div animate={{
+  transform: 'translateX(100px)'
+}} /&gt;</code>
+        </div>
+      </div>
+    </div>
+
+    <!-- REVIEW -->
+    <div class="section" id="review">
+      <h2>Review format</h2>
+      <p>When reviewing component code, return a table. Every row maps a violation to a CRISP dimension.</p>
+      <div class="table-wrap review-table">
+        <table>
+          <thead><tr><th>Before</th><th>After</th><th>CRISP</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td><code>transition: all 300ms</code></td><td><code>transition: transform 200ms var(--ease-out)</code></td><td><span class="dim dim-r">R</span></td><td>all animates layout-triggering properties</td></tr>
+            <tr><td><code>scale(0)</code> on enter</td><td><code>scale(0.95); opacity: 0</code></td><td><span class="dim dim-r">R</span></td><td>Nothing enters from nothing</td></tr>
+            <tr><td><code>ease-in</code> on dropdown</td><td>Custom <code>ease-out</code> curve</td><td><span class="dim dim-r">R</span></td><td>ease-in delays the watched moment</td></tr>
+            <tr><td>No <code>:active</code> on button</td><td><code>scale(0.97)</code> on :active</td><td><span class="dim dim-r">R</span></td><td>No press confirmation</td></tr>
+            <tr><td>Animation on keyboard shortcut</td><td>Remove animation</td><td><span class="dim dim-r">R</span></td><td>Keyboard actions fire 100s of times/day</td></tr>
+            <tr><td>Duration 400ms on dropdown</td><td>200ms</td><td><span class="dim dim-r">R</span></td><td>Above 300ms reads as slow</td></tr>
+            <tr><td>All items appear simultaneously</td><td>Stagger at 60ms per item</td><td><span class="dim dim-s">S</span></td><td>Simultaneous = page load</td></tr>
+            <tr><td>Same enter/exit duration</td><td>Enter 300ms, exit 150ms</td><td><span class="dim dim-r">R</span></td><td>Exit responds to clear intent</td></tr>
+            <tr><td>No pointer capture on drag</td><td><code>setPointerCapture()</code></td><td><span class="dim dim-s">S</span></td><td>Drag breaks when pointer leaves</td></tr>
+            <tr><td>Timer runs when tab hidden</td><td><code>visibilitychange</code> handler</td><td><span class="dim dim-s">S</span></td><td>Timer dismisses unseen element</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DEBUGGING -->
+    <div class="section" id="debug">
+      <h2>Debugging craft violations</h2>
+      <p><strong>Test at reduced speed.</strong> Before shipping, test animations at 5x duration. Issues invisible at full speed become obvious in slow motion: incorrect easing, wrong transform-origin, properties going out of sync.</p>
+      <p><strong>Test on real devices.</strong> For gesture interactions, test on physical hardware. Simulator gesture behaviour is not representative. Connect via USB, visit local dev server by IP, use remote devtools.</p>
+      <p><strong>Review the next day.</strong> Timing issues invisible during development become obvious with distance. What felt "slightly slow" reads as "clearly slow" the next morning.</p>
+    </div>
+
+    <!-- A11Y -->
+    <div class="section" id="a11y">
+      <h2>Accessibility</h2>
+
+      <h3>prefers-reduced-motion</h3>
+      <p>Reduced motion means fewer and gentler animations, not zero. Preserve opacity and colour transitions that aid comprehension. Remove all transform-based motion. <span class="dim dim-s">S</span></p>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">CSS</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-body"><span class="kw">@media</span> (<span class="prop">prefers-reduced-motion</span>: reduce) {
+  <span class="kw">.animated-element</span> {
+    <span class="prop">transition</span>: opacity <span class="fn">var</span>(<span class="prop">--duration-fast</span>) <span class="fn">var</span>(<span class="prop">--ease-out</span>);
+  }
+}</div>
+      </div>
+
+      <h3>Touch device hover guard</h3>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">CSS</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-body"><span class="kw">@media</span> (<span class="prop">hover</span>: hover) <span class="kw">and</span> (<span class="prop">pointer</span>: fine) {
+  <span class="kw">.element:hover</span> {
+    <span class="prop">background</span>: <span class="fn">var</span>(<span class="prop">--surface-2</span>);
+  }
+}</div>
+      </div>
+      <p>Touch devices fire <code>:hover</code> on tap. Without this guard, hover animations misfire on every tap.</p>
+    </div>
+
+    <!-- TOKENS -->
+    <div class="section" id="tokens">
+      <h2>CRISP token reference</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">CSS</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+        <div class="code-body"><span class="prop">--ease-out</span>:        <span class="fn">cubic-bezier</span>(<span class="num">0.16</span>, <span class="num">1</span>, <span class="num">0.3</span>, <span class="num">1</span>);
+<span class="prop">--ease-in-out</span>:     <span class="fn">cubic-bezier</span>(<span class="num">0.45</span>, <span class="num">0</span>, <span class="num">0.55</span>, <span class="num">1</span>);
+<span class="prop">--duration-fast</span>:   <span class="num">150ms</span>;
+<span class="prop">--duration-base</span>:   <span class="num">300ms</span>;
+<span class="prop">--duration-slow</span>:   <span class="num">500ms</span>;
+<span class="prop">--duration-thread</span>: <span class="num">800ms</span>;  <span class="cm">/* Lineage timeline only */</span></div>
+      </div>
+      <p><code>--duration-thread</code> is the one case where 800ms is correct. The lineage timeline draw is structural, not interactive. Every other UI interaction observes the 300ms ceiling.</p>
+      <div class="callout">No decorative motion. If removing the animation does not change what the user understands, remove it.</div>
+    </div>
+
+    <!-- SKILL GRAPH -->
+    <div class="section">
+      <h2>Relationship to other CRISP skills</h2>
+      <div class="skill-graph">
+/crisp-teach      <span class="arrow">→</span>  writes .crisp.md (run once per project)
+/crisp-research   <span class="arrow">→</span>  research synthesis, competitive patterns
+/crisp-review     <span class="arrow">→</span>  30-second audit, grade + top 3 issues
+/crisp-audit      <span class="arrow">→</span>  full scored evaluation, all 5 dimensions
+<span class="active">/crisp-design-eng  →  THIS: craft layer, motion, micro-interaction, polish</span>
+/handoff          <span class="arrow">→</span>  developer-ready spec from reviewed design</div>
+      <p>Craft violations identified here should be resolved before a component enters <code>/handoff</code>. They are <span class="dim dim-r">R</span> and <span class="dim dim-s">S</span> failures at the implementation level, not aesthetic preferences.</p>
+    </div>
+
+    <div class="footer">
+      <p>CRISP Design Engineering Skill &middot; <a href="https://getcrisp.design">getcrisp.design</a></p>
+      <p>Part of the CRISP skill pack &middot; <a href="https://github.com/laith-wallace/crisp">github.com/laith-wallace/crisp</a></p>
+      <p>Craft philosophy informed by Emil Kowalski &middot; <a href="https://animations.dev">animations.dev</a></p>
+    </div>
+  </main>
+</div>
+
+<script>
+function copyCode(btn) {
+  const block = btn.closest('.code-block').querySelector('.code-body');
+  const text = block.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+  });
+}
+</script>
+</body>
+</html>
