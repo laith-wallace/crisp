@@ -1,0 +1,9 @@
+{
+  "name": "crisp",
+  "description": "CRISP design evaluation framework for Claude Code. Includes skills for auditing, reviewing, briefing, teaching, accessibility, copy, AI, and design engineering.",
+  "version": "1.0.0",
+  "author": {
+    "name": "laith-wallace"
+  },
+  "tags": ["design", "crisp", "ui", "accessibility", "review", "audit", "copy", "research"]
+}
