@@ -400,6 +400,124 @@ Apply broadly: enter 300ms, exit 150–200ms. The asymmetry is felt as the inter
 
 ---
 
+## Behavioral Pattern Craft
+
+These are the interaction patterns most commonly designed wrong. Each has specific engineering decisions that separate craft from boilerplate.
+
+---
+
+### Loading States
+
+Loading is not a moment to hide. It is a moment to maintain user confidence.
+
+**Duration thresholds:**
+
+| Duration | Pattern | Reason |
+|---|---|---|
+| < 100ms | No indicator | Feels instant — an indicator would flash and disappear, creating noise |
+| 100ms–1s | Subtle skeleton | Show structure without implying slowness |
+| 1s–10s | Skeleton + optional progress | User is aware they're waiting; give them something to read |
+| > 10s | Explicit progress + cancel option | User must always be able to exit a long wait |
+
+**Skeleton rules:**
+- Match skeleton shapes to actual content proportions — not generic horizontal bars
+- Shimmer direction matches reading direction (left to right in LTR)
+- Transition to real content with `opacity: 0 → 1` — never replace-and-pop
+- Skeleton and content must share the same layout — no layout shift on resolve
+
+**Progressive loading:**
+- Load above-fold content first
+- Lazy-load below-fold with `IntersectionObserver`
+- Stagger list items on load at 30–50ms intervals (matches the stagger rule above)
+
+**Optimistic UI:**
+Show the expected result immediately. Reconcile on server response. Roll back with an undo toast if the action fails — never silently revert.
+
+**CRISP violations:**
+- Blank screen with no skeleton → **R** (user receives no feedback the system heard them)
+- Spinner on a predictable action (filter, sort, tab switch) → **R** (the system already knows the result)
+- Layout shift when skeleton resolves → **R** (the skeleton lied about what was coming)
+- No cancel option on a > 10s operation → **P** (user trapped in a wait they can't exit)
+
+---
+
+### Error Handling
+
+The correct hierarchy: prevent → detect → communicate → recover. Most UIs only communicate.
+
+**Prevention (design out errors before they happen):**
+- Inline validation before submission — never make the user submit to discover which fields are wrong
+- Constraint-based inputs (date pickers, dropdowns, sliders) where free text would produce errors
+- Confirmation dialogs on destructive actions; hold-to-confirm for irreversible ones (see `clip-path` hold pattern below)
+- Auto-save to prevent data loss on accidental navigation
+
+**Detection:**
+- Real-time field validation fires on blur, not on keystroke — keystroke validation is punitive for errors, acceptable for additive feedback (password strength)
+- Network timeout detection: surface an error at 15–30s; don't let the user wait indefinitely
+- Permission checks before the user tries the action, not after
+
+**Communication — three-part error message:**
+1. What happened (brief, factual)
+2. Why, if helpful
+3. What to do next (specific, actionable)
+
+Never:
+- "Something went wrong" — gives the user nothing
+- Error codes as the primary message
+- Blame language ("You entered an invalid email" → "This email address isn't valid")
+
+Severity levels:
+- **Error** — action failed or blocked
+- **Warning** — action succeeded but with a consequence the user should know
+- **Info** — neutral context, not a problem
+
+**Recovery:**
+- Preserve all user input on error — never clear a form on submission failure
+- Retry button for transient failures (network errors)
+- Auto-retry with exponential backoff for background operations
+- Undo toast for actions taken by mistake — 5 seconds to undo, then commit
+
+**CRISP violations:**
+- No inline validation, errors only on submit → **S** (user is forced into the form's workflow to discover problems)
+- Form cleared on error → **P** (data loss is a power failure — the system punished the user for an error)
+- Generic "Something went wrong" → **C** (no orientation — the user doesn't know where they are or what changed)
+- No recovery path from an error state → **P** (dead end — the powerful interface always offers a way out)
+
+---
+
+### State Machine Modeling
+
+UI behavior mapped as a finite state machine eliminates impossible states before they reach code. If you cannot draw the state machine for a component, its behavior is implicit in conditionals — and implicit behavior produces states no one designed.
+
+**Components:**
+- **States** — distinct modes the UI can be in (`idle`, `loading`, `loaded`, `error`, `empty`, `retrying`)
+- **Events** — what triggers transitions (click, submit, timeout, server response)
+- **Transitions** — rules for moving between states (`on submit in idle → loading`)
+- **Guards** — conditions required for a transition (`isValid`, `hasPermission`, `!isLoading`)
+
+**Common UI machines:**
+
+```
+Form:       idle → editing → submitting → success | error → idle
+Data:       idle → loading → loaded | error, error → retrying → loaded | error
+Auth:       logged-out → authenticating → logged-in → logging-out → logged-out
+Multi-step: step1 → step2 → step3 → review → submitting → complete
+```
+
+**Design each state as a distinct visual composition** — not a conditional tweak of the default state. Every state the machine can be in is a screen the user might see. If you haven't designed it, a developer will invent it.
+
+**The impossible-state rule:** Name which state combinations cannot coexist (`loading + error`, `empty + loaded`). Impossible states produce undefined UI. Naming them in design prevents them in code.
+
+**Every state needs an exit.** A state with no outgoing transition is a dead end. Users who reach it are stuck.
+
+**CRISP violations:**
+- Impossible states (`loading + error` simultaneously) → **S** (the interface contradicts itself)
+- Missing intermediate states (no `retrying` state — looks frozen) → **R** (no feedback on what the system is doing)
+- Error state with no exit → **P** (the powerful interface always offers a way out)
+- States invented by developers because designers didn't spec them → **C** (unknown experience at an undesigned moment)
+
+---
+
 ## clip-path as an Animation Tool
 
 `clip-path` animates on the GPU and enables patterns that opacity and transform cannot produce. It is not just for shapes.

@@ -42,6 +42,41 @@ If Fail — note it at the top of the audit output, before the grade.
 
 ---
 
+## Step 0b: Craft Check
+
+After the AI Slop Check, run the four intent tests. These catch a different failure: not whether something looks AI-made, but whether real design choices were made at all. Human defaults and AI defaults produce the same outcome.
+
+**The Swap Test**
+Could you swap the typeface, layout structure, or colour palette for the most common alternative and have the design feel meaningfully different? If swapping wouldn't matter, those were defaults wearing the clothes of decisions.
+
+Check specifically:
+- Could Inter or DM Sans replace this typeface without anyone noticing?
+- Would a standard sidebar + card grid feel identical to this layout?
+- Does this palette feel like it came from a specific world, or could it belong to any SaaS product?
+
+**The Squint Test**
+Blur your eyes at the interface. Hierarchy should still be perceivable — what's above what, where sections divide. Nothing should jump out harshly. Craft whispers. If borders, shadows, or accents are the first things visible blurred, they are competing with content instead of serving it.
+
+**The Signature Test**
+Name five specific design elements — not "the overall feel," not "the colour choice in general" — that exist because of deliberate intent for this specific product. A signature you cannot locate does not exist.
+
+Fewer than three nameable elements: the design has no signature. It reads as generic regardless of whether it passes the AI Slop Check.
+
+**The Token Test**
+Read the CSS variable names out loud. Do they sound like they belong to this product's world, or could they ship with any project? `--ink` and `--ledger` are design decisions. `--gray-700` and `--surface-2` are template tokens.
+
+```
+## Craft Check
+Swap test: [Pass / Fail — what was swappable without consequence]
+Squint test: [Pass / Fail — what competed with content]
+Signature test: [Pass (3+ named) / Fail — list elements identified]
+Token test: [Pass / Fail — token names assessed]
+```
+
+If any check fails, register the violation under the most relevant CRISP dimension: **C** (the product has no identity), **I** (choices weren't made for this user's specific context), or **P** (complexity wasn't deliberately managed).
+
+---
+
 ## Step 1: 30-Second Scan
 
 Before structured analysis, capture first impressions:
@@ -179,6 +214,12 @@ Structure the audit as:
 ### AI Slop Check
 Result: [Pass / Fail]
 [If Fail — list specific tells before anything else]
+
+### Craft Check
+Swap test: [Pass / Fail — what was swappable without consequence]
+Squint test: [Pass / Fail — what competed with content]
+Signature test: [Pass (3+ named) / Fail — list elements identified]
+Token test: [Pass / Fail — token names assessed]
 
 **Grade: [A–F]** — [One-line verdict]
 
