@@ -107,6 +107,34 @@ This convention signals: **something more is coming**. It primes the user and el
 
 ---
 
+## AI Copy Tells (Banned Patterns)
+
+These are signatures of LLM-written copy, drawn from production tests. Hard bans, not preferences:
+
+- **No em-dashes (—) or en-dashes (–) in any user-visible string.** Headlines, body, quotes, attribution, captions, button labels, alt text. Restructure with a period, comma, colon, or parentheses. Ranges use a hyphen. This is binary because "use sparingly" gets ignored.
+- **No filler verbs.** "Elevate", "Seamless", "Unleash", "Supercharge", "Next-Gen", "Revolutionize". Use concrete verbs that name what actually happens.
+- **No performative-craftsman labels.** "From the field", "Field notes", "On our desks", "Currently on the bench" as section labels. Use plain functional labels ("Testimonials", "Latest writing") or no label.
+- **No mock-humble social proof.** "Quietly in use at", "Quietly trusted by". Say "Trusted by" / "Used at", or let the logos speak with no heading.
+- **No micro-meta sentences.** Self-aware filler under headings ("The list will stay short on purpose."). Heading + body is enough.
+- **No fake-precise numbers in copy.** `92%`, `4.1×`, `48k` must be sourced or labelled as example data, never invented for spec aesthetics.
+- **One copy register per surface.** Don't mix technical mono ("47 tasks · 0.6 ctx/day"), editorial prose, and marketing punch in one composition unless the brand voice explicitly calls for it.
+- **Quote discipline.** Testimonial quotes max 3 lines. Attribution is name + role (+ company), never name alone. Real typographic quote marks or none.
+
+---
+
+## Copy Self-Audit (run before any output is final)
+
+Before declaring copy done (both modes), re-read EVERY visible string: headlines, subheads, labels, button text, body, captions, alt text, footer, error messages. Flag any string that is:
+
+1. **Grammatically broken** - reads wrong out loud ("free on its past", "two plans but one is honest")
+2. **Unclear referent** - "we plan to stay that way" with no prior context establishing what "that way" is
+3. **Cute-but-wrong wordplay** - forced metaphors that don't track, "elegant nothing" phrases
+4. **LLM-trying-to-sound-thoughtful** - passive-aggressive humility, mock-poetic micro-meta, fake-craftsman voice
+
+Rewrite every flagged string. If unsure whether a string makes sense, replace it with a plain functional sentence. AI-generated clever copy is worse than boring copy.
+
+---
+
 ## Mode A — Audit Existing Copy
 
 For each string the user provides, evaluate it against the rules above and the CRISP dimensions.

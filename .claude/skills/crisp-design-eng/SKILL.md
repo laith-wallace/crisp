@@ -110,6 +110,53 @@ Product UIs: system fonts or a single, highly legible brand sans. No display typ
 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 ```
 
+### Serif discipline (Brand register)
+
+"It feels creative / premium / editorial" is NOT a reason to reach for serif. The reflex "creative brief = serif" is one of the most-tested AI tells. Serif display type is acceptable only when ONE of these is true:
+
+- The brand brief literally names a serif font, OR
+- The aesthetic is genuinely editorial / luxury / publication / heritage AND you can articulate why this specific serif fits this specific brand
+
+For everything else (creative agency, design studio, modern brand, premium consumer, portfolio), default to a sans display. Sans display fonts are not boring - they are the default for the same reason black is the default in fashion.
+
+**Emphasis rule:** to emphasise a word inside a headline, use italic or bold of the SAME family. Never inject a serif word into a sans headline (or vice versa) for visual interest. Mixed-family emphasis is amateur.
+
+**Italic descender clearance:** when an italic display word contains a descender (`y g j p q`), `line-height: 1` clips it. Use `line-height: 1.1` minimum and reserve `padding-bottom` on the wrapper. Audit every italic display word before shipping.
+
+---
+
+## AI Tells - Banned Patterns
+
+These are empirically derived signatures of LLM-generated design, sourced from production tests (taste-skill, MIT). Each is a hard ban with a named override condition, not a "use sparingly." Soft phrasing gets ignored under generation pressure; these rules are binary on purpose. They apply most strongly to Brand register surfaces (marketing pages, landing pages, portfolios) but the palette and content tells apply everywhere.
+
+### Palette tells
+
+- **The AI-purple rule.** No purple/violet gradient accents, no neon button glows, no mesh-gradient hero backgrounds as defaults. Neutral base (zinc / slate / stone family) + ONE high-contrast accent. Override: the brand explicitly owns purple - then execute it with a consistent, harmonised palette, not gradient slop.
+- **The premium-consumer palette ban.** For premium-consumer briefs (cookware, wellness, artisan, luxury, DTC home goods) the LLM default is warm beige/cream backgrounds (`#f5f1ea`, `#f7f5f1`, `#efeae0` family) + brass/clay/oxblood accents (`#b08947`, `#b6553a`, `#9a2436` family) + espresso near-black text. Banned as the default reach. Rotate alternatives instead: cold luxury (silver + chrome + smoke), forest (deep green + bone + amber), black and tan, cobalt + cream, terracotta + slate, monochrome + one saturated pop. Never ship the same premium-consumer palette twice in a row. Override: the brief explicitly names those colours.
+- **Colour consistency lock.** Once an accent is chosen, it is the accent for the WHOLE surface. A warm-grey page does not get a blue CTA in section 7. Audit every component before shipping.
+- **Shape consistency lock.** ONE corner-radius system per surface: all-sharp, all-soft (12-16px), or all-pill for interactive. Mixed radii are allowed only under a documented rule ("buttons pill, cards 16px, inputs 8px") applied everywhere.
+
+### Layout tells
+
+- **No three equal feature cards.** The generic "three identical cards in a row" feature section is banned. Use a 2-column zig-zag, asymmetric grid, bento with varied cell sizes, or horizontal scroll.
+- **Zigzag alternation cap.** Max 2 consecutive "image one side, text the other" alternating sections. The 3rd consecutive split is a fail. Break with a full-width section, vertical stack, or different layout family.
+- **Section-layout repetition ban.** A layout family (3-col cards, full-width quote, split text+image) appears at most ONCE per page. 8 sections need at least 4 distinct layout families.
+- **Eyebrow rationing.** The small uppercase wide-tracked label above a section headline (`text-[11px] uppercase tracking-[0.18em]`) is the #1 templated rhythm in AI output. Hard cap: 1 eyebrow per 3 sections, hero counts as 1. If a section has one, the next two do not. Usually the right fix is deleting the eyebrow - the headline alone is enough.
+- **Split-header ban.** "Giant left headline + small explainer paragraph floating top-right" as a section header is banned as default. Stack vertically: headline, then body at max-width 65ch.
+- **No section-number eyebrows.** `001 · Capabilities`, `06 · How it works`, `00 / INDEX` - banned. Labels name topics in plain language; they do not enumerate.
+- **Hero discipline.** Max 4 text elements in a hero: optional eyebrow OR brand strip (not both), headline (max 2 lines desktop), subtext (max 20 words), CTAs (1 primary + max 1 secondary). Trust strips, pricing teasers, feature bullets, and avatar rows move below the hero. CTA visible without scrolling. Logo walls live UNDER the hero, never inside it.
+
+### Content and data tells
+
+- **The Jane Doe effect.** No "John Doe / Sarah Chan" testimonial names, no egg avatars, no "Acme / Nexus / SmartFlow / Cloudly" brand names. Invent locale-appropriate, believable names and specific brands.
+- **No fake-precise numbers.** `92%`, `4.1×`, `48k` either come from real data, are explicitly labelled as mock, or are removed. Do not fake engineering precision the product doesn't claim.
+- **No div-based fake screenshots.** A fake product UI built from styled `<div>` rectangles (fake task lists, fake terminals, fake dashboards) is the #1 visual tell. Use a real screenshot, a generated image, a real working component preview, or nothing.
+- **No scroll cues.** "Scroll to explore", animated mouse icons, `↓ scroll`. The user knows what scroll is.
+- **No decorative status dots.** Coloured dots before nav items, list rows, or badges are banned unless the dot conveys real semantic state (live server status, actual availability), max one per section.
+- **No locale / weather strips.** "Lisbon 14:23 · 18°C" in headers or footers - banned unless the brief is genuinely about place or distributed-team time zones. A plain contact address in the footer is fine.
+- **No pills or labels overlaid on images**, no fake photo-credit captions (`Field study no. 12 · House archive`), no version footers (`v1.4.2`, `Build 0048`) on marketing surfaces, no `BRAND. MOTION. SPATIAL.` decoration strips at the hero bottom.
+- **Em-dash ban.** Zero em-dashes (—) and zero en-dashes (–) anywhere user-visible: headlines, body, quotes, captions, buttons, alt text. Ranges use a hyphen. This rule is binary because "use sparingly" has been empirically ignored.
+
 ---
 
 ## The Motion Decision Framework
@@ -742,6 +789,32 @@ element.animate(
   { duration: 300, fill: 'forwards', easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }
 );
 ```
+
+---
+
+## Mechanical Pre-Flight Checks
+
+Run these before declaring any Brand-register surface done. Each check is countable or grep-able - it cannot be fudged by judgment. If a single check fails, the output is not done.
+
+| # | Check | How to verify |
+|---|---|---|
+| 1 | Zero em-dashes or en-dashes user-visible | `grep -n '—\|–'` over markup and copy. Count must be 0. |
+| 2 | Eyebrow count ≤ ceil(sections / 3) | Count `uppercase tracking` micro-labels above headlines. Hero counts as 1. |
+| 3 | Max 2 consecutive zigzag sections | Count consecutive image+text-split sections. 3+ in a row fails. |
+| 4 | ≥ 4 layout families per 8 sections | List each section's layout family; no family twice. |
+| 5 | No CTA label wraps at desktop | Render at 1280px; every button label is one line. |
+| 6 | No duplicate CTA intent | Group CTAs by intent (contact / signup / portfolio). One label per intent across nav, hero, footer. |
+| 7 | One accent colour page-wide | List every accent usage; all resolve to the same token. |
+| 8 | One corner-radius system | List every radius; all conform to the documented rule. |
+| 9 | Every CTA passes WCAG AA contrast | Check button text vs button background: 4.5:1 body, 3:1 large. White-on-white and ghost-over-photo without scrim fail. |
+| 10 | Hero fits initial viewport | Headline ≤ 2 lines, subtext ≤ 20 words, CTA visible without scroll, top padding ≤ 6rem. |
+| 11 | No banned serif as default | If serif display is used, it is not Fraunces or Instrument Serif without explicit brand justification. |
+| 12 | No premium-consumer default palette | If the brief is premium-consumer, the palette is not beige + brass + espresso. |
+| 13 | No div-based fake screenshots | Every product preview is a real image, generated image, or working component. |
+| 14 | No fake-precise numbers | Every statistic is sourced, labelled mock, or removed. |
+| 15 | Reduced motion honoured | Every transform-based animation degrades under `prefers-reduced-motion`. |
+
+**Authoring note:** when adding rules to this skill, phrase them in this binary, countable form. "Avoid X" and "use X sparingly" are empirically ignored during generation; "max N per page, count them" is not.
 
 ---
 

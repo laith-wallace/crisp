@@ -20,6 +20,29 @@ If yes — flag it at the top of your output before the grade. It is a disqualif
 
 This takes 5 seconds. Do it before anything else.
 
+### Mechanical tell scan
+
+When code or full copy is available, back the gut check with counts. These are binary - they cannot be argued with:
+
+| Tell | Check | Fail condition |
+|---|---|---|
+| Em/en-dashes | `grep -c '—\|–'` over visible strings | Count > 0 |
+| Eyebrow spam | Count `uppercase tracking` micro-labels above headlines | Count > ceil(sections / 3) |
+| Zigzag fatigue | Count consecutive image+text-split sections | 3+ in a row |
+| Three equal cards | Identical card trio as a feature section | Present |
+| Duplicate CTA intent | Group CTAs by intent (contact / signup / view work) | Two labels for one intent |
+| CTA wrap | Button labels at 1280px | Any label on 2+ lines |
+| AI-default fonts | Display font is Fraunces or Instrument Serif with no brand justification | Present |
+| AI-default palette | Premium-consumer brief using beige + brass + espresso | Present |
+| Jane Doe content | "John Doe / Sarah Chan" names, "Acme / Nexus / Cloudly" brands, egg avatars | Present |
+| Fake precision | Unsourced stats like `92%`, `4.1×`, `48k` not labelled as mock | Present |
+| Fake screenshots | Product previews built from styled divs | Present |
+| Scroll cues | "Scroll to explore", animated mouse icons | Present |
+| Decorative dots | Coloured dots with no semantic state | Present |
+| Locale strips | "Lisbon 14:23 · 18°C" style decoration | Present |
+
+Any mechanical fail = Slop Check: Fail, named in the output. Three or more = automatic grade cap of C regardless of CRISP dimension quality.
+
 ---
 
 ## What to Evaluate

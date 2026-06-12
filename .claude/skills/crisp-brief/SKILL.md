@@ -27,6 +27,27 @@ Ask all five questions:
 
 ---
 
+## The Design Read
+
+Before writing the brief, declare your interpretation of the request in exactly one line:
+
+```
+Reading this as: <surface kind> for <audience>, with a <register / vibe> language, leaning toward <aesthetic family or pattern direction>.
+```
+
+Examples:
+- "Reading this as: B2B SaaS dashboard view for daily-use account managers, Product register, leaning toward dense + functional with progressive disclosure."
+- "Reading this as: marketing landing page for design-conscious consumers, Brand register, leaning toward editorial layout with restrained motion."
+- "Reading this as: public-sector service flow, trust-first language, leaning toward maximum-clarity conventional patterns."
+
+The read is derived from: surface kind, vibe words the requester used, reference products or URLs they named, the audience, existing brand assets, and quiet constraints (regulated industry, accessibility-first audience, kids' products). Quiet constraints OVERRIDE aesthetic preference.
+
+This one line catches a misread request before a full brief and design cycle is spent on the wrong direction. It costs a sentence; a wrong read costs the whole iteration.
+
+**One-question discipline:** if the design read genuinely diverges into two plausible directions, ask exactly ONE clarifying question - never a multi-question dump on top of the intake questions. Example: "Should this feel closer to Linear-clean or editorial-experimental?" If you can confidently infer from context, do not ask. Declare the read and proceed; the user can correct it.
+
+---
+
 ## Problem Sharpening
 
 Before writing the brief, flag any of these patterns and prompt for clarification:
@@ -76,6 +97,7 @@ Write `.brief.md` to the project root:
 Date: [Today's date]
 Status: Draft
 Requested by: [If known]
+Design read: [The confirmed one-line read from The Design Read step]
 
 ---
 
