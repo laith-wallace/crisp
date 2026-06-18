@@ -172,6 +172,8 @@ body {
 @media (hover: hover) and (pointer: fine) {
   .sidebar a:hover { color: var(--text); }
 }
+.sidebar a.is-active { color: var(--accent); font-weight: 600; }
+.nav-links a.is-active { color: var(--text); background: var(--surface); }
 
 /* ─── CONTENT ─── */
 .content {
@@ -455,22 +457,25 @@ tbody td code {
   .footer a:hover { color: var(--accent); }
 }
 
-/* Animations */
-.section { opacity: 0; transform: translateY(12px); animation: fadeUp 500ms var(--ease-out) both; }
-.section:nth-child(1) { animation-delay: 0ms; }
-.section:nth-child(2) { animation-delay: 60ms; }
-.section:nth-child(3) { animation-delay: 120ms; }
-.section:nth-child(4) { animation-delay: 180ms; }
-.section:nth-child(5) { animation-delay: 240ms; }
-.section:nth-child(n+6) { animation-delay: 300ms; }
+/* Scroll-triggered reveal — only when JS is active, so no-JS users see everything.
+   IntersectionObserver adds .is-visible as each section scrolls into view (once). */
+.js .section {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity var(--duration-slow, 500ms) var(--ease-out),
+              transform var(--duration-slow, 500ms) var(--ease-out);
+}
+.js .section.is-visible { opacity: 1; transform: none; }
+/* Hero is above the fold — reveal immediately, never gate it behind scroll. */
+.js .hero { opacity: 0; transform: translateY(16px); animation: fadeUp 500ms var(--ease-out) both; }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .section { animation: none; opacity: 1; transform: none; }
+  .js .section, .js .hero { opacity: 1; transform: none; transition: none; animation: none; }
 }
 </style>
 </head>
@@ -969,6 +974,63 @@ end-of-quarter risk on a
 </div>
 
 <script>
+// Mark JS active so reveal styles apply (no-JS users get all content visible).
+document.documentElement.classList.add('js');
+
+(function () {
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sections = Array.prototype.slice.call(document.querySelectorAll('.section'));
+
+  // ── Scroll-triggered reveal (once per section) ──
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    sections.forEach(function (s) { s.classList.add('is-visible'); });
+  } else {
+    var revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target); // once: true
+        }
+      });
+    }, { rootMargin: '0px 0px -80px 0px', threshold: 0.05 });
+    sections.forEach(function (s) { revealObserver.observe(s); });
+  }
+
+  // ── Scroll-spy: highlight the current section in the sidebar + nav ──
+  var idSections = document.querySelectorAll('.section[id]');
+  var navTargets = {};
+  document.querySelectorAll('.sidebar a[href^="#"], .nav-links a[href^="#"]').forEach(function (a) {
+    var id = a.getAttribute('href').slice(1);
+    (navTargets[id] = navTargets[id] || []).push(a);
+  });
+
+  if ('IntersectionObserver' in window && idSections.length) {
+    var current = null;
+    var setActive = function (id) {
+      if (id === current) return;
+      current = id;
+      document.querySelectorAll('a.is-active').forEach(function (a) { a.classList.remove('is-active'); });
+      (navTargets[id] || []).forEach(function (a) { a.classList.add('is-active'); });
+    };
+    var visible = new Map();
+    var spyObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) visible.set(e.target.id, e.intersectionRatio);
+        else visible.delete(e.target.id);
+      });
+      if (!visible.size) return;
+      // Pick the topmost section currently in the activation band.
+      var topId = null, topY = Infinity;
+      visible.forEach(function (_, id) {
+        var rect = document.getElementById(id).getBoundingClientRect();
+        if (rect.top < topY) { topY = rect.top; topId = id; }
+      });
+      if (topId) setActive(topId);
+    }, { rootMargin: '-80px 0px -55% 0px', threshold: [0, 1] });
+    idSections.forEach(function (s) { spyObserver.observe(s); });
+  }
+})();
+
 function copyCode(btn) {
   const block = btn.closest('.code-block').querySelector('.code-body');
   const text = block.textContent;
