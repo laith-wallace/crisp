@@ -458,12 +458,16 @@ tbody td code {
 }
 
 /* Scroll-triggered reveal — only when JS is active, so no-JS users see everything.
-   IntersectionObserver adds .is-visible as each section scrolls into view (once). */
+   IntersectionObserver adds .is-visible as each section scrolls into view (once).
+   The transition is gated behind .ready so above-fold sections shown on load don't
+   all animate at once (which stutters the first paint). */
 .js .section {
   opacity: 0;
-  transform: translateY(16px);
-  transition: opacity var(--duration-slow, 500ms) var(--ease-out),
-              transform var(--duration-slow, 500ms) var(--ease-out);
+  transform: translateY(8px);
+}
+.js.ready .section {
+  transition: opacity 400ms var(--ease-out),
+              transform 400ms var(--ease-out);
 }
 .js .section.is-visible { opacity: 1; transform: none; }
 /* Hero is above the fold — reveal immediately, never gate it behind scroll. */
@@ -985,6 +989,16 @@ document.documentElement.classList.add('js');
   if (reduceMotion || !('IntersectionObserver' in window)) {
     sections.forEach(function (s) { s.classList.add('is-visible'); });
   } else {
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    // Reveal anything already in view on load with NO transition, then enable
+    // transitions so only sections that scroll in later animate.
+    sections.forEach(function (s) {
+      if (s.getBoundingClientRect().top < vh) s.classList.add('is-visible');
+    });
+    requestAnimationFrame(function () {
+      document.documentElement.classList.add('ready');
+    });
+
     var revealObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
@@ -992,12 +1006,14 @@ document.documentElement.classList.add('js');
           revealObserver.unobserve(entry.target); // once: true
         }
       });
-    }, { rootMargin: '0px 0px -80px 0px', threshold: 0.05 });
-    sections.forEach(function (s) { revealObserver.observe(s); });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
+    sections.forEach(function (s) {
+      if (!s.classList.contains('is-visible')) revealObserver.observe(s);
+    });
   }
 
   // ── Scroll-spy: highlight the current section in the sidebar + nav ──
-  var idSections = document.querySelectorAll('.section[id]');
+  var idSections = Array.prototype.slice.call(document.querySelectorAll('.section[id]'));
   var navTargets = {};
   document.querySelectorAll('.sidebar a[href^="#"], .nav-links a[href^="#"]').forEach(function (a) {
     var id = a.getAttribute('href').slice(1);
@@ -1005,6 +1021,11 @@ document.documentElement.classList.add('js');
   });
 
   if ('IntersectionObserver' in window && idSections.length) {
+    // Document-order index per id, so we pick the active section by order
+    // instead of measuring layout in the callback (avoids thrash + flicker).
+    var order = {};
+    idSections.forEach(function (s, i) { order[s.id] = i; });
+
     var current = null;
     var setActive = function (id) {
       if (id === current) return;
@@ -1012,21 +1033,20 @@ document.documentElement.classList.add('js');
       document.querySelectorAll('a.is-active').forEach(function (a) { a.classList.remove('is-active'); });
       (navTargets[id] || []).forEach(function (a) { a.classList.add('is-active'); });
     };
-    var visible = new Map();
+
+    var inBand = new Set();
     var spyObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting) visible.set(e.target.id, e.intersectionRatio);
-        else visible.delete(e.target.id);
+        if (e.isIntersecting) inBand.add(e.target.id);
+        else inBand.delete(e.target.id);
       });
-      if (!visible.size) return;
-      // Pick the topmost section currently in the activation band.
-      var topId = null, topY = Infinity;
-      visible.forEach(function (_, id) {
-        var rect = document.getElementById(id).getBoundingClientRect();
-        if (rect.top < topY) { topY = rect.top; topId = id; }
+      if (!inBand.size) return; // between bands: keep last active, don't flicker
+      var topId = null, topOrder = Infinity;
+      inBand.forEach(function (id) {
+        if (order[id] < topOrder) { topOrder = order[id]; topId = id; }
       });
       if (topId) setActive(topId);
-    }, { rootMargin: '-80px 0px -55% 0px', threshold: [0, 1] });
+    }, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
     idSections.forEach(function (s) { spyObserver.observe(s); });
   }
 })();
