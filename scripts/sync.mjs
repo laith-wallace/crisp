@@ -2,7 +2,9 @@
 /**
  * scripts/sync.mjs
  *
- * Copies every .md file from files/ to all four platform directories.
+ * Copies every .md file from skills/ to all four platform directories.
+ * A skill's companion .html asset (a sibling whose name matches the skill,
+ * e.g. crisp-funnel-kit.html for crisp-funnel) travels with it.
  * Run manually:    npm run sync
  * Run on publish:  prepublishOnly hook calls this automatically.
  *
@@ -19,15 +21,27 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
-const FILES_DIR = join(ROOT, 'files');
+const SKILLS_DIR = join(ROOT, 'skills');
 
-// Read all .md files from files/
-const sourceFiles = readdirSync(FILES_DIR)
+const dirEntries = readdirSync(SKILLS_DIR);
+
+// Read all .md files from skills/
+const sourceFiles = dirEntries
   .filter(f => extname(f) === '.md')
-  .map(f => ({ name: basename(f, '.md'), path: join(FILES_DIR, f), file: f }));
+  .map(f => ({ name: basename(f, '.md'), path: join(SKILLS_DIR, f), file: f }));
+
+// Companion assets (e.g. crisp-funnel-kit.html) — copied alongside the skill they belong to.
+const assetFiles = dirEntries
+  .filter(f => extname(f) === '.html')
+  .map(f => ({ name: basename(f, '.html'), path: join(SKILLS_DIR, f), file: f }));
 
 const skillFiles = sourceFiles.filter(f => !['BENCHMARKS', 'CHANGELOG', 'CONTRIBUTING'].includes(f.name));
 const docFiles = sourceFiles.filter(f => ['BENCHMARKS', 'CHANGELOG', 'CONTRIBUTING'].includes(f.name));
+
+// An asset belongs to a skill when its name equals the skill name or starts with `${skill}-`.
+function assetsForSkill(skillName) {
+  return assetFiles.filter(a => a.name === skillName || a.name.startsWith(`${skillName}-`));
+}
 
 let copied = 0;
 let errors = 0;
@@ -66,15 +80,23 @@ for (const skill of skillFiles) {
   // Gemini CLI: .gemini/skills/[name].md
   copy(skill.path, join(ROOT, '.gemini', 'skills', `${skill.name}.md`));
 
+  // Companion assets travel into the same skill location on each platform.
+  for (const asset of assetsForSkill(skill.name)) {
+    copy(asset.path, join(ROOT, '.claude', 'skills', skill.name, asset.file));
+    copy(asset.path, join(ROOT, '.cursor', 'rules', asset.file));
+    copy(asset.path, join(ROOT, '.agents', 'skills', skill.name, asset.file));
+    copy(asset.path, join(ROOT, '.gemini', 'skills', asset.file));
+  }
+
   console.log('');
 }
 
-// Sync doc files (BENCHMARKS.md, CHANGELOG.md, CONTRIBUTING.md) to files/ only
+// Doc files (BENCHMARKS.md, CHANGELOG.md, CONTRIBUTING.md) stay canonical in skills/
 // They're already there — no platform copy needed for these
 if (docFiles.length > 0) {
-  console.log(`[docs — files/ only]`);
+  console.log(`[docs — skills/ only]`);
   for (const doc of docFiles) {
-    console.log(`  ✓ files/${doc.file} (already canonical)`);
+    console.log(`  ✓ skills/${doc.file} (already canonical)`);
   }
   console.log('');
 }

@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRISP Funnel Kit — Section Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080808; --surface:#111111; --surface-2:#161616; --border:#1e1e1e;
+  --text:#ede8db; --text-mid:#9a9188; --text-muted:#666058;
+  --accent:#c8ff3c; --ink:#1a1612;
+  --font-headline:'DM Serif Display',Georgia,serif;
+  --font-mono:'DM Mono','Courier New',monospace;
+  --font-body:'Outfit',system-ui,sans-serif;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+  --r-sm:6px; --r-base:10px; --r-lg:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+
+/* ---------- Gallery shell ---------- */
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(20px,5vw,64px)}
+.lab{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)}
+
+header.top{padding:clamp(56px,9vw,120px) 0 clamp(32px,5vw,64px);border-bottom:1px solid var(--border)}
+.brandrow{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap}
+.wordmark{font-family:var(--font-headline);font-size:clamp(2.6rem,7vw,4.4rem);line-height:1;letter-spacing:.04em}
+.wordmark .lime{color:var(--accent)}
+.kit-tag{font-family:var(--font-mono);font-size:.8rem;letter-spacing:.1em;color:var(--text-mid);border:1px solid var(--border);border-radius:var(--r-sm);padding:6px 12px}
+header.top p{margin-top:24px;max-width:600px;color:var(--text-mid);font-size:1.05rem}
+header.top .meta{margin-top:28px;display:flex;gap:24px;flex-wrap:wrap}
+header.top .meta span{font-family:var(--font-mono);font-size:.72rem;color:var(--text-muted);letter-spacing:.06em}
+
+/* ---------- How-to strip ---------- */
+.howto{padding:clamp(40px,6vw,72px) 0;border-bottom:1px solid var(--border)}
+.howto h2{font-family:var(--font-headline);font-size:clamp(1.4rem,3vw,2rem);font-weight:400;margin-bottom:28px}
+.steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.steps3 .s{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;transition:background .15s var(--ease)}
+.steps3 .s:hover{background:var(--surface-2)}
+.steps3 .s .n{font-family:var(--font-mono);font-size:.72rem;color:var(--accent);letter-spacing:.1em}
+.steps3 .s h3{font-family:var(--font-body);font-weight:500;font-size:1.05rem;margin:10px 0 8px;color:var(--text)}
+.steps3 .s p{font-size:.9rem;color:var(--text-mid)}
+@media(max-width:760px){.steps3{grid-template-columns:1fr}}
+
+/* ---------- Section rows ---------- */
+.row{display:grid;grid-template-columns:390px 1fr;gap:clamp(32px,6vw,80px);align-items:center;padding:clamp(48px,8vw,104px) 0;border-bottom:1px solid var(--border)}
+.row:nth-child(even){grid-template-columns:1fr 390px}
+.row:nth-child(even) .phone-col{order:2}
+@media(max-width:900px){
+  .row,.row:nth-child(even){grid-template-columns:1fr;gap:36px}
+  .row:nth-child(even) .phone-col{order:0}
+  .phone-col{display:flex;justify-content:center}
+}
+.note .step-no{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;color:var(--text-muted)}
+.note h2{font-family:var(--font-headline);font-weight:400;font-size:clamp(1.6rem,3.4vw,2.3rem);margin:8px 0 18px;line-height:1.1}
+.dims{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.dim{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);border-radius:var(--r-sm);padding:4px 10px}
+.note .why{font-size:1rem;color:var(--text);margin-bottom:18px;max-width:480px}
+.kv{display:flex;gap:14px;padding:12px 0;border-top:1px solid var(--border);max-width:480px}
+.kv .k{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);min-width:90px;padding-top:2px}
+.kv .v{font-size:.92rem;color:var(--text-mid)}
+.flag{margin-top:18px;max-width:480px;font-size:.82rem;color:var(--text-muted);font-family:var(--font-mono);line-height:1.5;border-left:1px solid var(--accent);padding-left:14px}
+
+/* ---------- Phone frame ---------- */
+.phone{width:390px;max-width:100%;background:#000;border:1px solid #2a2a2a;border-radius:38px;padding:12px;box-shadow:0 40px 80px -40px rgba(0,0,0,.9)}
+.screen{position:relative;background:var(--bg);border-radius:28px;overflow:hidden;height:720px;display:flex;flex-direction:column}
+.statusbar{height:30px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.statusbar .pill{width:90px;height:7px;background:#1c1c1c;border-radius:99px}
+.scn{flex:1;display:flex;flex-direction:column;padding:22px 22px 26px;overflow:hidden}
+
+/* funnel primitives */
+.progress{display:flex;gap:5px;margin-bottom:26px;flex-shrink:0}
+.progress i{height:3px;flex:1;background:var(--border);border-radius:99px}
+.progress i.done{background:var(--accent)}
+.progress i.now{background:var(--text-mid)}
+.eyebrow{font-family:var(--font-mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px}
+.fh{font-family:var(--font-headline);font-weight:400;font-size:1.85rem;line-height:1.12;color:var(--text);margin-bottom:14px}
+.fsub{font-size:.95rem;color:var(--text-mid);margin-bottom:22px}
+.spacer{flex:1}
+.cta{font-family:var(--font-mono);font-weight:500;font-size:.92rem;letter-spacing:.02em;color:var(--ink);background:var(--accent);border:none;border-radius:var(--r-base);padding:16px 20px;width:100%;cursor:pointer;transition:opacity .15s var(--ease)}
+.cta:hover{opacity:.88}
+.cta[disabled]{background:var(--surface-2);color:var(--text-muted);cursor:not-allowed;opacity:1}
+.microtrust{display:flex;gap:14px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.microtrust span{font-family:var(--font-mono);font-size:.64rem;letter-spacing:.04em;color:var(--text-muted)}
+
+/* option cards */
+.opt{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--border);border-radius:var(--r-base);padding:16px 16px;margin-bottom:12px;cursor:pointer;transition:background .15s var(--ease),border-color .15s var(--ease);user-select:none}
+.opt:hover{background:var(--surface-2)}
+.opt .tick{width:20px;height:20px;border:1px solid var(--text-muted);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.7rem;color:var(--bg);transition:.15s var(--ease)}
+.opt .lab2{font-size:.95rem;color:var(--text)}
+.opt.is-active{background:var(--surface-2);border-left-color:var(--accent)}
+.opt.is-active .tick{background:var(--accent);border-color:var(--accent)}
+.opt.is-active .tick::after{content:"✓"}
+
+/* value / insight */
+.statbig{font-family:var(--font-headline);font-size:3.4rem;line-height:1;color:var(--accent);margin-bottom:12px}
+.insight-body{font-size:1rem;color:var(--text-mid);margin-bottom:8px}
+.insight-body b{color:var(--text);font-weight:500}
+
+/* proof */
+.quote{font-size:1.05rem;line-height:1.5;color:var(--text);margin-bottom:20px}
+.quote .res{color:var(--accent)}
+.byline{display:flex;align-items:center;gap:12px}
+.avatar{width:40px;height:40px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.8rem;color:var(--text-mid)}
+.byline .who{font-size:.85rem;color:var(--text)}
+.byline .role{font-family:var(--font-mono);font-size:.66rem;color:var(--text-muted);letter-spacing:.04em}
+.placeholder-tag{display:inline-block;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);background:var(--accent);border-radius:4px;padding:2px 7px;margin-bottom:16px}
+
+/* loader */
+.loadwrap{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+.loadbar{width:100%;height:4px;background:var(--border);border-radius:99px;overflow:hidden;margin:22px 0}
+.loadbar i{display:block;height:100%;background:var(--accent);width:0;border-radius:99px;animation:fill 3.2s var(--ease) infinite}
+@keyframes fill{0%{width:4%}100%{width:100%}}
+.loadlines{font-family:var(--font-mono);font-size:.8rem;color:var(--text-muted);height:22px;position:relative;width:100%}
+.loadlines span{position:absolute;inset:0;opacity:0;animation:cycle 3.2s steps(1) infinite}
+.loadlines span:nth-child(1){animation-delay:0s}
+.loadlines span:nth-child(2){animation-delay:1.06s}
+.loadlines span:nth-child(3){animation-delay:2.13s}
+@keyframes cycle{0%,33%{opacity:1}34%,100%{opacity:0}}
+
+/* form */
+.field{margin-bottom:14px}
+.field label{display:block;font-family:var(--font-mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:7px}
+.field input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-base);padding:14px 14px;color:var(--text);font-family:var(--font-body);font-size:.95rem;transition:border-color .15s var(--ease)}
+.field input::placeholder{color:var(--text-muted)}
+.field input:focus{outline:none;border-color:var(--text-mid)}
+.field input.ok{border-color:var(--accent)}
+.field input.err{border-color:#c8553c}
+.field .msg{font-family:var(--font-mono);font-size:.66rem;margin-top:6px;min-height:14px;color:#c8553c}
+.field input.ok ~ .msg{color:var(--accent)}
+
+/* booking slots */
+.daybar{display:flex;gap:8px;margin-bottom:16px}
+.daybar .d{flex:1;text-align:center;border:1px solid var(--border);border-radius:var(--r-base);padding:10px 0;cursor:pointer;transition:background .15s var(--ease)}
+.daybar .d:hover{background:var(--surface-2)}
+.daybar .d .dn{font-family:var(--font-mono);font-size:.62rem;color:var(--text-muted);letter-spacing:.06em}
+.daybar .d .dd{font-size:1.05rem;color:var(--text);margin-top:3px}
+.daybar .d.is-active{border-color:var(--accent);background:var(--surface-2)}
+.daybar .d.is-active .dn{color:var(--accent)}
+.slots{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.slot{border:1px solid var(--border);border-radius:var(--r-base);padding:13px 0;text-align:center;font-family:var(--font-mono);font-size:.85rem;color:var(--text);cursor:pointer;transition:background .15s var(--ease),border-color .15s var(--ease)}
+.slot:hover{background:var(--surface-2)}
+.slot.is-active{border-color:var(--accent);background:var(--surface-2);color:var(--accent)}
+
+/* confirmation */
+.confwrap{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center}
+.confmark{width:62px;height:62px;border:1.5px solid var(--accent);border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:var(--accent);margin:0 auto 22px}
+.nextlist{text-align:left;margin-top:24px;border-top:1px solid var(--border);padding-top:18px}
+.nextlist .li{display:flex;gap:12px;padding:9px 0;font-size:.88rem;color:var(--text-mid)}
+.nextlist .li b{font-family:var(--font-mono);font-size:.7rem;color:var(--accent);letter-spacing:.06em;min-width:18px}
+
+/* offer list */
+.getlist{margin:4px 0 8px}
+.getlist .g{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);font-size:.92rem;color:var(--text)}
+.getlist .g .mk{color:var(--accent);font-family:var(--font-mono)}
+
+footer.foot{padding:clamp(56px,9vw,110px) 0;text-align:center}
+footer.foot .wordmark{font-size:2.4rem;margin-bottom:18px}
+footer.foot p{color:var(--text-muted);font-family:var(--font-mono);font-size:.72rem;letter-spacing:.06em;line-height:1.8}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brandrow">
+      <div class="wordmark"><span class="lime">C</span>RISP</div>
+      <span class="kit-tag">FUNNEL KIT · v1</span>
+    </div>
+    <p>A library of mobile-first funnel sections built in CRISP tokens. Every section earns its place against one job: move the right visitor to the next action. Each carries the CRISP dimension it serves and the reason it converts.</p>
+    <div class="meta">
+      <span>10 sections</span>
+      <span>mobile-first</span>
+      <span>worked example: free CRISP audit funnel</span>
+      <span>tokens: getcrisp.design</span>
+    </div>
+  </div>
+</header>
+
+<section class="howto">
+  <div class="wrap">
+    <h2>How the kit works</h2>
+    <div class="steps3">
+      <div class="s">
+        <div class="n">01 — ASSEMBLE</div>
+        <h3>Brief in, funnel out</h3>
+        <p>Run the crisp-funnel skill on a client brief. It classifies the funnel type, selects sections from this library, and sequences them.</p>
+      </div>
+      <div class="s">
+        <div class="n">02 — FILL</div>
+        <h3>Copy on the pattern</h3>
+        <p>Each section is a tested pattern with swappable copy. The skill writes the copy to the offer, the audience, and their awareness level.</p>
+      </div>
+      <div class="s">
+        <div class="n">03 — REVIEW</div>
+        <h3>crisp-review before delivery</h3>
+        <p>The assembled funnel passes a CRISP scan. Grade and top issues returned before the client ever sees it. No funnel ships unaudited.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+
+<!-- 01 HOOK -->
+<div class="row">
+  <div class="phone-col">
+    <div class="phone"><div class="screen">
+      <div class="statusbar"><div class="pill"></div></div>
+      <div class="scn">
+        <div class="progress"><i class="now"></i><i></i><i></i><i></i><i></i></div>
+        <div class="eyebrow">FREE · 15 SECONDS · NO LOGIN</div>
+        <h1 class="fh">Your site is leaking revenue. See exactly where.</h1>
+        <p class="fsub">A free CRISP audit grades your interface across five dimensions and names what to fix first.</p>
+        <div class="spacer"></div>
+        <button class="cta">Get my free audit</button>
+        <div class="microtrust"><span>No card</span><span>No call required</span><span>4.9 from beta users</span></div>
+      </div>
+    </div></div>
+  </div>
+  <div class="note">
+    <div class="step-no">SECTION 01</div>
+    <h2>Hook</h2>
+    <div class="dims"><span class="dim">C — Contextual</span></div>
+    <p class="why">The ad-match screen. One headline stating the outcome, one action, nothing else. The visitor arriving from a paid ad confirms they are in the right place inside two seconds, or they bounce.</p>
+    <div class="kv"><div class="k">Converts</div><div class="v">Outcome-first headline plus a single action removes the "am I in the right place" friction at entry.</div></div>
+    <div class="kv"><div class="k">Use when</div><div class="v">Always the first step. The headline must match the ad creative word for word.</div></div>
+    <div class="kv"><div class="k">CRISP test</div><div class="v">Can a stranger name what this is and what to do in five seconds?</div></div>
+  </div>
+</div>
+
+<!-- 02 QUALIFIER -->
+<div class="row">
+  <div class="phone-col">
+    <div class="phone"><div class="screen">
+      <div class="statusbar"><div class="pill"></div></div>
+      <div class="scn">
+        <div class="progress"><i class="done"></i><i class="now"></i><i></i><i></i><i></i></div>
+        <div class="eyebrow">QUESTION 1 OF 2</div>
+        <h1 class="fh">What are you trying to fix?</h1>
+        <div class="opt" data-single><span class="tick"></span><span class="lab2">More signups</span></div>
+        <div class="opt" data-single><span class="tick"></span><span class="lab2">Lower bounce rate</span></div>
+        <div class="opt" data-single><span class="tick"></span><span class="lab2">Higher conversion</span></div>
+        <div class="opt" data-single><span class="tick"></span><span class="lab2">Not sure yet</span></div>
+        <div class="spacer"></div>
+      </div>
+    </div></div>
+  </div>
+  <div class="note">
+    <div class="step-no">SECTION 02</div>
+    <h2>Qualifier</h2>
+    <div class="dims"><span class="dim">R — Responsive</span><span class="dim">I — Intelligent</span></div>
+    <p class="why">Single-select cards. The tap selects and advances with no continue button. Each answer is data the funnel uses later to personalise the result. The interaction is the engagement, and the engagement is the lead quality.</p>
+    <div class="kv"><div class="k">Converts</div><div class="v">Tap-to-advance feels instant and effortless. One decision per screen beats a long form.</div></div>
+    <div class="kv"><div class="k">Use when</div><div class="v">Early in the funnel to qualify and to start the personalisation thread. Two to four steps, no more.</div></div>
+    <div class="kv"><div class="k">CRISP test</div><div class="v">Does the card respond inside 100ms, and does the answer change what comes next?</div></div>
+  </div>
+</div>
+
+<!-- 03 MULTI-SELECT -->
+<div class="row">
+  <div class="phone-col">
+    <div class="phone"><div class="screen">
+      <div class="statusbar"><div class="pill"></div></div>
+      <div class="scn">
+        <div class="progress"><i class="done"></i><i class="done"></i><i class="now"></i><i></i><i></i></div>
+        <div class="eyebrow">QUESTION 2 OF 2 · SELECT ALL THAT APPLY</div>
+        <h1 class="fh">Where does it hurt most?</h1>
+        <div class="opt" data-multi><span class="tick"></span><span class="lab2">Landing page</span></div>
+        <div class="opt" data-multi><span class="tick"></span><span class="lab2">Onboarding flow</span></div>
+        <div class="opt" data-multi><span class="tick"></span><span class="lab2">Checkout / signup</span></div>
+        <div class="opt" data-multi><span class="tick"></span><span class="lab2">Dashboard</span></div>
+        <div class="spacer"></div>
+        <button class="cta" data-continue disabled>Select one to continue</button>
+      </div>
+    </div></div>
+  </div>
+  <div class="note">
+    <div class="step-no">SECTION 03</div>
+    <h2>Multi-select</h2>
+    <div class="dims"><span class="dim">R — Responsive</span><span class="dim">I — Intelligent</span></div>
+    <p class="why">For questions with more than one valid answer. The continue button stays disabled until a choice is made, then activates to lime. The button label reports the state so the visitor is never guessing what unlocks progress.</p>
+    <div class="kv"><div class="k">Converts</div><div class="v">A state-reporting button removes the dead tap. The visitor sees exactly when they can proceed.</div></div>
+    <div class="kv"><div class="k">Use when</div><div class="v">The answer is genuinely multiple. Do not use it for single-choice questions, it adds a step.</div></div>
+    <div class="kv"><div class="k">CRISP test</div><div class="v">Does the button change state on selection, not on submit?</div></div>
+  </div>
+</div>
+
+<!-- 04 VALUE -->
+<div class="row">
+  <div class="phone-col">
+    <div class="phone"><div class="screen">
+      <div class="statusbar"><div class="pill"></div></div>
+      <div class="scn">
+        <div class="progress"><i class="done"></i><i class="done"></i><i class="done"></i><i class="now"></i><i></i></div>
+        <div class="eyebrow">WHILE YOU'RE HERE</div>
+        <div class="statbig">5s</div>
+        <p class="insight-body"><b>A visitor decides whether to stay in about five seconds.</b> Most sites lose them on the first screen because the page never says where they are or what to do.</p>
+        <p class="insight-body">CRISP grades that first screen first.</p>
+        <div class="spacer"></div>
+        <button class="cta">Makes sense, continue</button>
+      </div>
+    </div></div>
+  </div>
+  <div class="note">
+    <div class="step-no">SECTION 04</div>
+    <h2>Value / belief step</h2>
+    <div class="dims"><span class="dim">I — Intelligent</span></div>
+    <p class="why">A single insight placed between questions. It raises belief before the offer lands and gives the visitor a reason the funnel exists. One stat, one claim, one line. Never a wall of education.</p>
+    <div class="kv"><div class="k">Converts</div><div class="v">Belief built before the ask lifts opt-in. The lone stat earns the next tap.</div></div>
+    <div class="kv"><div class="k">Use when</div><div class="v">The audience is problem-aware but not solution-aware. Skip it for warm, ready-to-buy traffic.</div></div>
+    <div class="kv"><div class="k">CRISP test</div><div class="v">Is this a single insight, or raw information the visitor must process?</div></div>
+  </div>
+</div>
+
+<!-- 05 PROOF -->
+<div class="row">
+  <div class="phone-col">
+    <div class="phone"><div class="screen">
+      <div class="statusbar"><div class="pill"></div></div>
+      <div class="scn">
+        <div class="progress"><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="now"></i></div>
+        <span class="placeholder-tag">Replace with real result</span>
+        <div class="eyebrow">WHAT BETA USERS FOUND</div>
+        <p class="quote">"The audit named <span class="res">three orientation failures</span> on our signup screen our team had argued about for months. Fixed in a day."</p>
+        <div class="byline">
+          <div class="avatar">—</div>
+          <div><div class="who">[ Real beta user ]</div><div class="role">[ Role · Company ]</div></div>
+        </div>
+        <div class="spacer"></div>
+        <button class="cta">Show me mine</button>
+      </div>
+    </div></div>
+  </div>
+  <div class="note">
+    <div class="step-no">SECTION 05</div>
+    <h2>Social proof</h2>
+    <div class="dims"><span class="dim">I — Intelligent</span></div>
+    <p class="why">One specific result at the decision point. A named person, a problem before, a number after. Vague praise does nothing. The strongest proof is a concrete outcome the visitor wants for themselves.</p>
+    <div class="kv"><div class="k">Converts</div><div class="v">Proof adjacent to the CTA reduces drop-off at the moment of decision.</div></div>
+    <div class="kv"><div class="k">Use when</div><div class="v">Just before the offer or the form. One quote, not a carousel.</div></div>
+    <p class="flag">CRISP positions against AI-generated filler. Never ship an invented testimonial here. Leave the placeholder until a real beta audit result is in hand. A fabricated quote undercuts the whole product.</p>
+  </div>
+</div>
+
+<!-- 06 LOADER -->
+<div class="row">
+  <div class="phone-col">
+    <div class="phone"><div class="screen">
+      <div class="statusbar"><div class="pill"></div></div>
+      <div class="scn">
+        <div class="progress"><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i></div>
+        <div class="loadwrap">
+          <div class="eyebrow">BUILDING YOUR AUDIT</div>
+          <h1 class="fh">Matching your answers to the five dimensions</h1>
+          <div class="loadbar"><i></i></div>
+          <div class="loadlines">
+            <span>Reading your answers...</span>
+            <span>Scoring against Stripe, Linear, Notion...</span>
+            <span>Writing your priority fixes...</span>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+  <div class="note">
+    <div class="step-no">SECTION 06</div>
+    <h2>Loader / processing</h2>
+    <div class="dims"><span class="dim">R — Responsive</span><span class="dim">I — Intelligent</span></div>
+    <p class="why">A short, determinate wait that makes the result feel computed, not canned. The cycling status lines name real work being done. Perceived effort raises the perceived value of what arrives next.</p>
+    <div class="kv"><div class="k">Converts</div><div class="v">A worked result feels personal. The wait builds anticipation rather than friction, if kept under four seconds.</div></div>
+    <div class="kv"><div class="k">Use when</div><div class="v">Right before a personalised result or offer. Never fake a long delay, it reads as a trick.</div></div>
+    <div class="kv"><div class="k">CRISP test</div><div class="v">Is the bar determinate, and does it complete inside the time the visitor will wait?</div></div>
+  </div>
+</div>
+
+<!-- 07 OFFER -->
+<div class="row">
+  <div class="phone-col">
+    <div class="phone"><div class="screen">
+      <div class="statusbar"><div class="pill"></div></div>
+      <div class="scn">
+        <div class="eyebrow">YOUR FREE CRISP AUDIT</div>
+        <h1 class="fh">Your interface, graded in 15 seconds.</h1>
+        <div class="getlist">
+          <div class="g"><span class="mk">→</span><span>A letter grade across all five CRISP dimensions</span></div>
+          <div class="g"><span class="mk">→</span><span>The top three issues, ranked by user impact</span></div>
+          <div class="g"><span class="mk">→</span><span>A specific fix for each, not vague advice</span></div>
+        </div>
+        <div class="spacer"></div>
+        <button class="cta">Send me my audit</button>
+        <div class="microtrust"><span>Free</span><span>No card</span><span>Yours to keep</span></div>
+      </div>
+    </div></div>
+  </div>
+  <div class="note">
+    <div class="step-no">SECTION 07</div>
+    <h2>Offer</h2>
+    <div class="dims"><span class="dim">C — Contextual</span><span class="dim">P — Powerful</span></div>
+    <p class="why">The pitch. What they get, in three concrete lines, then one action. Depth is hidden here on purpose. The novice sees a clean offer, the detail lives one tap deeper for those who want it.</p>
+    <div class="kv"><div class="k">Converts</div><div class="v">Three specific deliverables beat a paragraph of claims. The single CTA carries all the visual weight.</div></div>
+    <div class="kv"><div class="k">Use when</div><div class="v">After value and proof, before the form. State the offer, do not sell past the close.</div></div>
+    <div class="kv"><div class="k">CRISP test</div><div class="v">Is there one obvious action, and is complexity held back from the first-time visitor?</div></div>
+  </div>
+</div>
+
+<!-- 08 CAPTURE -->
+<div class="row">
+  <div class="phone-col">
+    <div class="phone"><div class="screen">
+      <div class="statusbar"><div class="pill"></div></div>
+      <div class="scn">
+        <div class="eyebrow">LAST STEP · WHERE TO SEND IT</div>
+        <h1 class="fh">Where should the audit go?</h1>
+        <div class="field">
+          <label for="nm">First name</label>
+          <input id="nm" type="text" placeholder="Laith" autocomplete="given-name">
+          <div class="msg"></div>
+        </div>
+        <div class="field">
+          <label for="em">Work email</label>
+          <input id="em" type="email" placeholder="you@company.com" autocomplete="email" data-validate="email">
+          <div class="msg"></div>
+        </div>
+        <div class="field">
+          <label for="url">Site URL</label>
+          <input id="url" type="text" placeholder="company.com" autocomplete="url">
+          <div class="msg"></div>
+        </div>
+        <div class="spacer"></div>
+        <button class="cta">Get my audit</button>
+      </div>
+    </div></div>
+  </div>
+  <div class="note">
+    <div class="step-no">SECTION 08</div>
+    <h2>Capture form</h2>
+    <div class="dims"><span class="dim">R — Responsive</span><span class="dim">S — Seamless</span></div>
+    <p class="why">Three fields, no more, for a first touch. Validation fires on blur, not on submit, so the visitor is corrected before they reach the button. Autocomplete is on every field so the device does the typing.</p>
+    <div class="kv"><div class="k">Converts</div><div class="v">Fewer fields plus inline validation plus autofill removes the friction that kills mobile form completion.</div></div>
+    <div class="kv"><div class="k">Use when</div><div class="v">The single capture point. Earn each field, drop any the audit does not need.</div></div>
+    <div class="kv"><div class="k">CRISP test</div><div class="v">Does validation fire on blur, and is autocomplete set on every field?</div></div>
+  </div>
+</div>
+
+<!-- 09 BOOKING -->
+<div class="row">
+  <div class="phone-col">
+    <div class="phone"><div class="screen">
+      <div class="statusbar"><div class="pill"></div></div>
+      <div class="scn">
+        <div class="eyebrow">OPTIONAL · WALK THROUGH IT LIVE</div>
+        <h1 class="fh">Want a 15-minute walkthrough?</h1>
+        <div class="daybar">
+          <div class="d" data-day><div class="dn">TUE</div><div class="dd">24</div></div>
+          <div class="d" data-day><div class="dn">WED</div><div class="dd">25</div></div>
+          <div class="d" data-day><div class="dn">THU</div><div class="dd">26</div></div>
+          <div class="d" data-day><div class="dn">FRI</div><div class="dd">27</div></div>
+        </div>
+        <div class="slots">
+          <div class="slot" data-slot>09:30</div>
+          <div class="slot" data-slot>11:00</div>
+          <div class="slot" data-slot>14:00</div>
+          <div class="slot" data-slot>16:30</div>
+        </div>
+        <div class="spacer"></div>
+        <button class="cta">Confirm time</button>
+      </div>
+    </div></div>
+  </div>
+  <div class="note">
+    <div class="step-no">SECTION 09</div>
+    <h2>Booking</h2>
+    <div class="dims"><span class="dim">S — Seamless</span></div>
+    <p class="why">Slot selection in the funnel, not a redirect to a separate calendar tool. The visitor stays in the flow they started. The booking fits their day rather than forcing them into yours.</p>
+    <div class="kv"><div class="k">Converts</div><div class="v">In-funnel booking removes the portal redirect that loses warm leads at the handoff.</div></div>
+    <div class="kv"><div class="k">Use when</div><div class="v">High-ticket offers that need a call. For self-serve, skip straight to confirmation.</div></div>
+    <div class="kv"><div class="k">CRISP test</div><div class="v">Can they book without leaving the funnel or logging in?</div></div>
+  </div>
+</div>
+
+<!-- 10 CONFIRMATION -->
+<div class="row">
+  <div class="phone-col">
+    <div class="phone"><div class="screen">
+      <div class="statusbar"><div class="pill"></div></div>
+      <div class="scn">
+        <div class="confwrap">
+          <div class="confmark">✓</div>
+          <h1 class="fh" style="text-align:center">You're all set.</h1>
+          <p class="fsub" style="text-align:center">Your audit is on its way to your inbox now.</p>
+          <div class="nextlist">
+            <div class="li"><b>1</b><span>Check your inbox for your CRISP grade and top three fixes.</span></div>
+            <div class="li"><b>2</b><span>We've held Wed 25th, 11:00 for your walkthrough.</span></div>
+            <div class="li"><b>3</b><span>Reply to the email with your hardest screen and we'll cover it live.</span></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+  <div class="note">
+    <div class="step-no">SECTION 10</div>
+    <h2>Confirmation</h2>
+    <div class="dims"><span class="dim">C — Contextual</span><span class="dim">S — Seamless</span></div>
+    <p class="why">The close. It confirms the action landed, restates what was booked, and names the next step in plain terms. No dead end. The visitor leaves knowing exactly what happens and when, then returns to their day.</p>
+    <div class="kv"><div class="k">Converts</div><div class="v">A clear post-action state cuts the "did that work" support reply and sets up the next touch.</div></div>
+    <div class="kv"><div class="k">Use when</div><div class="v">Every funnel ends here. Always state what happens next, never leave a thank-you with no path.</div></div>
+    <div class="kv"><div class="k">CRISP test</div><div class="v">Does the visitor know the action worked and what to expect next?</div></div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="wordmark"><span class="lime">C</span>RISP</div>
+    <p>Funnel Kit v1 · getcrisp.design<br>Conventions: mobile-first · CRISP tokens · lime for significance only · British English<br>Every funnel passes crisp-review before delivery</p>
+  </div>
+</footer>
+
+<script>
+// Single-select: select one, clear siblings within the screen
+document.querySelectorAll('[data-single]').forEach(function(o){
+  o.addEventListener('click',function(){
+    o.parentNode.querySelectorAll('[data-single]').forEach(function(s){s.classList.remove('is-active')});
+    o.classList.add('is-active');
+  });
+});
+// Multi-select: toggle, and enable the continue button when any selected
+document.querySelectorAll('[data-multi]').forEach(function(o){
+  o.addEventListener('click',function(){
+    o.classList.toggle('is-active');
+    var scn=o.closest('.scn');
+    var any=scn.querySelectorAll('[data-multi].is-active').length>0;
+    var btn=scn.querySelector('[data-continue]');
+    if(btn){btn.disabled=!any;btn.textContent=any?'Continue':'Select one to continue';}
+  });
+});
+// Booking selection
+document.querySelectorAll('[data-day]').forEach(function(d){
+  d.addEventListener('click',function(){
+    d.parentNode.querySelectorAll('[data-day]').forEach(function(x){x.classList.remove('is-active')});
+    d.classList.add('is-active');
+  });
+});
+document.querySelectorAll('[data-slot]').forEach(function(s){
+  s.addEventListener('click',function(){
+    s.parentNode.querySelectorAll('[data-slot]').forEach(function(x){x.classList.remove('is-active')});
+    s.classList.add('is-active');
+  });
+});
+// Inline email validation on blur (R: validate on blur, not submit)
+document.querySelectorAll('[data-validate="email"]').forEach(function(i){
+  i.addEventListener('blur',function(){
+    var msg=i.parentNode.querySelector('.msg');
+    if(i.value===''){i.classList.remove('ok','err');msg.textContent='';return;}
+    var valid=/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(i.value);
+    i.classList.toggle('ok',valid);
+    i.classList.toggle('err',!valid);
+    msg.textContent=valid?'Looks good':'Enter a valid work email';
+  });
+});
+</script>
+</body>
+</html>

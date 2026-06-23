@@ -11,6 +11,17 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ---
 
+## [1.2.0] — 2026-06-23
+
+### New Skills
+- **P1** `/crisp-funnel` - Funnel assembly from a brief. Classifies the funnel type (appointment, application, webinar, direct sale, email list), sequences sections from the CRISP Funnel Kit (10 tested sections) to the audience's awareness level, writes the copy, and runs `/crisp-review` before delivery, so no funnel ships unaudited. Ships with the `crisp-funnel-kit.html` section library.
+
+### Infrastructure
+- **P2** Migrated the canonical skill source directory from `files/` to `skills/`. Updated `scripts/sync.mjs` and the `package.json` `files` array accordingly.
+- **P2** `scripts/sync.mjs` now carries a skill's companion `.html` asset (e.g. `crisp-funnel-kit.html`) into each platform directory alongside the skill, so library-backed skills stay self-contained.
+
+---
+
 ## [1.1.0] — 2026-03-31
 
 ### New Skills

@@ -1,6 +1,6 @@
 ---
 name: crisp-design-eng
-description: Design engineering craft layer for CRISP. Governs motion decisions, micro-interaction quality, component polish, GSAP landing page animations, scroll-driven sequences, and the invisible details that make an interface feel right — not just function correctly. Triggered by /crisp-design-eng. Maps every craft decision to a CRISP dimension. Reads CRISP-STYLE-KIT.md for token reference.
+description: Design engineering craft layer for CRISP. Governs motion decisions, micro-interaction quality, component polish, and the invisible details that make an interface feel right — not just function correctly. Triggered by /crisp-design-eng. Maps every craft decision to a CRISP dimension. Reads CRISP-STYLE-KIT.md for token reference.
 ---
 
 # CRISP Design Engineering — `/crisp-design-eng`
@@ -29,8 +29,6 @@ These are engineering problems. They have engineering solutions. This skill name
 
 The details users never consciously notice are the ones that matter most. When a feature functions exactly as someone expects, they proceed without thought. That is the goal. A thousand invisible details, each correct, produce something that feels right without the user being able to say why. This skill exists to make those details explicit.
 
-**B2B benchmarks:** Stripe (payment ops, approval flows) · Linear (keyboard-first, command palette) · Clay (data tables, bulk actions) · Rippling (HR/finance workflows) · Ramp (spend management - tightest interaction craft in B2B SaaS for approval and categorisation flows)
-
 ---
 
 ## Step 0 — Read context
@@ -45,23 +43,6 @@ Before evaluating any component or interaction:
 2. Check for `CRISP-STYLE-KIT.md`. If present, use its CSS tokens as the implementation ground truth. Do not introduce tokens not defined there.
 
 3. If neither file exists, proceed without product context and flag this gap in output.
-
-### Step 0.3 — Classify the surface
-
-Before applying any craft rule, identify the surface type. Motion posture follows surface classification.
-
-| Surface type | Motion posture |
-|---|---|
-| Operational dashboard / data table | Minimal - confirm-only. No reveals, no stagger on data rows. |
-| Detail / approval / form view | Standard - transitions earn their place |
-| Onboarding / first-run | Generous - motion explains and orients |
-| Marketing / report / summary | Expressive - motion conveys quality |
-
-Apply stagger, scroll reveal, and decorative motion only to onboarding and marketing surfaces. Never to operational or data-heavy surfaces.
-
-### Step 0.4 — Validate unfamiliar patterns against Mobbin
-
-For any interaction pattern not explicitly covered by this skill, check Mobbin before writing implementation code. Search the relevant product category and interaction type. Best-in-class B2B references: Stripe, Linear, Clay, Rippling, Ramp.
 
 ---
 
@@ -141,13 +122,12 @@ Determine how often a user will trigger this interaction:
 
 | Trigger frequency | Decision |
 |---|---|
-| 100+ times/day — keyboard shortcuts, nav toggle | No animation. Remove it. |
-| Command palette open (10–20×/day) | Minimal animation permitted: 80ms, `scale(0.97)`, ease-out only |
+| 100+ times/day — keyboard shortcuts, command palette, nav toggle | No animation. Remove it. |
 | Tens of times/day — hover states, list navigation, tab switching | Reduce or remove |
 | Occasional — modals, drawers, toasts, confirmations | Standard animation |
 | Rare or first-time — onboarding, empty state first load, celebrations | Can carry more weight |
 
-**Never animate repetitive keyboard actions.** These fire hundreds of times daily. Animation here fails R — it makes the interface feel slower than it is, which is a perception problem masquerading as a performance one. Command palette is the exception: it opens 10–20× per session, not 200×. Raycast and Linear both animate command palette open at ~80ms. That is the correct call for something used frequently but not constantly.
+**Never animate keyboard-initiated actions.** These are repeated hundreds of times daily. Animation here fails R — it makes the interface feel slower than it is, which is a perception problem masquerading as a performance one. Raycast has no open/close animation. That is the correct decision for something used hundreds of times a day.
 
 **CRISP dimension at risk:** R — Responsive. An animation on a frequent interaction is not delight. It is delay.
 
@@ -249,89 +229,6 @@ Add `transform: scale(0.97)` on `:active`. No exceptions for interactive element
 ```
 
 **Fails if absent:** R — the user receives no confirmation the interface registered their press.
-
----
-
-### Buttons must communicate async state
-
-Three-phase transition: idle - loading - resolved. Never dismiss loading before the server responds. Optimistic UI is for lists — buttons wait.
-
-```css
-.btn-label {
-  transition: opacity 150ms var(--ease-out),
-              transform 150ms var(--ease-out);
-}
-
-.btn[data-loading] .btn-label {
-  opacity: 0;
-  transform: scale(0.85);
-}
-
-.btn[data-loading] .btn-spinner {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* Success: morph the icon in-place, don't fire a separate toast */
-.btn[data-success] .btn-label { opacity: 1; }
-```
-
-**CRISP: R** — a button that appears to succeed and then reverts is worse than one that waited.
-
----
-
-### Floating bulk action bar
-
-When rows are selected, a contextual bar floats in. Timing: enter `translateY(100%)` to `translateY(0)` at 200ms ease-out, simultaneous with the checkbox animation - not after it. Exit at 150ms. The most common craft failure is the bar appearing after the row selection animation completes rather than simultaneously.
-
-```css
-.bulk-bar {
-  transform: translateY(100%);
-  transition: transform 200ms var(--ease-out);
-}
-
-.bulk-bar[data-visible] { transform: translateY(0); }
-.bulk-bar[data-hiding]  { transition-duration: 150ms; }
-```
-
-**CRISP: R** — delayed bar appearance signals the UI is one step behind the user's intent.
-
----
-
-### Skeleton loaders for layout-stable content; spinners for unknown duration
-
-| Use | When |
-|---|---|
-| Skeleton | Table rows, card grids, lists where final structure is known |
-| Spinner | Button feedback, inline saves, single-element async |
-| Progress bar | File uploads, multi-step operations with measurable progress |
-
-Never use a skeleton when you don't know the final layout. An unexpected content shift after skeleton load fails C — the user built a mental model the content then violated.
-
----
-
-### Status chip transition
-
-Status changes (Pending → Approved → Rejected) are meaningful events. Use the blur crossfade technique on both background AND label text simultaneously, not just a colour transition.
-
-```css
-.status-chip {
-  transition: background 200ms var(--ease-out),
-              filter 200ms var(--ease-out),
-              opacity 200ms var(--ease-out);
-}
-
-.status-chip.is-transitioning {
-  filter: blur(2px);
-  opacity: 0.7;
-}
-```
-
-Duration: 200ms. Easing: `var(--ease-out)`. Blur peak: 2px at midpoint.
-
-Never animate status badges on page load. Only on user-triggered or server-pushed state changes.
-
-**CRISP: C** — a twitching background colour does not communicate a state change. A full crossfade does.
 
 ---
 
@@ -488,8 +385,6 @@ When multiple elements appear together, stagger them. Everything appearing at on
 }
 ```
 
-**Do not apply stagger to virtualised lists.** Elements outside the viewport are not in the DOM - stagger has nothing to animate. Apply stagger only to initial page loads of known-length, non-virtualised lists.
-
 ---
 
 ### Asymmetric enter/exit timing
@@ -553,19 +448,6 @@ Use `clip-path: inset(0 100% 0 0)` on a coloured overlay. On `:active`, transiti
 
 **CRISP dimension:** P — destructive actions must require deliberate, sustained intent.
 
-### Hold-to-confirm vs. undo toast - decision criteria
-
-| Scenario | Pattern |
-|---|---|
-| Irreversible (delete account, purge data) | Hold-to-confirm |
-| Recoverable (archive, remove, disconnect) | Optimistic action + undo toast |
-| High-frequency recoverable action | Undo toast (hold is too slow per-rep) |
-
-Undo toast rules:
-- Enter from the same screen edge every time
-- Show a countdown progress bar (not static duration)
-- Dismiss immediately on undo - no exit animation on intentional dismiss
-
 ### Image and content reveals on scroll
 
 ```css
@@ -580,243 +462,6 @@ Undo toast rules:
 ```
 
 Trigger `.is-visible` with `IntersectionObserver` at `{ rootMargin: '-80px' }`. Use `once: true` — the reveal should not replay on scroll-back.
-
-**Restrict to:** marketing pages, onboarding flows, reports, and summary surfaces.
-**Prohibit on:** data tables, approval queues, operational dashboards. Scroll reveals on transactional surfaces fail R - they delay access to content the user is there to act on.
-
----
-
-## GSAP for Marketing and Landing Page Surfaces
-
-GSAP is the correct tool when CSS transitions are not enough: coordinated multi-element sequences, scroll-driven reveals, text animations, and SVG work. It is not the correct tool for product UI interactions. Every rule in this section applies to the Expressive surface posture (marketing, landing pages, onboarding). Do not reach for GSAP on operational, detail, or form surfaces.
-
----
-
-### When to use GSAP vs CSS
-
-| Use | Tool |
-|---|---|
-| Hover states, simple opacity/transform fades | CSS transitions |
-| Single-element enter/exit in product UI | CSS `@starting-style` or WAAPI |
-| Scroll-driven entry animations | GSAP ScrollTrigger |
-| Coordinated multi-element hero reveals | GSAP Timeline |
-| Text character/word/line reveals | GSAP SplitText |
-| SVG line draws, morphing paths | GSAP DrawSVG / MorphSVG |
-| Mouse-tracking parallax | GSAP `quickTo()` |
-| State layout transitions | GSAP Flip |
-| Custom easing curves for brand feel | GSAP CustomEase |
-
-If a single CSS transition handles it, do not import GSAP for it.
-
----
-
-### The landing page plugin toolkit
-
-**Required for most landing pages:**
-- `ScrollTrigger` - scroll-based animation; always register it before use
-- `CustomEase` - brand-specific easing curves that CSS cubic-bezier cannot express
-
-**Reach for when needed:**
-- `SplitText` - heading character/word/line reveals (free since Webflow acquisition)
-- `ScrollSmoother` - premium smooth scroll feel; wraps the entire page scroller
-- `DrawSVG` - SVG stroke animations and progress indicators
-- `Flip` - animating layout state changes without calculating positions manually
-
-**Rarely correct for landing pages:**
-- `MorphSVG`, `MotionPath`, `Physics2D` - illustration and interactive contexts only
-- `ScrambleText` - high risk of feeling gimmicky; use only with a specific creative rationale
-
----
-
-### Hero sequence
-
-Use `gsap.timeline()` with `gsap.set()` + `gsap.to()` for hero reveals. Never set initial hidden states in CSS - GSAP runs after the browser paints, so a CSS `opacity: 0` element flashes visible for one frame before GSAP takes over. `gsap.set()` runs synchronously and prevents this.
-
-```js
-// Set initial state synchronously — no flash
-gsap.set('.hero-badge, .hero-heading, .hero-sub, .hero-cta', {
-  autoAlpha: 0,
-  y: 24,
-});
-
-const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
-
-tl.to('.hero-badge',   { autoAlpha: 1, y: 0, duration: 0.5 })
-  .to('.hero-heading', { autoAlpha: 1, y: 0, duration: 0.6 }, '-=0.3')
-  .to('.hero-sub',     { autoAlpha: 1, y: 0, duration: 0.5 }, '-=0.3')
-  .to('.hero-cta',     { autoAlpha: 1, y: 0, duration: 0.4 }, '-=0.2');
-```
-
-The position parameter (`'-=0.3'`) overlaps animations. This is the correct way to produce a staggered-but-cohesive entrance - not by staggering individual tweens. `autoAlpha` handles both `opacity` and `visibility` together; use it instead of `opacity` alone.
-
----
-
-### Scroll entry
-
-```js
-gsap.utils.toArray('.section-reveal').forEach((el) => {
-  gsap.from(el, {
-    autoAlpha: 0,
-    y: 48,
-    duration: 0.7,
-    ease: 'power2.out',
-    scrollTrigger: {
-      trigger: el,
-      start: 'top 80%',
-      once: true,
-    },
-  });
-});
-```
-
-`start: 'top 80%'` fires when the element's top edge crosses 80% down the viewport - the user sees it arriving before it finishes entering. Always use `once: true` on entry animations. Replaying on scroll-back reads as broken.
-
----
-
-### Staggered list on scroll
-
-Use `ScrollTrigger.batch()` for rows of cards or feature blocks entering together. This creates one ScrollTrigger per group rather than one per element.
-
-```js
-ScrollTrigger.batch('.feature-card', {
-  start: 'top 85%',
-  onEnter: (batch) =>
-    gsap.to(batch, {
-      autoAlpha: 1,
-      y: 0,
-      stagger: 0.08,
-      duration: 0.6,
-      ease: 'power2.out',
-    }),
-  once: true,
-});
-```
-
----
-
-### Text reveal with SplitText
-
-```js
-const split = SplitText.create('.section-heading', { type: 'lines' });
-
-gsap.from(split.lines, {
-  autoAlpha: 0,
-  y: 32,
-  duration: 0.6,
-  stagger: 0.08,
-  ease: 'power2.out',
-  scrollTrigger: {
-    trigger: '.section-heading',
-    start: 'top 80%',
-    once: true,
-  },
-});
-```
-
-Animate the split spans, not the parent. Add `overflow: hidden` on the parent to clip lines sliding up from below - without it the lines are visible outside the heading bounds during animation.
-
----
-
-### Mouse parallax
-
-`gsap.quickTo()` is purpose-built for values that update on every pointer event. Calling `gsap.to()` inside `mousemove` creates a new tween every frame and causes memory and performance issues.
-
-```js
-const moveX = gsap.quickTo('.parallax-layer', 'x', { duration: 0.6, ease: 'power1.out' });
-const moveY = gsap.quickTo('.parallax-layer', 'y', { duration: 0.6, ease: 'power1.out' });
-
-window.addEventListener('mousemove', (e) => {
-  const xPct = (e.clientX / window.innerWidth  - 0.5) * 30;
-  const yPct = (e.clientY / window.innerHeight - 0.5) * 20;
-  moveX(xPct);
-  moveY(yPct);
-});
-```
-
----
-
-### Performance rules
-
-- **Animate `transform` and `opacity` only.** GSAP does not exempt you from layout-triggering property costs. `width`, `height`, `top`, `left`, `padding` cause reflows in GSAP the same as in CSS.
-- **`gsap.set()` for initial states, never CSS.** CSS `opacity: 0` on a GSAP-animated element means one visible frame before the tween runs. `gsap.set()` is synchronous.
-- **`gsap.quickTo()` for pointer-tracking.** One function call per move event, not one tween.
-- **Kill ScrollTriggers on cleanup.** In vanilla JS: `ScrollTrigger.getAll().forEach(t => t.kill())`. In React/Vue: `gsap.context().revert()` handles this automatically.
-- **Remove `markers: true` before shipping.** Markers affect layout and are visible in production if left in.
-
----
-
-### Framework integration
-
-**React — use `useGSAP` with scope**
-
-```jsx
-import { useGSAP } from '@gsap/react';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger, useGSAP);
-
-function HeroSection() {
-  const container = useRef(null);
-
-  useGSAP(() => {
-    gsap.from('.hero-heading', {
-      autoAlpha: 0,
-      y: 32,
-      duration: 0.6,
-      ease: 'power2.out',
-    });
-  }, { scope: container });
-
-  return <section ref={container}>...</section>;
-}
-```
-
-`useGSAP` with `scope` scopes all selectors to the component and handles cleanup automatically. Never put GSAP inside `useState` or `useCallback` - it is a side effect, not state.
-
-**Next.js / SSR guard**
-
-GSAP runs in the browser only. Inside `useGSAP` or `useEffect` this is handled automatically. If you reference GSAP outside a lifecycle hook, guard it:
-
-```js
-if (typeof window === 'undefined') return;
-```
-
-**Vue / Nuxt**
-
-```js
-onMounted(() => {
-  const ctx = gsap.context(() => {
-    gsap.from('.hero-heading', { autoAlpha: 0, y: 32, duration: 0.6 });
-  }, templateRef);
-
-  onUnmounted(() => ctx.revert());
-});
-```
-
----
-
-### Accessibility
-
-```js
-gsap.matchMedia().add('(prefers-reduced-motion: reduce)', () => {
-  // Kill all motion and snap elements to final state
-  gsap.globalTimeline.timeScale(0);
-  gsap.set('.hero-heading, .hero-sub, .hero-cta', { autoAlpha: 1, y: 0 });
-});
-```
-
-`gsap.matchMedia()` is the GSAP-native reduced-motion handler. It scopes cleanup automatically. Always snap elements to their final visible state - never leave them hidden when motion is reduced.
-
----
-
-### What not to do with GSAP
-
-- Do not use GSAP for hover states, button feedback, or form field transitions - CSS transitions handle these with no JS overhead
-- Do not call `gsap.to()` inside `mousemove` handlers - use `quickTo()`
-- Do not set initial hidden states in CSS for GSAP-animated elements - use `gsap.set()` or `autoAlpha`
-- Do not leave `markers: true` in production
-- Do not animate layout-affecting properties (`width`, `height`, `top`, `left`, `margin`, `padding`)
-- Do not use `ScrollSmoother` without testing on physical mobile hardware - it wraps the entire page scroll and can conflict with fixed elements and iOS rubber-banding
 
 ---
 
@@ -1002,10 +647,6 @@ When reviewing component code, return a markdown table. Not a list. Not prose. E
 | `setProperty('--drag-offset')` in gesture handler | `element.style.transform` directly | P | CSS variable update recalculates all children every frame |
 | No pointer capture on drag start | `element.setPointerCapture(e.pointerId)` | S | Drag breaks when pointer leaves element bounds |
 | Timer continues when tab hidden | `visibilitychange` handler pauses timer | S | Timer dismisses element the user never saw |
-| Button with no async state | Three-phase idle → loading → resolved; `data-loading` hides label, shows spinner | R | Button that appears to succeed then reverts is worse than one that waited |
-| Spinner on layout-known content (table rows, card grid) | Skeleton matching final layout structure | C | Unexpected content shift after spinner load violates the mental model the user built |
-| `transition: background` only on status chip | Blur crossfade on background and label text simultaneously at 200ms | C | Colour transition alone does not communicate a state change; full crossfade does |
-| Bulk action bar appears after row selection animation completes | Enter simultaneously with checkbox animation - `translateY(100%)` → `translateY(0)` at 200ms ease-out | R | Delayed bar signals UI is one step behind the user's intent |
 
 ---
 
@@ -1097,8 +738,6 @@ Use motion tokens from `CRISP-STYLE-KIT.md` as implementation ground truth. Do n
 /crisp-design-eng →  THIS SKILL: craft layer — motion, micro-interaction, invisible polish
 /handoff          →  developer-ready spec from reviewed design
 ```
-
-For deeper GSAP reference - ScrollTrigger patterns, plugin APIs, and framework integration examples - see the `GSAPskills/` folder at the project root.
 
 Craft violations identified here should be resolved before a component enters `/handoff`. They are R and S failures at the implementation level — not aesthetic preferences.
 

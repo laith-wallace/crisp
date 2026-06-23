@@ -33,31 +33,6 @@ Example directions for a data table feature:
 
 **If the user skips this step:** proceed, but note in Open Questions which visual direction assumptions you made and why.
 
-### The Three Dials
-
-Alongside the direction, set three explicit dials. Every downstream layout, motion, and density decision is gated by them - this makes aesthetic intensity a stated parameter instead of an accident:
-
-- **`VARIANCE`** (1 = perfect symmetry, 10 = asymmetric/artsy) - how far the layout departs from a centred, even grid
-- **`MOTION`** (1 = static, 10 = cinematic choreography) - how much the surface animates
-- **`DENSITY`** (1 = art gallery, 10 = cockpit) - how much information per viewport
-
-Infer values from the brief signals, then state them in the spec:
-
-| Brief signal | VARIANCE | MOTION | DENSITY |
-|---|---|---|---|
-| "minimalist / clean / calm / Linear-style" | 5-6 | 3-4 | 2-3 |
-| "premium consumer / Apple-y / luxury" | 7-8 | 5-7 | 3-4 |
-| "playful / experimental / agency" | 9-10 | 8-10 | 3-4 |
-| Marketing landing / portfolio (default) | 7-8 | 6 | 3-5 |
-| Product UI / dashboard / daily tool | 3-5 | 2-3 | 5-8 |
-| "trust-first / public-sector / regulated / a11y-critical" | 3-4 | 2-3 | 4-5 |
-
-Two enforcement rules:
-- **Motion claimed = motion shown.** If MOTION > 4, the surface must actually animate (entry transitions, scroll reveals, hover physics). If working motion can't be shipped in scope, drop the dial to 3 and ship clean static - never half-built motion.
-- **Mobile override.** VARIANCE 4+ asymmetric layouts MUST collapse to a strict single column below 768px, declared per section, not assumed.
-
-Record the chosen dial values in the spec output so `/crisp-review` and `/crisp-design-eng` can hold the implementation to them.
-
 ---
 
 ## Step 1: Problem Framing
@@ -139,10 +114,6 @@ Who: [User]
 Job: [What they're trying to do]
 Today: [Current workaround]
 Success: [Observable outcome]
-
-### Direction & Dials
-Direction: [Confirmed visual direction from Step 0]
-Dials: VARIANCE [n] / MOTION [n] / DENSITY [n] - [one line on why]
 
 ### User Flow
 

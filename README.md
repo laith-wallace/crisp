@@ -1,9 +1,9 @@
 # CRISP — Design Intelligence for AI Agents
 
-Eleven skills that give your AI agent a senior product designer's eye. Drop them
+Twelve skills that give your AI agent a senior product designer's eye. Drop them
 into Claude, Cursor, Copilot, or Gemini and get structured design reviews,
 feature specs, developer handoffs, accessibility audits, AI surface evaluations,
-and craft-level motion polish — all grounded in the CRISP framework.
+funnel assembly, and craft-level motion polish, all grounded in the CRISP framework.
 
 **CRISP** = Contextual · Responsive · Intelligent · Seamless · Powerful
 
@@ -31,6 +31,12 @@ and craft-level motion polish — all grounded in the CRISP framework.
 | `/crisp-a11y`       | Full WCAG 2.2 AA accessibility audit with exact code-level fixes, P0–P3 severity, and a committable `a11y-checklist.md`.                                                                                |
 | `/crisp-ai`         | Evaluates AI-native UI surfaces — chat interfaces, streaming responses, generative UI, inline assist — across 6 AI-specific dimensions.                                                                 |
 | `/crisp-design-eng` | Design engineering craft layer — motion decisions, micro-interaction quality, component polish, and the invisible details that make an interface feel right. Maps every craft fix to a CRISP dimension. |
+
+### Funnel Kit
+
+| Command          | What it does                                                                                                                                                                                                                       |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/crisp-funnel`  | Assembles a mobile-first funnel from a brief: classifies the funnel type, sequences sections from the CRISP Funnel Kit (10 tested sections) to the audience's awareness level, writes the copy, and runs `/crisp-review` before delivery. Ships with the `crisp-funnel-kit.html` section library. |
 
 ---
 
