@@ -11,6 +11,22 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ---
 
+## [1.3.0] — 2026-07-02
+
+### Improvements to Existing Skills
+- **P1** `/crisp-funnel` v2.0.0 - Merged the Funnel Architect methodology into the funnel skill. One skill now builds and critiques. New in this release:
+  - **Critique mode** - choke-point analysis from stage-by-stage numbers, kit-section leak mapping, P0-P3 severity findings, 80/20 above-the-fold rule, benchmark-and-show guidance.
+  - **Strategy layer in build mode** - research-first inputs (insight surveys, sales-call mining, journal mining), five explicit strategy decisions (awareness stage, offer type, format, named mechanism, transformation line), ad angles, and tracking instrumentation (CAC and ROI, not CPL).
+  - **Two formats** - step funnel from the ten-section kit, or long-form landing page via the eight-block hierarchy.
+  - **Progressive disclosure structure** - lean SKILL.md core plus `references/` for build mode, critique mode, and landing-page/copy/ads/forms patterns.
+  - Supersedes the separate `funnel-architect` skill draft, which is fully absorbed.
+
+### Infrastructure
+- **P2** `scripts/sync.mjs` now supports directory-based skills (`skills/[name]/SKILL.md` plus `references/` and assets). The full tree syncs to Claude Code and Antigravity; Cursor and Gemini receive SKILL.md and references flattened into a single file. Flat `skills/[name].md` skills keep working unchanged.
+- **P2** `skills/crisp-funnel.md` and `skills/crisp-funnel-kit.html` moved into the directory skill `skills/crisp-funnel/`.
+
+---
+
 ## [1.2.0] — 2026-06-23
 
 ### New Skills

@@ -1,20 +1,89 @@
 ---
 name: crisp-funnel
-description: Assembles a complete mobile-first funnel from a client brief. Classifies the funnel type, selects and sequences sections from the CRISP Funnel Kit, writes the copy to the offer and the audience's awareness level, and hands off to crisp-review before delivery. Triggered by /crisp-funnel. Reads .crisp.md for project context. Use whenever Laith needs to build a client lead-gen, application, webinar, or sales funnel fast.
-version: "1.0.0"
+description: Build, critique, and optimise high-converting funnels and landing pages using the ATM (Attention, Trust, Money) methodology and the CRISP Funnel Kit's ten-section library. Use whenever the user is designing, writing, auditing, or fixing a funnel, landing page, opt-in page, sales page, lead-gen offer, ad-to-page flow, or conversion path; or when they mention conversion rate, CAC vs CPL, stages of awareness, lead qualification, or why a page or campaign is not converting, even if they never say the word "funnel". Triggered by /crisp-funnel. Reads .crisp.md for project context.
+version: "2.0.0"
 metadata:
-  author: Laith Wallace — FlowConverts
+  author: Laith Wallace - FlowConverts
 ---
 
-# CRISP Funnel Assembly — `/crisp-funnel`
+# CRISP Funnel Architect - `/crisp-funnel`
 
-You assemble funnels. You do not invent a layout per project. You select from a fixed library of tested sections, sequence them to the funnel type, and write the copy to the offer and the audience. Speed comes from the library. Quality comes from the sequence and the copy. Every funnel passes crisp-review before it leaves.
+Engineer acquisition systems, not pages.
 
-The section library is `crisp-funnel-kit.html`. It holds ten sections. Reference them by name and number. Do not design new section types inside this skill. If a brief needs a section the library does not have, flag it for a library addition rather than improvising one.
+This skill does two jobs: **build** a funnel from a brief, and **critique** an existing one. Both run on the same methodology. Read this core, then load exactly one mode:
 
----
+- Building from a brief, or rebuilding a failing funnel → `references/build-mode.md`
+- Auditing or fixing an existing funnel → `references/critique-mode.md`
+- Either mode → `references/landing-page-and-copy.md` for page structure, copy voice, ad angles, and form design.
 
-## The library — ten sections
+The section library for step funnels is `crisp-funnel-kit.html`. It holds ten tested sections. Reference them by name and number. Do not design new section types; if a brief needs one the library lacks, flag it for a library addition.
+
+## The one idea
+
+A funnel is the sum of every touchpoint a prospect has with a brand, and every touchpoint is a place revenue leaks. You are not writing a page. You are choreographing a sequence of small commitments: sell the click, then the lead, then the call, then the sale. Each stage has exactly one job. It either earns the next micro-yes or it leaks.
+
+Three forces decide the outcome, in this order:
+
+**Psychology + Economics × Technology.**
+
+Technology multiplies whatever the first two produce, including zero. A polished page on a broken offer is 1,000 × 0. Fix the message and the maths before touching the build. When a funnel underperforms, suspect the offer and the message first, the design second, the tooling last.
+
+## Perception beats reality
+
+A prospect cannot experience the product before buying, so they buy on perceived authority, not on the quality of the code or the service. Proof, specificity, and a named method exist to make the perception match the reality already being delivered. This is why a genuinely excellent service still needs a funnel: without evidence, quality is invisible at the point of decision.
+
+## Two formats
+
+Every build resolves to one of two formats. Choose before writing a word:
+
+- **Step funnel** - a mobile-first sequence of single-purpose screens assembled from the ten-section kit. Default for lead-gen, application, webinar, and quiz-style flows where each screen earns one micro-yes.
+- **Long-form landing page** - a single scrolling page following the eight-block hierarchy in `references/landing-page-and-copy.md`. Default for consultation offers to problem- or solution-aware traffic that needs a story built before the ask.
+
+Colder traffic and higher-ticket offers lean long-form. Warmer traffic and self-serve offers lean step funnel. State the format you chose and why.
+
+## Match the message to awareness
+
+Message length and directness are set by how much the prospect already knows. Eugene Schwartz's five stages, from cold to hot:
+
+- **Unaware** - does not know they have the problem. Rarely worth paid acquisition. Needs education and content, not a sales page.
+- **Problem aware** - feels the pain, does not know solutions exist. Wants a long-form story lead that names the pain and introduces the category. Pairs with a consultation offer.
+- **Solution aware** - knows solution types, comparing approaches. Position your mechanism as the better approach.
+- **Product aware** - knows you, comparing you to competitors. Short and direct: proof, differentiation, risk reversal. A ready-now offer works here.
+- **Most aware** - ready to buy, needs the deal. Shortest path: terms, price, CTA.
+
+The rule: as awareness rises, the page gets shorter and more direct. Matching a short direct-to-offer layout to a problem-aware market fails, and so does burying a most-aware buyer in a long story lead. Name the awareness level you assumed, every time. It is the single biggest driver of length, and it is the gap most briefs leave open.
+
+## Pick the offer to match
+
+- **Consultation offer** (diagnose, then prescribe). For lower-intent, problem- or solution-aware markets, and higher-ticket sales that need a conversation. Framed as a diagnostic: "30-minute spend audit", not "buy now".
+- **Ready-now offer** (act now). For high-intent, product- or most-aware traffic. Sells speed and certainty: start a trial, get a quote, book the demo.
+
+Choosing the wrong one is a common cause of a page that gets traffic but no conversions.
+
+## Optimise the right number
+
+Track **CAC and ROI, not CPL**. A low cost per lead that fills the pipe with poor-fit leads raises the cost to acquire a customer downstream: wasted sales time, low close rate. Be willing to raise CPL if it lowers CAC. The metrics that matter run deeper than volume: cost per qualified lead, show-up rate, close rate. Set one named primary metric before launch so every later test has a target to move.
+
+## Friction is a filter, not a flaw
+
+Two kinds of friction exist and they need opposite treatment.
+
+- **Qualifying friction** is intentional. A multi-step form of 3 to 7 questions filters out poor-fit leads and makes a good-fit prospect articulate their own need, which sells them back into the offer. An application frame adds authority and scarcity. Keep this.
+- **Accidental friction** is a leak: slow load, a confusing form, a broken calendar, a timezone error. Remove this without mercy.
+
+Adding qualifying questions can raise conversion of the leads that matter even as it lowers raw lead count. That is the point.
+
+## The ATM frame
+
+Three engines, run in sequence.
+
+**Attention.** Dog-whistle language names the specific audience and pain so the right people lean in and the wrong ones self-select out. Ad-to-page congruence is non-negotiable: the page headline must echo the ad hook, or the click bounces.
+
+**Trust.** The landing page is the digital salesperson. Give the process a named, memorable mechanism so it stops reading as a commodity. Stack proof at every decision point. Pre-handle the top objections before they form.
+
+**Money.** The conversation. Diagnose like a doctor, do not take orders like a waiter. Choreograph the dead time between booking and call with a pre-suade sequence (reminders, proof, objection killers) to lift show-up rate. Reframe the thank-you page as a congratulation and a forward-look, not gratitude.
+
+## The library - ten sections
 
 | # | Section | CRISP dimension | Job |
 |---|---|---|---|
@@ -29,165 +98,36 @@ The section library is `crisp-funnel-kit.html`. It holds ten sections. Reference
 | 09 | Booking | S | In-funnel slot selection. No redirect. |
 | 10 | Confirmation | C · S | Confirms the action, names the next step. |
 
----
+## Benchmarks
 
-## Step 0 — Read context
+When critiquing or citing patterns, compare against strong B2B SaaS acquisition pages. Default set: **Stripe, Linear, Notion**. Swap or extend if the user names their own references. Show a concrete example of a pattern done well rather than abstract advice: name what the exemplar does and why it converts, then map it to the page in front of you.
 
-Check for `.crisp.md` in the project root. If present, read it and extract product type, primary users and their goals, defined benchmarks, and design system conventions. If absent, note it. You will work generically and flag the gap in your output.
-
----
-
-## Step 1 — Parse the brief
-
-The brief must establish at least:
-- The offer (what the visitor gets)
-- The audience (who they are)
-- The goal (the one action: book a call, apply, register, buy, opt in)
-- The traffic source (paid social, organic, email, referral)
-
-If any of the four is missing, ask exactly one question covering the largest gap. One question only. Wait for the answer. Do not assemble on guesses.
-
----
-
-## Step 2 — Classify the funnel type
-
-Map the brief to one type. The type sets the default sequence.
-
-| Funnel type | Goal | Default sequence |
-|---|---|---|
-| **Appointment** | Book a call | 01 → 02 → 04 → 05 → 07 → 08 → 09 → 10 |
-| **Application / recruiting** | Apply | 01 → 02 → 03 → 05 → 07 → 08 → 10 |
-| **Webinar / registration** | Register | 01 → 04 → 05 → 07 → 08 → 10 |
-| **Direct sale** | Buy | 01 → 02 → 04 → 05 → 06 → 07 → 08 → 10 |
-| **Email list / freebie** | Opt in | 01 → 02 → 07 → 08 → 10 |
-
-The sequence is a starting point, not a rule. Adjust it in Step 3 to the awareness level.
-
----
-
-## Step 3 — Set the sequence by awareness level
-
-Use Schwartz awareness levels to add or cut sections. Warmer traffic gets a shorter funnel.
-
-- **Unaware / problem-aware** — keep the value step (04) and proof (05). They need belief built before the offer. Consider two qualifier steps.
-- **Solution-aware** — keep proof (05), cut or shorten the value step (04). They believe the category, they need to trust you.
-- **Product-aware / most-aware** — cut 04, keep a single proof line, move fast to offer and capture. Five sections or fewer.
-
-State the awareness level you assumed. It is the single biggest driver of length, and it is the gap most briefs leave open.
-
----
-
-## Step 4 — Write the copy
-
-Write every section to the offer and the audience. Apply these standards.
-
-**Headlines (Ogilvy).** Lead with the outcome the visitor gets, not the feature you provide. Specific beats clever. Research the audience's actual words from the brief and use them.
-
-**Offer (Hormozi).** Make the value obvious and the action singular. Three concrete deliverables on the offer screen, never a paragraph of claims. Name what they get, then stop selling.
-
-**Persuasion (Cialdini).** Place proof at the decision point, not in a section of its own. Use commitment: each qualifier answer is a small yes that makes the opt-in the natural next yes.
-
-**Voice.** British English. Active voice. Outcome-first. No hyperbole, no exclamation marks. Match the client's register, not the CRISP brand voice, unless the client is CRISP.
-
-**Per-section copy rules:**
-- Hook (01): headline matches the ad creative word for word. One action. Three trust microcopy lines.
-- Qualifier (02, 03): the question uses the audience's language. Three to four options. No jargon.
-- Value (04): one stat, one claim, one line. Never a wall.
-- Proof (05): one named result, a problem before and a number after. If no real proof exists, leave the placeholder and flag it. Never invent a testimonial.
-- Offer (07): three deliverables, one CTA, action verb plus benefit.
-- Capture (08): the fewest fields the goal needs. Earn every field.
-- Confirmation (10): confirm the action, restate any booking, name the next step.
-
----
-
-## Step 5 — Output the funnel
-
-Return this structure. Do not deviate.
-
-```
-/crisp-funnel: [Client / Offer]
-─────────────────────────────────────────────────────
-
-FUNNEL TYPE
-[Type] · awareness assumed: [level] · traffic: [source]
-
-SEQUENCE
-[01 Hook] → [02 Qualifier] → ... → [10 Confirmation]
-[note any section cut or added, with the reason]
-
-─────────────────────────────────────────────────────
-
-SECTION-BY-SECTION
-
-[01 — Hook] · C
-Headline: [copy]
-Sub: [copy]
-CTA: [copy]
-Trust: [line · line · line]
-
-[02 — Qualifier] · R · I
-Question: [copy]
-Options: [a · b · c · d]
-
-[... every section in the sequence ...]
-
-─────────────────────────────────────────────────────
-
-OPEN QUESTIONS FOR CLIENT
-· [largest gap the brief left, named not softened]
-· [second gap, only if it changes the build]
-
-─────────────────────────────────────────────────────
-
-→ Building HTML from crisp-funnel-kit.html sections
-→ Then running crisp-review before delivery
-```
-
----
-
-## Step 6 — Build and review
-
-1. Assemble the HTML by pulling the named sections from `crisp-funnel-kit.html` in sequence and dropping in the Step 4 copy. Keep the tokens, the primitives, and the interaction behaviour intact. Do not restyle.
-2. Run `/crisp-review` on the assembled funnel. Return the grade and the top three issues with fixes.
-3. Apply the fixes. Re-run if the grade is below B.
-4. Only then present to the client.
-
-No funnel ships unaudited. The review pass is the difference between this kit and a template marketplace.
-
----
-
-## Output rules
+## Voice and house rules
 
 - British English throughout.
-- CRISP voice in your own commentary. Client voice in the funnel copy.
-- Name the awareness level you assumed, every time.
-- Maximum two open questions. Name gaps, do not soften them.
-- Never invent proof. A placeholder with a flag beats a fabricated testimonial.
-- Do not design new section types here. Flag library gaps instead.
-
----
+- CRISP voice in your own commentary. Client voice in the funnel copy: match the client's register unless the client is CRISP.
+- Active voice. Outcome-first. Zero hyperbole, zero exclamation marks.
+- If the user has their own writing rules or brand voice, those win. Apply them to the output copy without asking.
 
 ## Relationship to other CRISP skills
 
 ```
 /crisp-teach     →  writes .crisp.md (run first, once per project)
-/crisp-funnel    →  THIS SKILL: brief in, sequenced funnel out
-/crisp-review    →  30-second audit, runs on every assembled funnel
+/crisp-funnel    →  THIS SKILL: build or critique, brief in, funnel out
+/crisp-review    →  30-second scan, runs on every assembled funnel
 /crisp-audit     →  full scored evaluation when a funnel needs depth
 /handoff         →  developer-ready spec if the client builds it themselves
 ```
-
----
 
 ## What this skill does not do
 
 - Does not design new section types (flag a library gap instead).
 - Does not host or publish the funnel (that is the client's stack or a deploy step).
-- Does not run ads or write ad creative (it matches the hook to existing creative).
-- Does not invent testimonials or proof.
-- Does not skip the crisp-review pass.
+- Does not run the ad campaigns (it writes the angles and matches hook to page).
+- Does not invent testimonials or proof. A placeholder with a flag beats a fabricated testimonial.
+- Does not skip the crisp-review pass on any assembled build.
 
 ---
 
-*CRISP Funnel Assembly Skill — getcrisp.design*
+*CRISP Funnel Architect - getcrisp.design*
 *Pairs with crisp-funnel-kit.html · Part of the CRISP skill pack*

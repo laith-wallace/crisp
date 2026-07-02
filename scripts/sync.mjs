@@ -2,21 +2,29 @@
 /**
  * scripts/sync.mjs
  *
- * Copies every .md file from skills/ to all four platform directories.
- * A skill's companion .html asset (a sibling whose name matches the skill,
- * e.g. crisp-funnel-kit.html for crisp-funnel) travels with it.
+ * Copies every skill from skills/ to all four platform directories.
+ *
+ * Two source shapes:
+ *   Flat skill        skills/[name].md, with optional companion .html assets
+ *                     (a sibling whose name matches the skill, e.g.
+ *                     crisp-funnel-kit.html for crisp-funnel).
+ *   Directory skill   skills/[name]/SKILL.md plus references/ and assets.
+ *                     The whole tree travels to tree-based platforms; flat
+ *                     platforms receive SKILL.md and references concatenated
+ *                     into a single file.
+ *
  * Run manually:    npm run sync
  * Run on publish:  prepublishOnly hook calls this automatically.
  *
  * Platform targets:
- *   Claude Code    .claude/skills/[name]/SKILL.md
- *   Cursor         .cursor/rules/[name].md
- *   Antigravity    .agents/skills/[name]/SKILL.md
- *   Gemini CLI     .gemini/skills/[name].md
+ *   Claude Code    .claude/skills/[name]/   (tree)
+ *   Antigravity    .agents/skills/[name]/   (tree)
+ *   Cursor         .cursor/rules/[name].md  (flat)
+ *   Gemini CLI     .gemini/skills/[name].md (flat)
  */
 
-import { readdirSync, readFileSync, mkdirSync, writeFileSync, copyFileSync } from 'node:fs';
-import { join, basename, extname, dirname } from 'node:path';
+import { readdirSync, readFileSync, mkdirSync, writeFileSync, copyFileSync, statSync, existsSync } from 'node:fs';
+import { join, basename, extname, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -25,10 +33,17 @@ const SKILLS_DIR = join(ROOT, 'skills');
 
 const dirEntries = readdirSync(SKILLS_DIR);
 
+// Directory skills: skills/[name]/SKILL.md
+const dirSkills = dirEntries
+  .filter(f => statSync(join(SKILLS_DIR, f)).isDirectory() && existsSync(join(SKILLS_DIR, f, 'SKILL.md')))
+  .map(f => ({ name: f, path: join(SKILLS_DIR, f) }));
+const dirSkillNames = new Set(dirSkills.map(s => s.name));
+
 // Read all .md files from skills/
 const sourceFiles = dirEntries
   .filter(f => extname(f) === '.md')
-  .map(f => ({ name: basename(f, '.md'), path: join(SKILLS_DIR, f), file: f }));
+  .map(f => ({ name: basename(f, '.md'), path: join(SKILLS_DIR, f), file: f }))
+  .filter(f => !dirSkillNames.has(f.name)); // a directory skill owns its name
 
 // Companion assets (e.g. crisp-funnel-kit.html) — copied alongside the skill they belong to.
 const assetFiles = dirEntries
@@ -62,7 +77,62 @@ function copy(src, dest) {
   }
 }
 
-console.log(`\nCRISP sync — ${skillFiles.length} skills, ${docFiles.length} docs\n`);
+// Recursively list every file in a directory skill, as paths relative to its root.
+function treeFiles(root, dir = root) {
+  return readdirSync(dir).flatMap(entry => {
+    const full = join(dir, entry);
+    return statSync(full).isDirectory() ? treeFiles(root, full) : [relative(root, full)];
+  });
+}
+
+// Flatten a directory skill into one markdown document for flat platforms:
+// SKILL.md first, then each references/*.md appended under a labelled divider.
+function flattenSkill(skill) {
+  let out = readFileSync(join(skill.path, 'SKILL.md'), 'utf8');
+  const refsDir = join(skill.path, 'references');
+  if (existsSync(refsDir)) {
+    for (const ref of readdirSync(refsDir).filter(f => extname(f) === '.md').sort()) {
+      out += `\n\n---\n\n<!-- references/${ref} -->\n\n${readFileSync(join(refsDir, ref), 'utf8')}`;
+    }
+  }
+  return out;
+}
+
+function writeOut(dest, content) {
+  try {
+    ensureDir(dirname(dest));
+    writeFileSync(dest, content);
+    console.log(`  ✓ ${dest.replace(ROOT + '/', '')} (flattened)`);
+    copied++;
+  } catch (err) {
+    console.error(`  ✗ ${dest.replace(ROOT + '/', '')} — ${err.message}`);
+    errors++;
+  }
+}
+
+console.log(`\nCRISP sync — ${skillFiles.length + dirSkills.length} skills, ${docFiles.length} docs\n`);
+
+// Sync each directory skill: full tree to Claude Code and Antigravity,
+// flattened single file (plus .html assets) to Cursor and Gemini.
+for (const skill of dirSkills) {
+  console.log(`[${skill.name}]`);
+
+  for (const rel of treeFiles(skill.path)) {
+    copy(join(skill.path, rel), join(ROOT, '.claude', 'skills', skill.name, rel));
+    copy(join(skill.path, rel), join(ROOT, '.agents', 'skills', skill.name, rel));
+  }
+
+  const flat = flattenSkill(skill);
+  writeOut(join(ROOT, '.cursor', 'rules', `${skill.name}.md`), flat);
+  writeOut(join(ROOT, '.gemini', 'skills', `${skill.name}.md`), flat);
+
+  for (const rel of treeFiles(skill.path).filter(f => extname(f) === '.html')) {
+    copy(join(skill.path, rel), join(ROOT, '.cursor', 'rules', basename(rel)));
+    copy(join(skill.path, rel), join(ROOT, '.gemini', 'skills', basename(rel)));
+  }
+
+  console.log('');
+}
 
 // Sync each skill file to all four platform directories
 for (const skill of skillFiles) {
