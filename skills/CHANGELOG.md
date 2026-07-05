@@ -11,6 +11,45 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ---
 
+## [1.4.0] — 2026-07-03
+
+### New Skills in the Pack
+- **P1** `/crisp-redesign` and `/crisp-ux-laws` join the repo as canonical sources (previously installed-only). `/crisp-redesign` now defines its VARIANCE / MOTION / DENSITY dials inline.
+
+### Fixed Broken Cross-References
+- **P0** `/crisp-design-eng` no longer requires a phantom `CRISP-STYLE-KIT.md` - the motion tokens in the skill are now canonical defaults, with a project-root `CRISP-STYLE-KIT.md` as an optional override. The project-specific `--duration-thread` token is generalised to `--duration-structural`.
+- **P0** The **Mechanical Pre-Flight Checks** referenced by `/crisp-redesign` now actually exist in `/crisp-design-eng` - ten countable checks (em-dash count, eyebrow count, zigzag cap, CTA contrast and wrap, palette and radius locks, transition lock, entry scale, press feedback). `/crisp-funnel` also calls them as a quality gate.
+- **P0** The **Copy Self-Audit** referenced by `/crisp-redesign` now exists in `/crisp-copy` - seven binary checks run over every touched string.
+
+### Reproducible Scoring
+- **P1** `/crisp-audit` scores are now mechanical: 10 - 3/P0 - 2/P1 - 1/P2, floor 1, with a shared /50-to-grade mapping. `/crisp-review` grades follow matching binary rules (A = zero P0/P1 ... F = two or more P0s). Any P0 caps the grade at C. History entries from both commands are now comparable across runs.
+- **P1** AI Slop Check is binary in both skills: one or more tells = Fail.
+
+### Evidence-Gathering Protocol
+- **P1** `/crisp-audit`, `/crisp-review`, `/crisp-a11y`, and `/crisp-design-eng` now require evidence before judgement when a codebase is available: read the components, enumerate actual states, verify mechanically, cite file:line for every violation.
+
+### Infer-First, Ask-Second
+- **P1** `/crisp-copy` (mode + register), `/crisp-ai` (surface type), `/crisp-a11y` (setup), and `/crisp-teach` (new Step 0: scan the codebase and pre-fill a draft .crisp.md for confirmation) now infer from context and only ask what they cannot infer.
+
+### File-Based Pipeline
+- **P1** `/crisp-research` writes `.research.md`; `/feature-design` reads `.brief.md` and `.research.md` automatically and skips questions they already answer. The teach → brief → research → feature-design → design-eng → handoff chain no longer relies on manual paste.
+
+### WCAG 2.2 Completion
+- **P1** `/crisp-a11y` adds the missing new-in-2.2 criteria (2.4.11 Focus Not Obscured, 2.5.7 Dragging Movements, 3.2.6 Consistent Help, 3.3.7 Redundant Entry, 3.3.8 Accessible Authentication), scopes its coverage claim honestly, and reconciles the 24px WCAG floor with the 44px touch recommendation used in `/handoff`.
+
+### Structure & Consistency
+- **P2** `/crisp-design-eng` is now a directory skill: lean SKILL.md core plus `references/motion-recipes.md` (clip-path, springs, gestures) and `references/performance.md` (performance rules, debugging).
+- **P2** `/crisp-research`: source-fallback rules for auth-walled/thin sources, `[verified via search]` vs `[from knowledge]` labels, redundant bottom risk guide merged into Step 2.
+- **P2** `/crisp-funnel`: funnel-native benchmark exemplars (Hims/Ro, Typeform, Calendly, Lemonade) for direct-response offers alongside the SaaS defaults.
+- **P2** Frontmatter standardised: `user-invocable` and `version` on every skill. Natural-language trigger phrases added to weak descriptions (design-eng, review, audit, handoff, copy, a11y).
+- **P2** Voice: British English across the pack (`/crisp-ux-laws` spellings corrected); em dashes replaced with spaced hyphens in all skill sources; History dates must come from the `date` command, never from memory.
+
+### Infrastructure
+- **P1** `scripts/install.mjs` now derives the skill list from canonical `skills/` sources (flat + directory skills) instead of `files/`, which only contained one skill and silently skipped the rest.
+- **P2** New `tests/` directory: three seeded fixtures (janky component CSS, weak copy strings, bad dashboard description) with expected-findings files, so skill revisions can be regression-checked.
+
+---
+
 ## [1.3.0] — 2026-07-02
 
 ### Improvements to Existing Skills

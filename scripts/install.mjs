@@ -14,7 +14,7 @@
  *   Antigravity    ~/.agents/skills/[name]         → {project}/.agents/skills/[name]
  */
 
-import { readdirSync, mkdirSync, symlinkSync, lstatSync, unlinkSync, readlinkSync, existsSync } from 'node:fs';
+import { readdirSync, mkdirSync, symlinkSync, lstatSync, unlinkSync, readlinkSync, existsSync, statSync } from 'node:fs';
 import { join, extname, basename, dirname } from 'node:path';
 import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -23,11 +23,19 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const HOME = homedir();
 
+// Skill names come from the canonical skills/ sources: flat skills/[name].md
+// plus directory skills skills/[name]/SKILL.md.
 const NON_SKILLS = new Set(['BENCHMARKS', 'CHANGELOG', 'CONTRIBUTING']);
-const SKILLS = readdirSync(join(ROOT, 'files'))
-  .filter(f => extname(f) === '.md')
-  .map(f => basename(f, '.md'))
-  .filter(name => !NON_SKILLS.has(name));
+const SKILLS_SRC = join(ROOT, 'skills');
+const skillEntries = readdirSync(SKILLS_SRC);
+const SKILLS = [
+  ...skillEntries
+    .filter(f => extname(f) === '.md')
+    .map(f => basename(f, '.md'))
+    .filter(name => !NON_SKILLS.has(name)),
+  ...skillEntries
+    .filter(f => statSync(join(SKILLS_SRC, f)).isDirectory() && existsSync(join(SKILLS_SRC, f, 'SKILL.md'))),
+];
 
 const PLATFORMS = [
   {

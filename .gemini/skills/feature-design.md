@@ -1,14 +1,17 @@
 ---
 name: feature-design
-description: Design a new product feature using CRISP principles. Takes a problem statement and produces user flows, component decisions, CRISP compliance checks, and decision rationale benchmarked against world-class products. If .crisp.md exists, load it first.
+description: Design a new product feature using CRISP principles. Takes a problem statement and produces user flows, component decisions, CRISP compliance checks, and decision rationale benchmarked against world-class products. If .crisp.md exists, load it first; also reads .brief.md and .research.md when present.
 user-invocable: true
+version: "1.1.0"
 ---
 
-# /feature-design — CRISP Feature Design
+# /feature-design - CRISP Feature Design
 
-Design a new feature from scratch, grounded in CRISP principles. This is not wireframe generation — it's structured design thinking that produces flows, decisions, rationale, and open questions.
+Design a new feature from scratch, grounded in CRISP principles. This is not wireframe generation - it's structured design thinking that produces flows, decisions, rationale, and open questions.
 
 If `.crisp.md` exists, load it before beginning. The design should be grounded in the specific users, design system, and benchmarks documented there.
+
+Also read `.brief.md` and `.research.md` if they exist. The brief supplies the problem, user, scope, and CRISP priority; the research supplies patterns, benchmarks, and open questions. Do not re-ask anything those files already answer.
 
 ## Step 0: Visual Direction (when applicable)
 
@@ -16,12 +19,12 @@ Before writing flows or specs, establish visual direction. This step prevents te
 
 **Trigger this step when:**
 - The feature is greenfield (no existing visual reference in the product)
-- The `.brief.md` CRISP priority is **C (Contextual)** or **I (Intelligent)** — these dimensions are most visually dependent
+- The `.brief.md` CRISP priority is **C (Contextual)** or **I (Intelligent)** - these dimensions are most visually dependent
 - The user explicitly requests a direction exploration
 
 **How to run it:**
 1. Read `.crisp.md` for register (Brand/Product), Creative North Star, and named rules
-2. Describe 2–3 distinct layout/density approaches in plain language — vary hierarchy, density, and type voice, not just colour. Each should be distinct enough that "a bit of both" is not a reasonable answer.
+2. Describe 2–3 distinct layout/density approaches in plain language - vary hierarchy, density, and type voice, not just colour. Each should be distinct enough that "a bit of both" is not a reasonable answer.
 
 Example directions for a data table feature:
 - **Dense + functional**: Full-width table, data-forward, toolbar at top, minimal chrome
@@ -37,7 +40,7 @@ Example directions for a data table feature:
 
 ## Step 1: Problem Framing
 
-Before designing anything, clarify the problem. If the user hasn't provided these, ask:
+Before designing anything, clarify the problem. Skip any question `.brief.md` already answers. If the user hasn't provided these, ask:
 
 1. **Who is experiencing this problem?** (Role, sophistication level, context)
 2. **What are they trying to do?** (The job, not the feature)
@@ -51,27 +54,27 @@ If `.crisp.md` exists, cross-reference with the documented user persona and know
 
 Design the feature so that each dimension is explicitly addressed:
 
-**Contextual** — The user should always know:
+**Contextual** - The user should always know:
 - Where they are in the flow
 - What they've just done
 - What happens next
 
-**Responsive** — Every action should feel immediate:
+**Responsive** - Every action should feel immediate:
 - Optimistic UI for predictable state changes
 - Skeleton loading, not blank spaces
 - No spinners for actions the user initiated
 
-**Intelligent** — The feature should leverage what we know:
+**Intelligent** - The feature should leverage what we know:
 - Pre-populate from history or context
 - Surface the next-best-action at every step
 - Show data as insight, not raw numbers
 
-**Seamless** — The feature should fit into their existing workflow:
+**Seamless** - The feature should fit into their existing workflow:
 - Don't redirect users out of their context unnecessarily
 - Use familiar patterns before inventing new ones
 - Keep the feature's footprint as small as possible
 
-**Powerful** — Complexity should be progressive:
+**Powerful** - Complexity should be progressive:
 - Surface the most-used 20% by default
 - Hide the other 80% behind deliberate disclosure
 - Add keyboard shortcuts for power users
@@ -93,12 +96,12 @@ Step [N]: [What the user does / sees]
 For each key UI element in the flow, document:
 - **What it is** (component name/type)
 - **Why this pattern** (over alternatives)
-- **Benchmark reference** (where this pattern works well — Stripe, Linear, etc.)
+- **Benchmark reference** (where this pattern works well - Stripe, Linear, etc.)
 - **CRISP alignment** (which dimension it serves)
 
 ## Step 5: Open Questions
 
-List the research questions this design surfaces — things that should be validated before building or in a usability test:
+List the research questions this design surfaces - things that should be validated before building or in a usability test:
 
 - User behaviour questions (do users actually do X?)
 - Technical feasibility questions

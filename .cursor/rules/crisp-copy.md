@@ -1,14 +1,15 @@
 ---
 name: crisp-copy
-description: Write and evaluate all UI microcopy — labels, empty states, errors, tooltips, CTAs, success messages, onboarding hints — against CRISP Contextual and Intelligent dimensions. Two modes: audit existing copy or generate new copy. Reads .crisp.md for voice and context.
+description: Write and evaluate all UI microcopy - labels, empty states, errors, tooltips, CTAs, success messages, onboarding hints - against CRISP Contextual and Intelligent dimensions. Two modes: audit existing copy or generate new copy. Use when the user asks for button labels, error message wording, empty state text, or says "what should this say", even if they never say "microcopy". Reads .crisp.md for voice and context.
 user-invocable: true
+version: "1.1.0"
 ---
 
-# /crisp-copy — UX Microcopy Specialist
+# /crisp-copy - UX Microcopy Specialist
 
-Copy is the most underestimated design material. A spinner with "Loading..." is not the same as "Fetching your deals." A generic "Error" is not the same as "Payment failed — your card was declined. Try a different card or contact your bank." Every string in a UI is a design decision.
+Copy is the most underestimated design material. A spinner with "Loading..." is not the same as "Fetching your deals." A generic "Error" is not the same as "Payment failed - your card was declined. Try a different card or contact your bank." Every string in a UI is a design decision.
 
-Load `.crisp.md` if it exists — product context informs voice, terminology, and user expectations.
+Load `.crisp.md` if it exists - product context informs voice, terminology, and user expectations.
 
 ## Register Detection
 
@@ -19,16 +20,16 @@ Before writing or auditing any copy, read the register from `.crisp.md`:
 | **Brand** | Lead with personality. Voice is the product. Tolerance for unexpected word choices, metaphor, rhythm. |
 | **Product** | Lead with clarity and recovery. Voice disappears into the task. No clever language at high-stakes moments. |
 
-If `.crisp.md` is absent, ask: "Is this a marketing page or a product UI?" The answer changes the voice entirely.
+If `.crisp.md` is absent, infer the register from the surface itself (a pricing page is Brand; a settings screen is Product) and declare the inference. Ask "Is this a marketing page or a product UI?" only when the surface could genuinely be either. The answer changes the voice entirely.
 
 ---
 
 ## Mode Detection
 
-Ask the user: **"Are you auditing existing copy or generating new copy?"**
+Infer the mode from the request before asking. Strings pasted with "review", "check", or "improve" = Mode A. "Write me", "I need copy for", or a component with no existing strings = Mode B. If the mode is evident, declare it ("Auditing the 6 strings you pasted") and proceed. Ask **"Are you auditing existing copy or generating new copy?"** only when genuinely ambiguous.
 
-- **Mode A — Audit**: User provides a screen description, screenshot, or list of strings. Evaluate what exists.
-- **Mode B — Generate**: User provides a component type and context. Write the strings from scratch.
+- **Mode A - Audit**: User provides a screen description, screenshot, or list of strings. Evaluate what exists.
+- **Mode B - Generate**: User provides a component type and context. Write the strings from scratch.
 
 ---
 
@@ -38,27 +39,27 @@ These apply in both modes. Every string is evaluated against them.
 
 ### Empty States
 Must have three parts:
-1. **Name the thing that's missing** — "You haven't added any team members yet" (not "No data")
-2. **Explain why** — if not obvious (e.g. "Invites are sent after you publish your project")
-3. **One recovery action** — a specific CTA ("Invite your first team member →")
+1. **Name the thing that's missing** - "You haven't added any team members yet" (not "No data")
+2. **Explain why** - if not obvious (e.g. "Invites are sent after you publish your project")
+3. **One recovery action** - a specific CTA ("Invite your first team member →")
 
 ### Error Messages
 Must have two parts:
-1. **What went wrong — specifically** — "Your session expired" (not "Something went wrong"), "File too large — maximum is 5MB" (not "Upload failed")
-2. **What the user can do next — specifically** — "Sign in again →", "Compress the file and try again"
+1. **What went wrong - specifically** - "Your session expired" (not "Something went wrong"), "File too large - maximum is 5MB" (not "Upload failed")
+2. **What the user can do next - specifically** - "Sign in again →", "Compress the file and try again"
 
-Match the failure type to the recovery action. Generic "Something went wrong" always fails — name the failure:
+Match the failure type to the recovery action. Generic "Something went wrong" always fails - name the failure:
 
 | Failure type | What to say | Recovery action |
 |---|---|---|
 | Session expired | "Your session expired" | "Sign in again →" |
-| Network / connection | "Connection lost — check your internet" | "Try again" button |
+| Network / connection | "Connection lost - check your internet" | "Try again" button |
 | Permission denied | "You don't have access to [X]" | "Request access →" or "Contact your admin" |
-| Rate limit | "You've reached the limit — [upgrade or wait X mins]" | Clear action with ETA |
-| File / input error | "[Specific reason] — [constraint]" (e.g. "File too large — max 5MB") | Specific resolution |
-| Server error | "Something went wrong on our end" | "Try again" — never expose technical detail |
+| Rate limit | "You've reached the limit - [upgrade or wait X mins]" | Clear action with ETA |
+| File / input error | "[Specific reason] - [constraint]" (e.g. "File too large - max 5MB") | Specific resolution |
+| Server error | "Something went wrong on our end" | "Try again" - never expose technical detail |
 
-Errors must **guide the exit**, not just name the problem. If the error is fixable, the message tells the user exactly how to fix it — not just that something went wrong.
+Errors must **guide the exit**, not just name the problem. If the error is fixable, the message tells the user exactly how to fix it - not just that something went wrong.
 
 | Weak | Strong |
 |------|--------|
@@ -66,7 +67,7 @@ Errors must **guide the exit**, not just name the problem. If the error is fixab
 | "Your deployment failed" | "Something went wrong - try again or contact support." |
 | "Payment error" | "Your card was declined. Try a different card or contact your bank." |
 
-Frame errors in a **problem-solving tone**, not a failure tone. Even when something goes wrong, the copy should feel like a hand pointing toward the solution — not a finger pointing at the user.
+Frame errors in a **problem-solving tone**, not a failure tone. Even when something goes wrong, the copy should feel like a hand pointing toward the solution - not a finger pointing at the user.
 
 ### CTA Labels
 Describe the **outcome**, not the action:
@@ -86,7 +87,7 @@ Name what happened specifically:
 ### Tooltips
 - One sentence maximum
 - Answer "why" or "when to use this", not "what this is"
-- Don't restate the label — "Publish makes your campaign live and sends it immediately" not "Publish: publish your campaign"
+- Don't restate the label - "Publish makes your campaign live and sends it immediately" not "Publish: publish your campaign"
 
 ### Onboarding Hints
 - Lead with the value, not the action
@@ -95,23 +96,23 @@ Name what happened specifically:
 
 ### Destructive Actions
 - Always name the specific thing being destroyed
-- Always state irreversibility if true: "Delete campaign — this can't be undone"
+- Always state irreversibility if true: "Delete campaign - this can't be undone"
 - Offer a safer alternative when possible: "Archive instead →"
 
 ### Loading States & Further-Input Signals
 End with `…` (the ellipsis character `…`, not three periods `...`):
-- Menu items that open a follow-up dialog — "Rename…", "Move to…", "Export as…"
-- Active loading or processing states — "Loading…", "Saving…", "Generating…"
+- Menu items that open a follow-up dialog - "Rename…", "Move to…", "Export as…"
+- Active loading or processing states - "Loading…", "Saving…", "Generating…"
 
 This convention signals: **something more is coming**. It primes the user and eliminates the jarring gap between action and result.
 
 ---
 
-## Mode A — Audit Existing Copy
+## Mode A - Audit Existing Copy
 
 For each string the user provides, evaluate it against the rules above and the CRISP dimensions.
 
-**Output format — Audit table:**
+**Output format - Audit table:**
 
 ```
 ## Copy Audit: [Screen / Component Name]
@@ -120,14 +121,14 @@ For each string the user provides, evaluate it against the rules above and the C
 |----------|-------------|-----------|----------|-------------|
 | Empty state | "No data available" | [C] No context, no CTA | P1 | "You haven't added any suppliers yet. [Add your first supplier →]" |
 | Submit button | "Submit" | CTA names action not outcome | P2 | "Send request" |
-| Error banner | "An error occurred" | No specificity, no recovery | P1 | "Connection lost — check your internet and try again" |
+| Error banner | "An error occurred" | No specificity, no recovery | P1 | "Connection lost - check your internet and try again" |
 ```
 
 **Severity guide:**
-- P0 — Blocks comprehension entirely (user cannot continue without understanding this)
-- P1 — Misleads or leaves user without a recovery path
-- P2 — Generic; user can infer meaning but shouldn't have to
-- P3 — Suboptimal word choice, minor clarity improvement
+- P0 - Blocks comprehension entirely (user cannot continue without understanding this)
+- P1 - Misleads or leaves user without a recovery path
+- P2 - Generic; user can infer meaning but shouldn't have to
+- P3 - Suboptimal word choice, minor clarity improvement
 
 After the table, add:
 
@@ -140,7 +141,7 @@ Top issue: [Single most impactful fix]
 
 ---
 
-## Mode B — Generate New Copy
+## Mode B - Generate New Copy
 
 Ask the user: **"What component or context are you writing copy for?"**
 
@@ -149,20 +150,20 @@ Common component types and their templates:
 **Empty state**
 ```
 You haven't [done X] yet.
-[Why this matters / what they're missing — optional]
-[Primary CTA — outcome-oriented label]
+[Why this matters / what they're missing - optional]
+[Primary CTA - outcome-oriented label]
 ```
 
 **Error message**
 ```
 [What specifically went wrong].
-[What the user can do next — specific action or link].
+[What the user can do next - specific action or link].
 ```
 
 **Success confirmation**
 ```
 [Specific thing that happened].
-[What changed or what comes next — optional].
+[What changed or what comes next - optional].
 ```
 
 **Destructive confirmation dialog**
@@ -175,8 +176,8 @@ Delete [specific item name]?
 
 **Onboarding hint**
 ```
-[Value the user gets — lead with the outcome]
-[How to get there — one clear action]
+[Value the user gets - lead with the outcome]
+[How to get there - one clear action]
 ```
 
 **Output format for generated copy:**
@@ -197,6 +198,22 @@ Delete [specific item name]?
 
 ---
 
+## Copy Self-Audit
+
+Run this over every string you wrote or touched, before delivering. `/crisp-redesign` calls this checklist by name. Binary checks - each string passes or fails:
+
+1. Empty states: all three parts present (names the missing thing, explains why if not obvious, one recovery CTA)?
+2. Errors: names the specific failure AND the specific next action?
+3. CTAs: describe the outcome, not the mechanism ("Save draft", not "Submit")?
+4. Destructive actions: name the thing being destroyed, and state irreversibility if true?
+5. Success messages: name exactly what changed, not "Success" or "Done"?
+6. Loading and follow-up items: end with the ellipsis character "…"?
+7. Zero em dashes, zero exclamation marks, zero "click here" in any string.
+
+Fix failures before delivery - do not report them as findings. Report one line: `Self-audit: [N] strings checked, all pass.`
+
+---
+
 ## Copy System Derivation
 
 If `.crisp.md` exists, derive these conventions for the product and include them at the end of any audit or generation output:
@@ -204,12 +221,12 @@ If `.crisp.md` exists, derive these conventions for the product and include them
 ```
 ## Copy System: [Product Name]
 
-Voice: [Formal / Casual / Technical / Plain — with one example]
-Person: [Second-person ("You haven't...") / First-person ("My dashboard") — pick one and stay consistent]
+Voice: [Formal / Casual / Technical / Plain - with one example]
+Person: [Second-person ("You haven't...") / First-person ("My dashboard") - pick one and stay consistent]
 Tense: [Present for state ("3 deals open"), past for confirmation ("Campaign sent")]
 Case: [Sentence case for UI text / Title Case for headings only]
-Terminology: [Product-specific terms to always use — e.g. "deals" not "opportunities"]
-Avoid: [Terms to never use — e.g. "submit", "click", "portal", brand competitor names]
+Terminology: [Product-specific terms to always use - e.g. "deals" not "opportunities"]
+Avoid: [Terms to never use - e.g. "submit", "click", "portal", brand competitor names]
 ```
 
 This section can be committed to the project as a copy reference for the whole team.

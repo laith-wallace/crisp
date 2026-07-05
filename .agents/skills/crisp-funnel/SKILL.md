@@ -1,7 +1,8 @@
 ---
 name: crisp-funnel
 description: Build, critique, and optimise high-converting funnels and landing pages using the ATM (Attention, Trust, Money) methodology and the CRISP Funnel Kit's ten-section library. Use whenever the user is designing, writing, auditing, or fixing a funnel, landing page, opt-in page, sales page, lead-gen offer, ad-to-page flow, or conversion path; or when they mention conversion rate, CAC vs CPL, stages of awareness, lead qualification, or why a page or campaign is not converting, even if they never say the word "funnel". Triggered by /crisp-funnel. Reads .crisp.md for project context.
-version: "2.0.0"
+user-invocable: true
+version: "2.1.0"
 metadata:
   author: Laith Wallace - FlowConverts
 ---
@@ -101,6 +102,12 @@ Three engines, run in sequence.
 ## Benchmarks
 
 When critiquing or citing patterns, compare against strong B2B SaaS acquisition pages. Default set: **Stripe, Linear, Notion**. Swap or extend if the user names their own references. Show a concrete example of a pattern done well rather than abstract advice: name what the exemplar does and why it converts, then map it to the page in front of you.
+
+For direct-response and lead-gen offers (coaching, local service, info products), the SaaS defaults are the wrong register - use funnel-native exemplars instead: **Hims / Ro** (quiz-to-offer intake), **Typeform** (multi-step form craft), **Calendly** (in-flow booking), **Lemonade** (conversational qualifying). Match the exemplar set to the offer type before citing it.
+
+### Quality gate
+
+Before delivery, run the **Mechanical Pre-Flight Checks** from `/crisp-design-eng` on any assembled build - all ten checks are countable and all must pass.
 
 ## Voice and house rules
 

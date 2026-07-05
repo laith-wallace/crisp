@@ -1,10 +1,11 @@
 ---
 name: handoff
-description: Convert a CRISP-reviewed design into a developer-ready specification. Produces component states, implementation notes, token references, edge cases, and an accessibility checklist. Use after a design has passed /crisp-audit or /crisp-review. If .crisp.md exists, load it first.
+description: Convert a CRISP-reviewed design into a developer-ready specification. Produces component states, implementation notes, token references, edge cases, and an accessibility checklist. Use after a design has passed /crisp-audit or /crisp-review, or when the user says "spec this for engineering", "dev handoff", or "write this up for the developers". If .crisp.md exists, load it first.
 user-invocable: true
+version: "1.1.0"
 ---
 
-# /handoff — Developer Handoff Spec
+# /handoff - Developer Handoff Spec
 
 Convert a design into a complete, implementation-ready specification. The goal is to eliminate ambiguity before a single line of code is written.
 
@@ -19,8 +20,8 @@ A handoff spec that covers everything a developer needs to build the design corr
 ## Section 1: Overview
 
 ```
-## [Component / Screen Name] — Handoff Spec
-Date: [Today]
+## [Component / Screen Name] - Handoff Spec
+Date: [Today - from the `date` command, never from memory]
 Status: Ready for development
 
 ### Summary
@@ -42,7 +43,7 @@ List every distinct component in the design:
 
 | Component | Type | Existing / New | Notes |
 |-----------|------|---------------|-------|
-| [Name]    | [Button / Card / Modal / etc.] | [Existing — link to design system] / [New] | [Any notes] |
+| [Name]    | [Button / Card / Modal / etc.] | [Existing - link to design system] / [New] | [Any notes] |
 ```
 
 For new components only, add:
@@ -63,25 +64,25 @@ For every interactive element and every screen, document all states:
 [Description of the resting state]
 
 **Hover / Focus**
-[Description — include cursor, outline, colour change]
+[Description - include cursor, outline, colour change]
 
 **Active / Pressed**
 [Description]
 
 **Loading**
-[Description — skeleton, spinner, optimistic UI? Which and why]
+[Description - skeleton, spinner, optimistic UI? Which and why]
 
 **Empty**
-[What the user sees when there's no data — never "No data available"]
+[What the user sees when there's no data - never "No data available"]
 
 **Error**
-[What the user sees when something goes wrong — specific error message, recovery action]
+[What the user sees when something goes wrong - specific error message, recovery action]
 
 **Disabled**
 [When is it disabled? What does it look like? Can the user tell why?]
 
 **Success**
-[What confirms the action completed — and what did it do specifically?]
+[What confirms the action completed - and what did it do specifically?]
 ```
 
 ---
@@ -121,7 +122,7 @@ Reference the design system from `.crisp.md` or document the values directly:
 
 | Trigger | Action | Duration | Easing | Notes |
 |---------|--------|----------|--------|-------|
-| Button click | Optimistic state update | immediate | — | Don't wait for API |
+| Button click | Optimistic state update | immediate | - | Don't wait for API |
 | Hover on card | Background colour shift | 150ms | ease-out | |
 | Modal open | Fade + scale from 95% | 200ms | ease-out | |
 ```
@@ -139,14 +140,14 @@ Document the cases that aren't shown in the main design but must be handled:
 
 | Scenario | Expected behaviour |
 |----------|-------------------|
-| User has no data yet | [Empty state with CTA — exact copy] |
-| API returns error | [Error message — exact copy + recovery action] |
+| User has no data yet | [Empty state with CTA - exact copy] |
+| API returns error | [Error message - exact copy + recovery action] |
 | User has 1 item | [Singular vs. plural label handling] |
 | User has 1,000+ items | [Truncation / pagination behaviour] |
 | Long text / content | [How labels, headings, descriptions handle overflow] |
-| Slow connection | [Loading state — duration before skeleton appears] |
-| User lacks permission | [What they see — not a blank page] |
-| User navigates away with unsaved changes | Warn before navigation — "You have unsaved changes. Leave anyway?" with explicit confirm/cancel |
+| Slow connection | [Loading state - duration before skeleton appears] |
+| User lacks permission | [What they see - not a blank page] |
+| User navigates away with unsaved changes | Warn before navigation - "You have unsaved changes. Leave anyway?" with explicit confirm/cancel |
 ```
 
 ---
@@ -171,7 +172,7 @@ Document the cases that aren't shown in the main design but must be handled:
 **Visual**
 - [ ] Text contrast meets WCAG AA (4.5:1 for body, 3:1 for large text)
 - [ ] UI doesn't rely on colour alone to convey meaning
-- [ ] Touch targets are minimum 44×44px
+- [ ] Touch targets minimum 44×44px on touch surfaces (WCAG 2.2 compliance floor is 24×24px - 44 is the touch recommendation; see /crisp-a11y)
 - [ ] Focus indicator is visible and has 3:1 contrast against background
 
 **Specific to this component**
@@ -214,7 +215,7 @@ Document every string that appears in this design:
 - [Product decisions still outstanding]
 
 ### Decisions Made
-- [Key decisions already resolved — document so there's no revisiting]
+- [Key decisions already resolved - document so there's no revisiting]
 ```
 
 ---
@@ -241,4 +242,4 @@ Before delivering the spec, check:
 | Success confirmations | Name exactly what changed, not "Success" or "Done" |
 | Table/list preview data | Realistic production-representative values, not "John Doe / example@email.com" |
 
-If real copy is unavailable for a section, flag it explicitly as an Open Question for Product — do not use placeholder copy as a stand-in.
+If real copy is unavailable for a section, flag it explicitly as an Open Question for Product - do not use placeholder copy as a stand-in.

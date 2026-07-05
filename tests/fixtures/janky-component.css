@@ -1,0 +1,44 @@
+/* Fixture: dropdown + modal + card list styles for a settings page.
+   Seeded with known craft violations - do not "fix" this file. */
+
+.dropdown-trigger {
+  padding: 8px 12px;
+  border-radius: 6px;
+  outline: none;
+}
+
+.dropdown-menu {
+  transform: scale(0);
+  opacity: 0;
+  transition: all 400ms ease-in;
+  transform-origin: center;
+}
+
+.dropdown-menu.open {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.modal {
+  transition: height 300ms ease-in-out, all 250ms;
+}
+
+.card {
+  transition: all 200ms;
+}
+
+.card:hover {
+  background: #f5f5f5;
+  padding: 18px;
+}
+
+.btn-primary {
+  background: #4caf50;
+  color: #ffffff;
+  border-radius: 3px;
+  transition: all 150ms;
+}
+
+/* note: no :active state anywhere in this file */
+/* note: no @media (prefers-reduced-motion) handling */
+/* note: no @media (hover: hover) guard on .card:hover */
