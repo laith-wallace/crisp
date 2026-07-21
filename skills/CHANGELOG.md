@@ -11,6 +11,24 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ---
 
+## [1.6.0] — 2026-07-21
+
+### New Skills in the Pack
+- **P1** `/crisp-improve-ui` - evidence-locked improvement audit of an existing UI surface, adapted from ibelick's improve-ui skill and rebuilt for the CRISP pack. Strictly read-only on product source: selects one coherent surface, traces the rendered path, reconstructs the design system that actually governs it (`.crisp.md` is a binding source, register-aware), and keeps only findings that pass a three-proof gate - contract, runtime, correction. Every finding cites file:line, carries a CRISP dimension tag and P0–P3 severity, and survives a six-check binary falsification pass before it may be reported.
+- **P1** Countable output contract: at most five findings reported with the withheld count stated, out-of-scope candidates routed to the right skill (`/crisp-a11y`, `/crisp-copy`, `/crisp-design-eng`) instead of silently dropped, and a clean audit is a valid outcome - the gate never lowers to have something to say.
+- **P1** Self-contained execution plans in `design-plans/` via `references/plan-template.md`: commit hash, evidence chain, exact reuse names, ordered no-broken-intermediate-state changes, verbatim verification command, and stop conditions. The executor needs zero context from the audit. Writes a `/crisp-improve-ui` History line to `.crisp.md` so drift is trackable run over run.
+
+---
+
+## [1.5.0] — 2026-07-14
+
+### New Skills in the Pack
+- **P1** `/crisp-production-ready` - complete production-readiness audit. Builds a full feature inventory, runs the project's own gates, then sweeps repeated passes through 24 lenses (subsystem, attack-class, auth deep-dive, claim-vs-code, data-shape, lifecycle, concurrency and more) until two consecutive passes surface nothing new. Every finding is verified against the real code and pinned to file:line before it is reported.
+- **P1** Dual output contract: the flat findings list in chat (the list IS the report) plus `production-playbook.html` at the project root - a self-contained, zero-external-request visual playbook with a binary READY / FIX FIRST / NOT READY verdict, severity scoreboard, gates table, pass ledger, and three remediation waves of checkable finding cards (what's wrong / do this / prove it) with localStorage progress that survives re-audits via stable finding slugs.
+- **P1** Playbook design rules are binary and countable, matching the 1.4.0 conventions: 0 external requests, 0 em dashes, 0 gradient text/glassmorphism/side-stripe borders, exactly six functional colors, every card checkable, readable with JS disabled.
+
+---
+
 ## [1.4.0] — 2026-07-03
 
 ### New Skills in the Pack

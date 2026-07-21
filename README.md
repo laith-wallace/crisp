@@ -1,6 +1,6 @@
 # CRISP — Design Intelligence for AI Agents
 
-Twelve skills that give your AI agent a senior product designer's eye. Drop them
+Fourteen skills that give your AI agent a senior product designer's eye. Drop them
 into Claude, Cursor, Copilot, or Gemini and get structured design reviews,
 feature specs, developer handoffs, accessibility audits, AI surface evaluations,
 funnel assembly, and craft-level motion polish, all grounded in the CRISP framework.
@@ -31,12 +31,19 @@ funnel assembly, and craft-level motion polish, all grounded in the CRISP framew
 | `/crisp-a11y`       | Full WCAG 2.2 AA accessibility audit with exact code-level fixes, P0–P3 severity, and a committable `a11y-checklist.md`.                                                                                |
 | `/crisp-ai`         | Evaluates AI-native UI surfaces — chat interfaces, streaming responses, generative UI, inline assist — across 6 AI-specific dimensions.                                                                 |
 | `/crisp-design-eng` | Design engineering craft layer — motion decisions, micro-interaction quality, component polish, and the invisible details that make an interface feel right. Maps every craft fix to a CRISP dimension. |
+| `/crisp-improve-ui` | Evidence-locked improvement audit. Read-only on product source: traces the rendered path, keeps only findings that pass a three-proof gate (contract, runtime, correction), tags each with a CRISP dimension and P0–P3 severity, then writes self-contained execution plans to `design-plans/`. Improves a surface without replacing its identity. |
 
 ### Funnel Kit
 
 | Command          | What it does                                                                                                                                                                                                                       |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/crisp-funnel`  | Assembles a mobile-first funnel from a brief: classifies the funnel type, sequences sections from the CRISP Funnel Kit (10 tested sections) to the audience's awareness level, writes the copy, and runs `/crisp-review` before delivery. Ships with the `crisp-funnel-kit.html` section library. |
+
+### Ship gate
+
+| Command                   | What it does                                                                                                                                                                                                                                                                                        |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/crisp-production-ready` | Complete production-readiness audit: repeated passes through 24 lenses (security, auth, claims-vs-code, data shapes, perf, a11y, config, concurrency and more) until two consecutive passes find nothing new. Outputs a flat findings list plus `production-playbook.html` - a visual, checkable, step-by-step fix plan with a binary READY / FIX FIRST / NOT READY verdict. |
 
 ---
 
