@@ -1,6 +1,6 @@
 ---
 name: crisp-production-ready
-description: Complete production-readiness audit of a codebase or product, ending in a visual HTML remediation playbook. Runs repeated audit passes through 24 lenses (security, auth, claims-vs-code, data shapes, perf, a11y, content, config, concurrency and more) until two consecutive passes surface nothing new, verifies every finding against the real code, then delivers a flat findings list plus production-playbook.html - a step-by-step, checkable fix plan the user works through. Use when the user says "production ready", "can we ship", "is this ready to launch", "pre-launch audit", "production audit", "ship check", or "audit everything before we go live". Triggered by /crisp-production-ready. Reads .crisp.md for product context if present.
+description: Production-readiness audit ending in a visual HTML remediation playbook - repeated passes through 24 lenses until two consecutive passes surface nothing new, every finding verified against the real code, delivered as a findings list plus production-playbook.html. Use for 'production ready', 'can we ship', 'pre-launch audit', or any launch-readiness check.
 user-invocable: true
 version: "1.0.0"
 metadata:

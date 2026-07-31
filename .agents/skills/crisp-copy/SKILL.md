@@ -1,6 +1,6 @@
 ---
 name: crisp-copy
-description: Write and evaluate all UI microcopy - labels, empty states, errors, tooltips, CTAs, success messages, onboarding hints - against CRISP Contextual and Intelligent dimensions. Two modes: audit existing copy or generate new copy. Use when the user asks for button labels, error message wording, empty state text, or says "what should this say", even if they never say "microcopy". Reads .crisp.md for voice and context.
+description: Write and evaluate UI microcopy - labels, empty states, errors, tooltips, CTAs, onboarding hints - in audit or generate mode. Use when the user asks for button labels, error wording, or empty state text, even if they never say 'microcopy'.
 user-invocable: true
 version: "1.1.0"
 ---

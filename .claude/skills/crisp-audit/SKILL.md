@@ -1,6 +1,6 @@
 ---
 name: crisp-audit
-description: Full CRISP framework evaluation of a UI design. Scores all five dimensions - Contextual, Responsive, Intelligent, Seamless, Powerful - with P0–P3 severity ratings, benchmarks against Stripe, Linear, Notion, Asana, and Slack, and delivers a prioritised action plan. Use for a thorough design review - when the user says "audit this", "full design review", "score this design", or "how good is this UI, really". If .crisp.md exists, load it first for project context.
+description: Full CRISP evaluation of a UI design - scores all five dimensions with P0-P3 severity, benchmarks against world-class products, and delivers a prioritised action plan. Use for a thorough design review: 'audit this', 'score this design', 'how good is this UI, really'.
 user-invocable: true
 version: "1.1.0"
 ---

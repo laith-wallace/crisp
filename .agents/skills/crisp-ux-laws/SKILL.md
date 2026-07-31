@@ -1,6 +1,6 @@
 ---
 name: crisp-ux-laws
-description: Cognitive and perceptual laws applied to interface design decisions. Maps Fitts' Law, Hick's Law, Miller's Law, Doherty Threshold, Von Restorff Effect, Law of Proximity, and Law of Common Region to specific CRISP dimensions and actionable design rules. Use during design reviews, audits, or when evaluating interaction complexity.
+description: Cognitive and perceptual laws applied to interface decisions - Fitts, Hick, Miller, Doherty Threshold, Von Restorff, Proximity, Common Region - mapped to CRISP dimensions and actionable rules. Use during design reviews or when evaluating interaction complexity.
 user-invocable: true
 version: "1.1.0"
 ---

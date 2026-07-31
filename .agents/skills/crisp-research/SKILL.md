@@ -1,6 +1,6 @@
 ---
 name: crisp-research
-description: Design research synthesis agent. Triggered by /crisp-research. Searches designated design reference sources, identifies CRISP dimension risks, surfaces competitive patterns, anti-patterns, and brief gaps - so the designer starts oriented, not still gathering. Reads .crisp.md automatically. Writes .research.md, which /feature-design reads automatically.
+description: Design research synthesis before designing - searches designated reference sources, surfaces competitive patterns, anti-patterns, CRISP dimension risks, and brief gaps. Writes .research.md, which /feature-design reads.
 user-invocable: true
 version: "1.1.0"
 ---

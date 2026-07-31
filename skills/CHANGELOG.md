@@ -11,6 +11,19 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ---
 
+## [1.7.0] — 2026-07-31
+
+### New Skills in the Pack
+- **P1** `/crisp` - router skill for the pack. User-invoked only (`disable-model-invocation: true`, zero per-turn context cost): names every skill, its pipeline stage, and when to reach for it, so one command is enough to remember.
+
+### Context Load Pass (skill-authoring conventions adapted from mattpocock/skills)
+- **P1** Every skill description pruned to identity plus distinct trigger branches: synonym triggers collapsed, body-duplicated identity removed, "Triggered by /x" no-ops deleted. The always-loaded description block across the pack shrinks by roughly 40%.
+- **P1** `/crisp-teach` is now user-invoked only (`disable-model-invocation: true`) - a once-per-project command no longer pays per-turn context cost, and its description is rewritten human-facing.
+- **P1** `/crisp-design-eng` restructured by progressive disclosure: SKILL.md drops from 629 to 348 lines. Colour Strategy and Font Selection Doctrine move to `references/color-typography.md`; the ten Component Craft Rules collapse to a checkable index in SKILL.md with full rationale and code fixes in `references/component-craft.md`. The Mechanical Pre-Flight Checks stay in SKILL.md - they are the cross-skill contract called by `/crisp-redesign` and `/crisp-funnel`.
+- **P2** Interview rules added to `/crisp-brief` and `/crisp-teach`: one question at a time, facts looked up in the environment rather than asked, decisions put to the user one by one - no output until shared understanding is confirmed.
+
+---
+
 ## [1.6.0] — 2026-07-21
 
 ### New Skills in the Pack

@@ -1,8 +1,8 @@
 ---
 name: crisp-brief
-description: Turn a vague design request into a structured, unambiguous design brief. Writes .brief.md with problem statement, target user, observable success criteria, scope boundaries, constraints, and CRISP dimension priority. Reads .crisp.md for project context.
+description: Turn a vague design request into a structured, unambiguous design brief - writes .brief.md with problem statement, target user, observable success criteria, scope, constraints, and CRISP priority.
 user-invocable: true
-version: "1.1.0"
+version: "1.2.0"
 ---
 
 # /crisp-brief - Design Brief Generator
@@ -12,6 +12,11 @@ Vague requests are a permanent design failure mode. "Can we improve the dashboar
 Load `.crisp.md` if it exists before beginning. Project context (users, design system, constraints) informs the output.
 
 ## Intake Protocol
+
+Interview rules, in force for every question below:
+1. Ask one question at a time. Wait for the answer before asking the next.
+2. If a *fact* can be found in the environment (framework, existing components, analytics events, current copy), look it up instead of asking. The *decisions* - success criteria, scope, priorities - are the user's: put each one to them and wait.
+3. Do not write the brief until shared understanding is confirmed - see Problem Sharpening below.
 
 **If `.crisp.md` exists** (product context is known):
 Ask only:

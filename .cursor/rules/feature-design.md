@@ -1,6 +1,6 @@
 ---
 name: feature-design
-description: Design a new product feature using CRISP principles. Takes a problem statement and produces user flows, component decisions, CRISP compliance checks, and decision rationale benchmarked against world-class products. If .crisp.md exists, load it first; also reads .brief.md and .research.md when present.
+description: Design a new product feature using CRISP principles - takes a problem statement and produces user flows, component decisions, compliance checks, and decision rationale. Reads .brief.md and .research.md when present.
 user-invocable: true
 version: "1.1.0"
 ---

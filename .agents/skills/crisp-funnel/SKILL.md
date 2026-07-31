@@ -1,6 +1,6 @@
 ---
 name: crisp-funnel
-description: Build, critique, and optimise high-converting funnels and landing pages using the ATM (Attention, Trust, Money) methodology and the CRISP Funnel Kit's ten-section library. Use whenever the user is designing, writing, auditing, or fixing a funnel, landing page, opt-in page, sales page, lead-gen offer, ad-to-page flow, or conversion path; or when they mention conversion rate, CAC vs CPL, stages of awareness, lead qualification, or why a page or campaign is not converting, even if they never say the word "funnel". Triggered by /crisp-funnel. Reads .crisp.md for project context.
+description: Build, critique, and optimise funnels and landing pages using the ATM (Attention, Trust, Money) methodology and the ten-section Funnel Kit. Use for any landing page, sales page, opt-in, lead-gen offer, or ad-to-page flow, or when the user mentions conversion rate, CAC vs CPL, stages of awareness, or a page that is not converting - even if they never say 'funnel'.
 user-invocable: true
 version: "2.1.0"
 metadata:

@@ -1,8 +1,9 @@
 ---
 name: crisp-teach
-description: CRISP onboarding command. Run once per project to teach the AI your product context - users, jobs-to-be-done, design system, benchmark references, and anti-references. Writes .crisp.md which all subsequent CRISP commands read automatically.
+description: One-time project onboarding - interviews you about users, design system, and benchmarks, then writes .crisp.md, the context file every other CRISP command reads.
 user-invocable: true
-version: "1.1.0"
+disable-model-invocation: true
+version: "1.2.0"
 ---
 
 # /crisp-teach - Project Onboarding
@@ -17,7 +18,7 @@ Only ask cold the questions the code cannot answer: who the users are, the job-t
 
 ## Interview Protocol
 
-Work through the following questions with the user. Ask them one section at a time, presenting any pre-filled inference from Step 0 for confirmation instead of asking cold. Don't rush - good context makes every subsequent command significantly more accurate.
+Work through the following questions with the user. Ask them one section at a time, and wait for the answer before moving to the next section - asking multiple sections at once is bewildering. Facts belong to the environment: anything the codebase can answer gets inferred in Step 0 and presented for confirmation. Decisions belong to the user: benchmarks, priorities, and known weaknesses are theirs to make - put each one to them and wait. Don't rush - good context makes every subsequent command significantly more accurate.
 
 ---
 

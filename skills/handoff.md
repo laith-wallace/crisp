@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: Convert a CRISP-reviewed design into a developer-ready specification. Produces component states, implementation notes, token references, edge cases, and an accessibility checklist. Use after a design has passed /crisp-audit or /crisp-review, or when the user says "spec this for engineering", "dev handoff", or "write this up for the developers". If .crisp.md exists, load it first.
+description: Convert a CRISP-reviewed design into a developer-ready specification - component states, implementation notes, token references, edge cases, and an accessibility checklist. Use after /crisp-audit or /crisp-review, or for 'dev handoff', 'spec this for engineering'.
 user-invocable: true
 version: "1.1.0"
 ---

@@ -1,6 +1,6 @@
 ---
 name: crisp-review
-description: 30-second CRISP design scan. Returns a grade A–F and the top 3 issues by user impact with specific fix suggestions. Use during rapid design iteration when a full audit would slow you down - when the user says "quick look at this", "sanity check this screen", "is this any good", or "grade this". If .crisp.md exists, load it for project context.
+description: 30-second CRISP design scan - a grade A-F and the top 3 issues by user impact with specific fixes. Use during rapid iteration when a full audit would slow you down: 'quick look at this', 'sanity check this screen', 'grade this'.
 user-invocable: true
 version: "1.1.0"
 ---
