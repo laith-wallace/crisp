@@ -7,20 +7,38 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script>
+// Light is the default; apply a saved dark preference before first paint to avoid a flash
+try{if(localStorage.getItem('crisp-theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}
+</script>
 <style>
 :root{
-  --bg:#080808; --surface:#111111; --surface-2:#161616; --border:#1e1e1e;
-  --text:#ede8db; --text-mid:#9a9188; --text-muted:#666058;
-  --accent:#c8ff3c; --ink:#1a1612;
+  /* light theme (default) */
+  color-scheme:light;
+  --bg:#faf8f3; --surface:#ffffff; --surface-2:#f1eee6; --border:#e3dfd3;
+  --text:#1a1612; --text-mid:#5c554d; --text-muted:#767065;
+  --accent:#5a7a00; --accent-fill:#c8ff3c; --ink:#1a1612;
+  --err:#a8402a;
+  --pill:#d8d3c6;
+  --phone-shadow:0 40px 80px -40px rgba(26,22,18,.35);
   --font-headline:'DM Serif Display',Georgia,serif;
   --font-mono:'DM Mono','Courier New',monospace;
   --font-body:'Outfit',system-ui,sans-serif;
   --ease:cubic-bezier(0.16,1,0.3,1);
   --r-sm:6px; --r-base:10px; --r-lg:16px;
 }
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#080808; --surface:#111111; --surface-2:#161616; --border:#1e1e1e;
+  --text:#ede8db; --text-mid:#9a9188; --text-muted:#666058;
+  --accent:#c8ff3c; --accent-fill:#c8ff3c;
+  --err:#c8553c;
+  --pill:#1c1c1c;
+  --phone-shadow:0 40px 80px -40px rgba(0,0,0,.9);
+}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background-color .2s var(--ease),color .2s var(--ease)}
 a{color:inherit}
 
 /* ---------- Gallery shell ---------- */
@@ -67,10 +85,10 @@ header.top .meta span{font-family:var(--font-mono);font-size:.72rem;color:var(--
 .flag{margin-top:18px;max-width:480px;font-size:.82rem;color:var(--text-muted);font-family:var(--font-mono);line-height:1.5;border-left:1px solid var(--accent);padding-left:14px}
 
 /* ---------- Phone frame ---------- */
-.phone{width:390px;max-width:100%;background:#000;border:1px solid #2a2a2a;border-radius:38px;padding:12px;box-shadow:0 40px 80px -40px rgba(0,0,0,.9)}
+.phone{width:390px;max-width:100%;background:#000;border:1px solid #2a2a2a;border-radius:38px;padding:12px;box-shadow:var(--phone-shadow)}
 .screen{position:relative;background:var(--bg);border-radius:28px;overflow:hidden;height:720px;display:flex;flex-direction:column}
 .statusbar{height:30px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.statusbar .pill{width:90px;height:7px;background:#1c1c1c;border-radius:99px}
+.statusbar .pill{width:90px;height:7px;background:var(--pill);border-radius:99px}
 .scn{flex:1;display:flex;flex-direction:column;padding:22px 22px 26px;overflow:hidden}
 
 /* funnel primitives */
@@ -82,7 +100,7 @@ header.top .meta span{font-family:var(--font-mono);font-size:.72rem;color:var(--
 .fh{font-family:var(--font-headline);font-weight:400;font-size:1.85rem;line-height:1.12;color:var(--text);margin-bottom:14px}
 .fsub{font-size:.95rem;color:var(--text-mid);margin-bottom:22px}
 .spacer{flex:1}
-.cta{font-family:var(--font-mono);font-weight:500;font-size:.92rem;letter-spacing:.02em;color:var(--ink);background:var(--accent);border:none;border-radius:var(--r-base);padding:16px 20px;width:100%;cursor:pointer;transition:opacity .15s var(--ease)}
+.cta{font-family:var(--font-mono);font-weight:500;font-size:.92rem;letter-spacing:.02em;color:var(--ink);background:var(--accent-fill);border:none;border-radius:var(--r-base);padding:16px 20px;width:100%;cursor:pointer;transition:opacity .15s var(--ease)}
 .cta:hover{opacity:.88}
 .cta[disabled]{background:var(--surface-2);color:var(--text-muted);cursor:not-allowed;opacity:1}
 .microtrust{display:flex;gap:14px;justify-content:center;margin-top:14px;flex-wrap:wrap}
@@ -91,10 +109,10 @@ header.top .meta span{font-family:var(--font-mono);font-size:.72rem;color:var(--
 /* option cards */
 .opt{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--border);border-radius:var(--r-base);padding:16px 16px;margin-bottom:12px;cursor:pointer;transition:background .15s var(--ease),border-color .15s var(--ease);user-select:none}
 .opt:hover{background:var(--surface-2)}
-.opt .tick{width:20px;height:20px;border:1px solid var(--text-muted);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.7rem;color:var(--bg);transition:.15s var(--ease)}
+.opt .tick{width:20px;height:20px;border:1px solid var(--text-muted);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.7rem;color:var(--ink);transition:.15s var(--ease)}
 .opt .lab2{font-size:.95rem;color:var(--text)}
 .opt.is-active{background:var(--surface-2);border-left-color:var(--accent)}
-.opt.is-active .tick{background:var(--accent);border-color:var(--accent)}
+.opt.is-active .tick{background:var(--accent-fill);border-color:var(--accent-fill)}
 .opt.is-active .tick::after{content:"✓"}
 
 /* value / insight */
@@ -109,7 +127,7 @@ header.top .meta span{font-family:var(--font-mono);font-size:.72rem;color:var(--
 .avatar{width:40px;height:40px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:.8rem;color:var(--text-mid)}
 .byline .who{font-size:.85rem;color:var(--text)}
 .byline .role{font-family:var(--font-mono);font-size:.66rem;color:var(--text-muted);letter-spacing:.04em}
-.placeholder-tag{display:inline-block;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);background:var(--accent);border-radius:4px;padding:2px 7px;margin-bottom:16px}
+.placeholder-tag{display:inline-block;font-family:var(--font-mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);background:var(--accent-fill);border-radius:4px;padding:2px 7px;margin-bottom:16px}
 
 /* loader */
 .loadwrap{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
@@ -130,8 +148,8 @@ header.top .meta span{font-family:var(--font-mono);font-size:.72rem;color:var(--
 .field input::placeholder{color:var(--text-muted)}
 .field input:focus{outline:none;border-color:var(--text-mid)}
 .field input.ok{border-color:var(--accent)}
-.field input.err{border-color:#c8553c}
-.field .msg{font-family:var(--font-mono);font-size:.66rem;margin-top:6px;min-height:14px;color:#c8553c}
+.field input.err{border-color:var(--err)}
+.field .msg{font-family:var(--font-mono);font-size:.66rem;margin-top:6px;min-height:14px;color:var(--err)}
 .field input.ok ~ .msg{color:var(--accent)}
 
 /* booking slots */
@@ -162,6 +180,13 @@ header.top .meta span{font-family:var(--font-mono);font-size:.72rem;color:var(--
 footer.foot{padding:clamp(56px,9vw,110px) 0;text-align:center}
 footer.foot .wordmark{font-size:2.4rem;margin-bottom:18px}
 footer.foot p{color:var(--text-muted);font-family:var(--font-mono);font-size:.72rem;letter-spacing:.06em;line-height:1.8}
+footer.foot .theme-toggle{margin-top:28px}
+
+/* ---------- Theme switcher ---------- */
+.theme-toggle{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-mid);background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:7px 13px;cursor:pointer;transition:background .15s var(--ease),color .15s var(--ease),border-color .15s var(--ease)}
+.theme-toggle:hover{background:var(--surface-2);color:var(--text)}
+.theme-toggle .tt-icon{font-size:.85rem;line-height:1}
+.brandrow .theme-toggle{margin-left:auto;align-self:center}
 </style>
 </head>
 <body>
@@ -171,6 +196,7 @@ footer.foot p{color:var(--text-muted);font-family:var(--font-mono);font-size:.72
     <div class="brandrow">
       <div class="wordmark"><span class="lime">C</span>RISP</div>
       <span class="kit-tag">FUNNEL KIT · v1</span>
+      <button class="theme-toggle" data-theme-toggle aria-label="Switch to dark theme"><span class="tt-icon" aria-hidden="true">☾</span><span class="tt-label">Night</span></button>
     </div>
     <p>A library of mobile-first funnel sections built in CRISP tokens. Every section earns its place against one job: move the right visitor to the next action. Each carries the CRISP dimension it serves and the reason it converts.</p>
     <div class="meta">
@@ -520,10 +546,30 @@ footer.foot p{color:var(--text-muted);font-family:var(--font-mono);font-size:.72
   <div class="wrap">
     <div class="wordmark"><span class="lime">C</span>RISP</div>
     <p>Funnel Kit v1 · getcrisp.design<br>Conventions: mobile-first · CRISP tokens · lime for significance only · British English<br>Every funnel passes crisp-review before delivery</p>
+    <button class="theme-toggle" data-theme-toggle aria-label="Switch to dark theme"><span class="tt-icon" aria-hidden="true">☾</span><span class="tt-label">Night</span></button>
   </div>
 </footer>
 
 <script>
+// Theme switcher: light is the default, buttons flip to dark and back, choice persists
+function syncThemeToggles(){
+  var dark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.querySelectorAll('[data-theme-toggle]').forEach(function(b){
+    b.querySelector('.tt-icon').textContent=dark?'☀':'☾';
+    b.querySelector('.tt-label').textContent=dark?'Day':'Night';
+    b.setAttribute('aria-label',dark?'Switch to light theme':'Switch to dark theme');
+  });
+}
+document.querySelectorAll('[data-theme-toggle]').forEach(function(b){
+  b.addEventListener('click',function(){
+    var dark=document.documentElement.getAttribute('data-theme')==='dark';
+    if(dark){document.documentElement.removeAttribute('data-theme');}
+    else{document.documentElement.setAttribute('data-theme','dark');}
+    try{localStorage.setItem('crisp-theme',dark?'light':'dark');}catch(e){}
+    syncThemeToggles();
+  });
+});
+syncThemeToggles();
 // Single-select: select one, clear siblings within the screen
 document.querySelectorAll('[data-single]').forEach(function(o){
   o.addEventListener('click',function(){
