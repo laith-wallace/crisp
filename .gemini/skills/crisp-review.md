@@ -2,7 +2,7 @@
 name: crisp-review
 description: 30-second CRISP design scan - a grade A-F and the top 3 issues by user impact with specific fixes. Use during rapid iteration when a full audit would slow you down: 'quick look at this', 'sanity check this screen', 'grade this'.
 user-invocable: true
-version: "1.1.0"
+version: "1.2.0"
 ---
 
 # /crisp-review - Quick CRISP Scan
@@ -10,6 +10,8 @@ version: "1.1.0"
 A fast, high-signal design pass. Not a full audit - a diagnostic. Use this during iteration when you need clear direction, not a comprehensive report.
 
 If `.crisp.md` exists in the project root, load it. Your review should be grounded in the specific product, users, and priorities documented there - including the **register**: a Brand surface is judged on distinctiveness, a Product surface on how completely it disappears into the task.
+
+**Surface register**: `.crisp.md`'s register is the project default, not a verdict on this specific target. If the target's path or content clearly signals the other register (project registered Product but this target is `/marketing/`, `/pricing/`, `/(landing)/`, or a campaign page, or vice versa), judge this scan against the surface's actual register and note it in one line. Don't ask - infer and move on; asking would defeat a 30-second scan.
 
 If the design is a live codebase rather than a screenshot: read the component before grading, verify each issue against the code, and cite file and line in the output. Even a 30-second scan cites its evidence.
 
@@ -19,7 +21,9 @@ Before evaluating CRISP dimensions, run one fast check:
 
 **Would someone look at this and immediately say "AI made that"?**
 
-One or more tells present = Fail. Zero tells = Pass. If Fail - flag it at the top of your output before the grade. It is a disqualifier, not a dimension. Specific tells: hero metric template (big number + gradient accent), identical card grid, side-stripe borders, gradient text, glassmorphism as default surface, generic sans-serif + off-white with no design decision evident.
+If the target is a live codebase (markup/style files, not a screenshot or Figma link), run `npx @laith-wallace/crisp detect --json <target>` first - it's faster than reasoning about it and it's exact. Fold any findings straight into the Fail verdict below instead of re-deriving them by eye. Skip it for screenshot-only or Figma-link targets and judge by eye instead.
+
+One or more tells present (from the detector, or from your own read) = Fail. Zero tells = Pass. If Fail - flag it at the top of your output before the grade, naming the detector's rule id when it came from the scan. It is a disqualifier, not a dimension. Specific tells: hero metric template (big number + gradient accent), identical card grid, side-stripe borders, gradient text, glassmorphism as default surface, generic sans-serif + off-white with no design decision evident.
 
 This takes 5 seconds. Do it before anything else.
 
@@ -123,3 +127,10 @@ Example:
 ```
 
 If `.crisp.md` has prior History entries, note whether the grade has improved or regressed since the last entry.
+
+If the target resolves to a real slug (skip for vague/root-level targets), also persist a structured per-surface snapshot so a later scan can read this target's own trend without parsing `.crisp.md` prose. Fire-and-forget - don't block or show raw output:
+
+```bash
+CRISP_CRITIQUE_META='{"command":"/crisp-review","date":"<today, from date +%Y-%m-%d>","grade":"<A-F>","p0_count":<n>,"p1_count":<n>}' \
+  npx @laith-wallace/crisp critique write "<resolved target>" <body-file>
+```

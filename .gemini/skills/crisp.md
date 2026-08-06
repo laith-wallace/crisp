@@ -3,7 +3,7 @@ name: crisp
 description: Router for the CRISP skill pack - names every skill and when to reach for it.
 user-invocable: true
 disable-model-invocation: true
-version: "1.0.0"
+version: "1.1.0"
 ---
 
 # /crisp - Skill Pack Router
@@ -40,5 +40,11 @@ One place to find the right CRISP skill. Read the user's situation, name the mat
 | `/crisp-improve-ui` | Tightening an existing surface without redesigning it - evidence-locked, writes plans to `design-plans/` |
 | `/crisp-funnel` | Landing pages, sales pages, funnels, conversion problems - ATM methodology |
 | `/crisp-production-ready` | Pre-launch audit of the whole product - 24 lenses, HTML remediation playbook |
+
+## Maintenance
+
+| Skill | Reach for it when |
+|---|---|
+| `/crisp-doctor` | `.crisp.md` or `.crisp/config.json` might be stale, out of date, or missing fields - especially after upgrading the crisp package |
 
 If no `.crisp.md` exists yet, suggest `/crisp-teach` first - every skill above reads it.

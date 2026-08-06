@@ -2,23 +2,43 @@
 name: crisp-audit
 description: Full CRISP evaluation of a UI design - scores all five dimensions with P0-P3 severity, benchmarks against world-class products, and delivers a prioritised action plan. Use for a thorough design review: 'audit this', 'score this design', 'how good is this UI, really'.
 user-invocable: true
-version: "1.1.0"
+version: "1.2.0"
 ---
 
 # /crisp-audit - Full CRISP Evaluation
 
 Analyse the provided design (screenshot, Figma link, description, or live codebase) with the critical eye of a senior product designer. If `.crisp.md` exists in the project root, load it before beginning - your analysis should be grounded in the specific product context, users, and benchmarks documented there.
 
-## Evidence Before Judgement
+## Surface Register
+
+`.crisp.md`'s `Register` is the project default, not a verdict on this specific target. Before scoring, check whether the target being audited actually matches it: a Product-registered project can still have a marketing landing page (`/marketing/`, `/pricing/`, `/(landing)/`, a campaign or waitlist page), and a Brand-registered project can still ship an authenticated settings screen. Infer from the target's path and content first. If inference is confident, state the surface register in one line and proceed - don't interrupt the audit to confirm the obvious. If it's genuinely ambiguous (a new route with no clear precedent, a component used in both contexts), ask once before scoring. Score this audit against the surface's actual register, not the project default, when they diverge - and say so explicitly in the output.
+
+## Assessment Orchestration
+
+A full audit runs two independent assessments and synthesises them - never one pass wearing two hats.
+
+- **Assessment A** (design review) and **Assessment B** (evidence: code inspection + the `crisp detect` scan) are both required for every full audit.
+- Delegate A and B to two isolated sub-agents via the Agent tool whenever one is available. They must not see each other's output or reasoning before both finish. Running them inline in one context is convenient, not permitted, when a sub-agent tool exists - a design director grading their own detector output anchors on it instead of checking it.
+- If no sub-agent/Task tool is exposed in this session, fall back sequentially: finish Assessment A, then Assessment B, then synthesise - and mark the report degraded (see Report header provenance under Output Format). A silent degraded run is a failed audit, not a shortcut.
+- Only the synthesis step (Output Format) sees both assessments together.
+
+## Assessment B: Evidence + Detector Scan
 
 When the design is a live codebase, do not grade from impressions - gather evidence first:
 
+0. Run the deterministic scan before anything else: `npx @laith-wallace/crisp detect --json <target>` (or `crisp detect --json <target>` if the CLI is installed globally). Pass markup/style files or a directory; skip for screenshot-only or Figma-link targets - fall back to items 1-4 for those. Exit code 0 = clean, 2 = findings. Every finding is a candidate, not a verdict - re-open the cited file and verify it before citing it in the report, and name any false positive explicitly.
 1. Read the relevant components and enumerate their actual states: does an empty state exist in the code? A loading skeleton? An error branch? A disabled state? A state that exists in code passes; a state that doesn't is a finding, not a guess.
 2. Search for mechanical violations: pre-disabled submit buttons, spinner-on-filter patterns, generic "Something went wrong" strings, missing hover/focus states.
 3. If the project runs locally, render the surface and screenshot it before scoring.
 4. Cite evidence for every violation: file and line for code, screen region for screenshots. A violation without a citation is an impression, not a finding.
 
+Return this assessment's findings (detector JSON summary + manual evidence) to the synthesis step without editorialising on overall design quality - that judgement belongs to Assessment A.
+
+## Assessment A: Design Review
+
 ## Step 0: AI Slop Check
+
+The detector scan in Assessment B now catches most of these tells in code. Run this check regardless - it covers what code can't settle (screenshots, Figma links, judgement calls) and gives Assessment A an independent read to cross-check against Assessment B's findings at synthesis.
 
 Before evaluating CRISP dimensions, run a rapid anti-monoculture check. This is a disqualifier, not a dimension - it fires before scoring.
 
@@ -197,9 +217,19 @@ Compare against one or more of these exemplars (or the benchmarks from `.crisp.m
 
 ## Output Format
 
+Synthesise Assessment A and Assessment B here - do not just concatenate them. Note where they agree, where the detector caught something the design review missed, and where a detector finding turned out to be a false positive on inspection.
+
+### Report header provenance
+
+The audit's first line MUST declare how the two assessments were run, so a degraded run is never silent:
+- Dual-agent: `Method: dual-agent (A: <agent-id> · B: <agent-id>)`
+- Degraded: `⚠️ DEGRADED: single-context (<reason, e.g. no sub-agent tool exposed>)`
+
 Structure the audit as:
 
 ```
+Method: dual-agent (A: <agent-id> · B: <agent-id>)
+
 ## CRISP Audit: [Screen/Feature Name]
 
 ### AI Slop Check
@@ -274,3 +304,16 @@ Example:
 ```
 
 If `.crisp.md` has prior History entries, call out any dimension regressions: "Your I score has dropped from 7 to 5 since the last audit - the Intelligent dimension has regressed."
+
+### Per-surface snapshot
+
+The `.crisp.md` line above is a project-wide timeline; it gets unwieldy once a project has been audited dozens of times across many surfaces. Also persist a structured, per-target snapshot so a later run can read this target's own trend without parsing prose out of a shared file. Skip this sub-step (but still do the `.crisp.md` line above) if the target is vague or root-level - `slug` returning empty means don't persist.
+
+1. Write the full report body (everything from `Method:` through Strategic Recommendations, before any "Ask the User" follow-up) to a temp file.
+2. Get today's date from `date +%Y-%m-%d` - never from memory - and run:
+   ```bash
+   CRISP_CRITIQUE_META='{"command":"/crisp-audit","date":"<today>","total_score":<n>,"max_score":<n>,"p0_count":<n>,"p1_count":<n>}' \
+     npx @laith-wallace/crisp critique write "<resolved target>" <body-file>
+   ```
+3. Delete the temp file whether the write succeeded or failed.
+4. Read the per-surface trend for context: `npx @laith-wallace/crisp critique trend "<resolved target>" 5`. This is fire-and-forget - don't show the user the raw JSON, and don't block the rest of the report if it fails.

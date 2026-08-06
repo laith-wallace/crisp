@@ -11,6 +11,30 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ---
 
+## [1.8.0] — 2026-08-05
+
+### New Skills in the Pack
+- **P1** `/crisp-doctor` - reports and repairs drift between a project's `.crisp.md` / `.crisp/config.json` and what the installed pack version expects. Three severity tiers (`auto` auto-fixes with `--fix`, `mention` states it, `route` names the command to run). Honest about what it can't know: an unstamped `.crisp.md` is reported as unknown vintage, never assumed current or assumed broken.
+
+### Deterministic Detector (new)
+- **P1** `crisp detect <path>` - a dependency-free CLI (zero new npm packages) that scans HTML/CSS/JS/JSX/TSX/Vue/Svelte/Astro source for 14 anti-pattern tells that were previously LLM-judgment-only in the AI Slop Check tables: gradient-clipped text, purple-to-blue gradients, side-stripe borders, kicker/eyebrow labels, bounce/elastic easing, pure black/white text, generic-only font stacks, pre-disabled submit buttons, missing alt text, `outline: none` without a `:focus-visible` replacement, marquee/blink, nested `.card` selectors, decorative section numbering, and em-dash overuse. `--json` for CI, exit code 0/2.
+- **P1** Suppression at both scopes: inline `<!-- crisp-disable[-line|-next-line] <rule-id>: reason -->` comments (any comment syntax) and a repo-level `.crisp/config.json` (`ignoreRules`, `ignoreFiles` glob patterns, `ignoreValues` named exceptions) managed via `crisp ignores list|add-file|add-value`.
+- **P1** `/crisp-audit` and `/crisp-review` now run the detector as their first evidence-gathering step instead of relying solely on LLM pattern-matching against the Slop Check table.
+
+### Dual-Agent Critique + Per-Surface Register
+- **P1** `/crisp-audit` now mandates two isolated sub-agents (Assessment A: design review, Assessment B: code + detector evidence) that never see each other's output before synthesis, with a required report-header banner (`Method: dual-agent (...)` or `⚠️ DEGRADED: single-context (<reason>)`) so a single-context fallback is never silent.
+- **P2** `/crisp-audit` and `/crisp-review` no longer trust `.crisp.md`'s project-level `Register` blindly - both infer the *surface's* actual register from the target's path/content first (a Product-registered project can still have a Brand-surface landing page), asking only when genuinely ambiguous.
+
+### Per-Surface Critique Snapshots
+- **P2** `crisp critique write/trend` persists one frontmatter-tagged snapshot per audited/reviewed target to `.crisp/critique/<slug>--<timestamp>.md`, so score trend for one surface is queryable without parsing prose out of the shared `.crisp.md` History log, which stays as the cheap project-wide timeline.
+
+### Distribution
+- **P2** `bin/crisp.mjs` gained non-interactive subcommands (`detect`, `ignores`, `hook`, `critique`, `doctor`) that exit before touching the interactive installer's UI dependencies (`@clack/prompts`, `chalk`, `figlet`), which are now lazy-loaded only on the interactive path - the detector and its siblings have zero dependencies, as intended.
+- **P2** `crisp install`'s Claude Code path now offers a project-local `PostToolUse` hook (`.claude/settings.local.json`) that runs the detector after every UI file Edit/Write and surfaces findings via `additionalContext`, idempotent on re-install. Cursor and Gemini CLI hook formats are not implemented yet.
+- **P2** `/crisp-teach` now stamps `.crisp.md` with `<!-- crisp-teach: vX.Y.Z -->` so `/crisp-doctor` has a real version to compare against going forward.
+
+---
+
 ## [1.7.0] — 2026-07-31
 
 ### New Skills in the Pack

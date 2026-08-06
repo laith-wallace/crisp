@@ -1,8 +1,5 @@
 #!/usr/bin/env node
-import * as p from '@clack/prompts';
-import chalk from 'chalk';
-import figlet from 'figlet';
-import { existsSync, mkdirSync, copyFileSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, copyFileSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -16,6 +13,35 @@ if (process.argv.includes('--version') || process.argv.includes('-v')) {
   const pkg = JSON.parse(readFileSync(join(PKG_ROOT, 'package.json'), 'utf8'));
   console.log(`@laith-wallace/crisp v${pkg.version}`);
   process.exit(0);
+}
+
+// Non-interactive subcommands short-circuit the installer entirely.
+const [subcommand, ...subArgs] = process.argv.slice(2);
+
+if (subcommand === 'detect') {
+  const { runDetect } = await import(join(PKG_ROOT, 'scripts', 'detect.mjs'));
+  process.exit(runDetect(subArgs));
+}
+
+if (subcommand === 'ignores') {
+  const { runIgnores } = await import(join(PKG_ROOT, 'scripts', 'ignores-cli.mjs'));
+  process.exit(await runIgnores(subArgs));
+}
+
+if (subcommand === 'hook') {
+  const { runHook } = await import(join(PKG_ROOT, 'scripts', 'hook.mjs'));
+  await runHook();
+  process.exit(0); // hooks never fail the tool call, whatever happened inside
+}
+
+if (subcommand === 'critique') {
+  const { runCritiqueStorage } = await import(join(PKG_ROOT, 'scripts', 'critique-storage.mjs'));
+  process.exit(await runCritiqueStorage(subArgs));
+}
+
+if (subcommand === 'doctor') {
+  const { runDoctor } = await import(join(PKG_ROOT, 'scripts', 'doctor.mjs'));
+  process.exit(await runDoctor(subArgs));
 }
 
 const SKILLS = [
@@ -32,6 +58,7 @@ const SKILLS = [
   { value: 'crisp-ai',       label: '/crisp-ai',       hint: 'Evaluate and design AI-native UI surfaces' },
   { value: 'crisp-research',    label: '/crisp-research',    hint: 'Research synthesis — patterns, anti-patterns, brief gaps' },
   { value: 'crisp-design-eng', label: '/crisp-design-eng', hint: 'Motion decisions, micro-interaction quality, and invisible polish' },
+  { value: 'crisp-doctor',     label: '/crisp-doctor',     hint: 'Check .crisp.md and .crisp/config.json for drift' },
 ];
 
 const AGENTS = [
@@ -77,20 +104,30 @@ const AGENTS = [
   },
 ];
 
-function logo() {
-  const art = figlet.textSync('CRISP', { font: 'ANSI Shadow' });
-  return chalk.hex(LIME)(art);
-}
-
-function cancelIfNeeded(value) {
-  if (p.isCancel(value)) {
-    p.cancel('Installation cancelled.');
-    process.exit(0);
-  }
-  return value;
-}
-
+// The interactive installer's UI deps are loaded lazily, here, rather than
+// at module top-level. `crisp detect`/`crisp ignores` exit before reaching
+// this function, so they never pay for or require @clack/prompts, chalk, or
+// figlet — that's the whole point of the detector being dependency-free.
 async function main() {
+  const [p, { default: chalk }, { default: figlet }] = await Promise.all([
+    import('@clack/prompts'),
+    import('chalk'),
+    import('figlet'),
+  ]);
+
+  function logo() {
+    const art = figlet.textSync('CRISP', { font: 'ANSI Shadow' });
+    return chalk.hex(LIME)(art);
+  }
+
+  function cancelIfNeeded(value) {
+    if (p.isCancel(value)) {
+      p.cancel('Installation cancelled.');
+      process.exit(0);
+    }
+    return value;
+  }
+
   console.log('\n' + logo());
   console.log(chalk.hex(LIME).dim('  Design Intelligence for AI Agents\n'));
 
@@ -183,6 +220,13 @@ async function main() {
     }
   }
 
+  // The design-detector hook is Claude Code-specific for now (PostToolUse
+  // hooks in .claude/settings.local.json) — Cursor and Gemini CLI use
+  // different hook formats this installer doesn't write yet.
+  if (selectedAgentValues.includes('claude')) {
+    await offerClaudeHook(p, chalk);
+  }
+
   p.outro(
     chalk.hex(LIME)('Done.') +
     chalk.dim(' Run ') +
@@ -191,7 +235,58 @@ async function main() {
   );
 }
 
+const HOOK_COMMAND = 'npx @laith-wallace/crisp hook';
+
+async function offerClaudeHook(p, chalk) {
+  const settingsPath = join(process.cwd(), '.claude', 'settings.local.json');
+
+  let settings = {};
+  if (existsSync(settingsPath)) {
+    try {
+      settings = JSON.parse(readFileSync(settingsPath, 'utf8'));
+    } catch {
+      console.log('\n' + chalk.red(`  ✗ .claude/settings.local.json exists but isn't valid JSON — skipping hook install.`));
+      return;
+    }
+  }
+
+  const postToolUse = settings.hooks?.PostToolUse ?? [];
+  const alreadyInstalled = postToolUse.some(entry =>
+    entry.hooks?.some(h => h.command === HOOK_COMMAND)
+  );
+
+  if (alreadyInstalled) {
+    console.log('\n' + chalk.dim('  Design-detector hook already installed in this project.'));
+    return;
+  }
+
+  const install = await p.confirm({
+    message: 'Install the design-detector hook for this project? Runs `crisp detect` after every UI file edit (Edit/Write) and surfaces findings automatically.',
+    initialValue: true,
+  });
+
+  if (p.isCancel(install) || !install) {
+    console.log('\n' + chalk.dim('  Skipped the hook. Run this installer again anytime to add it.'));
+    return;
+  }
+
+  settings.hooks = settings.hooks ?? {};
+  settings.hooks.PostToolUse = postToolUse;
+  postToolUse.push({
+    matcher: 'Edit|Write',
+    hooks: [{ type: 'command', command: HOOK_COMMAND }],
+  });
+
+  try {
+    mkdirSync(dirname(settingsPath), { recursive: true });
+    writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n');
+    console.log('\n' + chalk.hex(LIME)('  ✓') + chalk.dim(` Hook installed: ${settingsPath}`));
+  } catch (e) {
+    console.log('\n' + chalk.red(`  ✗ Could not write ${settingsPath}: ${e.message}`));
+  }
+}
+
 main().catch(e => {
-  console.error(chalk.red('Error: ' + e.message));
+  console.error('Error: ' + e.message);
   process.exit(1);
 });
