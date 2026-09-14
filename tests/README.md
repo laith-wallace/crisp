@@ -9,6 +9,8 @@ Regression fixtures for the CRISP skill pack. Every time a skill is revised, re-
    - `/crisp-design-eng` on `fixtures/janky-component.css`
    - `/crisp-copy` (audit mode) on `fixtures/weak-copy.md`
    - `/crisp-review` or `/crisp-audit` on `fixtures/bad-dashboard.md`
+   - `/crisp-unslop` (detect mode, then edit mode) on `fixtures/slop-prose.md`
+   - `/crisp-structure` (audit mode) on `fixtures/duplicated-actions.ts`
 3. Compare the output against the matching file in `expected/`.
 
 ## Pass criteria
@@ -23,3 +25,5 @@ Regression fixtures for the CRISP skill pack. Every time a skill is revised, re-
 | `fixtures/janky-component.css` | /crisp-design-eng | `expected/janky-component.md` |
 | `fixtures/weak-copy.md` | /crisp-copy | `expected/weak-copy.md` |
 | `fixtures/bad-dashboard.md` | /crisp-review, /crisp-audit | `expected/bad-dashboard.md` |
+| `fixtures/slop-prose.md` | /crisp-unslop | `expected/slop-prose.md` |
+| `fixtures/duplicated-actions.ts` | /crisp-structure | `expected/duplicated-actions.md` |
