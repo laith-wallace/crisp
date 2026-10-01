@@ -2,6 +2,18 @@
 
 Use this when the user wants a new funnel built from a brief, or a rebuild of a failing one. Read the SKILL.md core first, then work the seven steps below in order. Page structure, copy voice, ad angles, and form design live in `landing-page-and-copy.md`.
 
+## Contents
+
+- Step 0 - Read context
+- Step 1 - Research the inputs
+- Step 2 - Set the strategy
+- Step 3 - Sequence the funnel
+- Step 4 - Write the copy
+- Step 5 - Output the build plan
+- Step 6 - Assemble and review
+- Step 7 - Instrument tracking
+- Pre-delivery checklist
+
 ## Step 0 - Read context
 
 Check for `.crisp.md` in the project root. If present, read it and extract product type, primary users and their goals, defined benchmarks, and design system conventions. If absent, note it, work generically, and flag the gap in your output.

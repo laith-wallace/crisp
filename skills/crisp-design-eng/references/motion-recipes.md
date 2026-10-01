@@ -2,6 +2,12 @@
 
 Implementation patterns for the decisions made in SKILL.md. Load this when actually building clip-path reveals, spring-driven motion, or drag/gesture interactions.
 
+## Contents
+
+- clip-path as an Animation Tool
+- Spring Physics
+- Gesture and Drag Craft
+
 ---
 
 ## clip-path as an Animation Tool

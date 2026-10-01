@@ -28,6 +28,8 @@ Load `.crisp.md` if it exists. Its jobs-to-be-done name the flows whose evidence
 
 `$EVIDENCE` below is the path to `scripts/evidence.sh` inside this skill's install folder (for Claude Code: `~/.claude/skills/crisp-evidence/scripts/evidence.sh`). It needs bash, git, and for video, ffmpeg + ffprobe built with libx264 and the subtitles filter. If the script is not present on your platform copy, follow the headless path below with the same annotation protocol kept as a file.
 
+Install ffmpeg if `doctor` reports it missing: `brew install ffmpeg` (macOS) or `sudo apt-get install -y ffmpeg` (Debian/Ubuntu). Skip this when `ready: yes`.
+
 ```bash
 bash $EVIDENCE doctor
 ```

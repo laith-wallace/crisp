@@ -181,6 +181,14 @@ The playbook is the human-facing deliverable. Its reader did not run the audit a
 
 Write it to the project root as `production-playbook.html`. Re-runs overwrite it. Card ids are stable slugs (see below) so checked-off progress survives regeneration.
 
+## Contents
+
+- Binary rules (count them, no judgement calls)
+- Structure, in order
+- Card anatomy
+- Slug rule
+- Skeleton
+
 ## Binary rules (count them, no judgement calls)
 
 1. One file, zero external requests. Count of `src`/`href` attributes loading a remote resource = 0. No CDN fonts, no CDN scripts, no analytics.

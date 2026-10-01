@@ -2,6 +2,24 @@
 
 The full rationale and exact code fix for each of the ten craft rules indexed in `SKILL.md`. Load this file before writing any fix.
 
+## Contents
+
+- Buttons must confirm they were pressed
+- Nothing enters from scale(0)
+- Popovers scale from their trigger
+- Tooltips: remove delay and animation after first hover
+- Use blur to bridge imperfect crossfades
+- Never use `transition: all`
+- Animations must be interruptible
+- Animate entry with @starting-style
+- Stagger list entries
+- Asymmetric enter/exit timing
+- **Component Philosophy**
+- Zero-configuration default
+- Defaults are the product
+- Handle edge cases invisibly
+- Match the motion to the personality
+
 ---
 
 ## Buttons must confirm they were pressed

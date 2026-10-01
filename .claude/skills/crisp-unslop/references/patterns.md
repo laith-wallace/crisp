@@ -2,6 +2,18 @@
 
 Every pattern has an id, the tell, and the fix. Findings cite the id and quote the line. The catalogue merges two public MIT sources (cursor/plugins pstack `unslop`, petergyang `no-ai-slop`) and dedupes them into nine families.
 
+## Contents
+
+- C - Content
+- L - Language
+- S - Punctuation and style
+- F - Formatting
+- R - Rhetoric
+- E - Endings
+- A - Communication artifacts
+- X - Filler
+- J - Jargon and plain speech
+
 ## C - Content
 
 **C1 Puffery.** "pivotal moment", "testament to", "evolving landscape", "setting the stage for", "indelible mark", "deeply rooted", "plays a vital role", "solidifies its position". Fix: state what happened and let the reader judge whether it matters. "The launch marks a pivotal moment" → "The launch is the company's first paid product."

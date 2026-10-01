@@ -11,6 +11,12 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ---
 
+## [1.9.1] - 2026-10-01
+
+### Skill structure (Anthropic skill authoring best practices)
+- **P2** Contents lists added to the top of every reference file over 100 lines, so a partial read (`head -100`) still shows the full scope: `crisp-design-eng/references/component-craft.md`, `crisp-design-eng/references/motion-recipes.md`, `crisp-funnel/references/build-mode.md`, `crisp-production-ready/references/playbook.md`, `crisp-unslop/references/patterns.md`.
+- **P2** `/crisp-evidence` now gives the ffmpeg install command next to the recorder instead of assuming it is installed.
+
 ## [1.9.0] — 2026-09-14
 
 ### New Skills in the Pack
