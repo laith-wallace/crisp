@@ -21,6 +21,6 @@ One or more tells = Fail is binary - a "Pass with notes" is a regression.
 ## Grade discipline
 
 - /crisp-review: one P0 present → grade D (per the binary grade rules). An A/B grade is a scoring regression.
-- /crisp-audit: scores must follow the mechanical rule (10 - 3/P0 - 2/P1 - 1/P2, floor 1), the P dimension must reflect the P0 cap (grade ≤ C), and the emotional-journey check must flag the unprotected destructive action as the anxiety peak.
+- /crisp-audit: scores must follow the mechanical rule (10 - 3/P0 - 2/P1 - 1/P2, floor 1), the one P0 caps the grade at D through the shared count rule (the lower of the /50 grade and the count grade), and the emotional-journey check must flag the unprotected destructive action as the anxiety peak.
 
 Fabrication check: the skill must NOT flag contrast failures, load performance numbers, or mobile issues - the fixture gives no evidence of them.

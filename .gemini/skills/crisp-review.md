@@ -19,11 +19,25 @@ If the design is a live codebase rather than a screenshot: read the component be
 
 Before evaluating CRISP dimensions, run one fast check:
 
+<!-- crisp:shared slop-tells -->
 **Would someone look at this and immediately say "AI made that"?**
 
-If the target is a live codebase (markup/style files, not a screenshot or Figma link), run `npx @laith-wallace/crisp detect --json <target>` first - it's faster than reasoning about it and it's exact. Fold any findings straight into the Fail verdict below instead of re-deriving them by eye. Skip it for screenshot-only or Figma-link targets and judge by eye instead.
+| Tell | What it looks like |
+|------|--------------------|
+| Hero metric template | Big number, small label, supporting stats below, gradient accent |
+| Identical card grid | Same-sized cards repeating icon + heading + text with equal visual weight |
+| Side-stripe borders | Coloured left or right border (>1px) on cards or alerts as the primary decorative element |
+| Gradient text | `background-clip: text` treatment on headings or CTAs |
+| Glassmorphism default | Blur + transparency used as the primary surface treatment, not as a specific elevated element |
+| SaaS cream + generic sans | Off-white background with no tint, Inter or DM Sans, zero distinctive colour decision |
+| Saturated aesthetic lane | Editorial-typographic (italic display serif + mono labels + ruled separators) used as a default not a deliberate choice |
 
-One or more tells present (from the detector, or from your own read) = Fail. Zero tells = Pass. If Fail - flag it at the top of your output before the grade, naming the detector's rule id when it came from the scan. It is a disqualifier, not a dimension. Specific tells: hero metric template (big number + gradient accent), identical card grid, side-stripe borders, gradient text, glassmorphism as default surface, generic sans-serif + off-white with no design decision evident.
+**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count.
+<!-- /crisp:shared slop-tells -->
+
+If the target is a live codebase (markup/style files, not a screenshot or Figma link), run `npx @laith-wallace/crisp detect --json <target>` first - it's faster than reasoning about it and it's exact. Fold any findings straight into the Fail verdict above instead of re-deriving them by eye. Skip it for screenshot-only or Figma-link targets and judge by eye instead.
+
+Tells come from the detector or from your own read. If Fail - flag it at the top of your output before the grade, naming the detector's rule id when it came from the scan.
 
 This takes 5 seconds. Do it before anything else.
 
@@ -39,7 +53,8 @@ Scan the design against all five CRISP dimensions, but don't score each one indi
 
 ## Grading Scale
 
-Grades are countable, not vibes - rate each issue P0–P3 first, then the grade follows. These boundaries match `/crisp-audit`'s grade mapping, so History entries from both commands are comparable.
+<!-- crisp:shared grade-scale -->
+Grades are countable, not vibes. Rate every issue P0-P3 first, then the grade follows from the counts:
 
 | Grade | Rule | Meaning |
 |-------|------|---------|
@@ -48,6 +63,20 @@ Grades are countable, not vibes - rate each issue P0–P3 first, then the grade 
 | C | Zero P0, three or more P1s | Functional but frustrating. |
 | D | One P0 | Users will struggle. Core experience broken. |
 | F | Two or more P0s | Blocks users entirely. Don't ship. |
+
+This rule is shared by `/crisp-review` and `/crisp-audit`, so History entries from both are comparable. A skill that also scores dimensions out of 50 takes the lower of its /50 grade and this count grade.
+<!-- /crisp:shared grade-scale -->
+
+### Severity
+
+<!-- crisp:shared severity -->
+| Priority | Definition | Example |
+|----------|-----------|---------|
+| P0 | Blocks the user entirely | Empty state with no recovery path |
+| P1 | Major friction - user can work around it but shouldn't have to | Spinner on every filter change |
+| P2 | Noticeable degradation in experience | Generic empty state copy |
+| P3 | Minor polish issue | Missing hover state on secondary action |
+<!-- /crisp:shared severity -->
 
 ## CRISP Quick-Check
 
@@ -65,6 +94,40 @@ Additional craft checks - flag any as issues or Quick Wins:
 - **All states present** - every component has empty, sparse, dense, and error states; missing states become developer inventions
 - **Stable skeletons** - loading skeletons must match the final layout exactly; a skeleton that shifts on load is worse than no skeleton
 - **Don't pre-disable submit** - forms allow submission before all fields are filled so validation errors can surface; a pre-disabled button hides which fields are required
+
+<!-- crisp:shared evidence-gate -->
+## Evidence Gate
+
+Every finding passes this gate before it reaches the output. A finding you cannot evidence is a guess, and guesses erode trust in the real findings.
+
+1. **Quote the evidence.** Live code: `file:line` plus the verbatim line. Screenshot or Figma: name the element and where it sits. Written description: quote the sentence that shows the problem.
+2. **Name the broken principle.** The CRISP dimension, WCAG criterion, UX law, or `.crisp.md` Named Rule the evidence violates. "Feels off" is not a finding. Taste is debuggable: trace it to a principle or drop it.
+3. **Score confidence 1-10.** No quoted evidence caps the score at 4.
+
+| Confidence | Meaning | What happens |
+|---|---|---|
+| 8-10 | Evidence quoted, principle named, problem confirmed | Report normally |
+| 5-7 | Evidence quoted, but impact depends on context you lack (traffic, user type, intent) | Report with `(verify: <the one thing to check>)` after the fix |
+| 1-4 | No evidence, or speculation | Leave out of the main output. List under `Unverified` at the end only when it would be a P0 if true |
+
+Severity and confidence are separate. A P0 at confidence 5 is still a P0; the `verify` note tells the reader what would confirm it. Scores stay internal unless the output format shows them. Their effect is which findings appear and how.
+<!-- /crisp:shared evidence-gate -->
+
+<!-- crisp:shared decisions -->
+## Settled Decisions
+
+Before reporting, read the `## Decisions` section of `.crisp.md` if it exists. Each line is a finding the team already ruled on:
+
+```
+- YYYY-MM-DD | <rule, tell, or issue> | <surface path, or "all"> | accepted | <reason>
+```
+
+- **Same issue, same surface:** drop the finding. Add `Suppressed by decisions: N` as the last line of the output so nothing disappears silently.
+- **The reason no longer holds** (the decision cites Brand register but this surface is Product, or the accepted element now blocks a task): report the finding, cite the decision's date, and state in one line what changed.
+- **Never re-raise a settled decision on judgement alone.** New evidence reopens it; a different opinion does not.
+
+When the user rejects a finding in this session with explicit words ("that's intentional", "on-brand", "won't fix", "leave it"), append one line to `## Decisions`, creating the section at the end of `.crisp.md` if it is missing. Get the date from `date +%Y-%m-%d`. Record only what the user said. Never log a decision on your own initiative.
+<!-- /crisp:shared decisions -->
 
 ## Output Format
 

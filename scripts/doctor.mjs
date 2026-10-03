@@ -102,6 +102,23 @@ function checkCrispMd(target, findings) {
       },
     });
   }
+
+  if (!/^## Decisions\b/m.test(text)) {
+    findings.push({
+      id: 'crisp-md-missing-decisions-section',
+      artifact: '.crisp.md',
+      path,
+      severity: 'auto',
+      summary: 'No ## Decisions section - findings the team rejected will be raised again on every review.',
+      fix: 'Append an empty ## Decisions section.',
+      apply: () => {
+        // Re-read: the History fix above may have already appended to this file.
+        const latest = readFileSync(path, 'utf8');
+        const addition = '\n## Decisions\n<!-- Findings the team ruled on. Review skills skip a matching finding instead of raising it again. -->\n<!-- Format: - YYYY-MM-DD | <rule, tell, or issue> | <surface path, or "all"> | accepted | <reason> -->\n';
+        writeFileSync(path, latest.replace(/\s*$/, '') + '\n' + addition);
+      },
+    });
+  }
 }
 
 function checkDetectorConfig(target, findings) {

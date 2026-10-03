@@ -11,6 +11,7 @@ Regression fixtures for the CRISP skill pack. Every time a skill is revised, re-
    - `/crisp-review` or `/crisp-audit` on `fixtures/bad-dashboard.md`
    - `/crisp-unslop` (detect mode, then edit mode) on `fixtures/slop-prose.md`
    - `/crisp-structure` (audit mode) on `fixtures/duplicated-actions.ts`
+   - `/crisp-review` on `fixtures/bad-dashboard.md` with `fixtures/decisions/.crisp.md` copied to the session's project root
 3. Compare the output against the matching file in `expected/`.
 
 ## Pass criteria
@@ -19,6 +20,7 @@ Regression fixtures for the CRISP skill pack. Every time a skill is revised, re-
 - No fabricated violations - the skill must not invent issues absent from the fixture.
 - Binary checks report as binary (counts, pass/fail), not hedged prose.
 - Output format matches the skill's declared format.
+- `npm run check` passes: no skill's shared block has drifted from `skills/_shared/`.
 
 | Fixture | Skill(s) | Expected findings |
 |---|---|---|
@@ -27,3 +29,4 @@ Regression fixtures for the CRISP skill pack. Every time a skill is revised, re-
 | `fixtures/bad-dashboard.md` | /crisp-review, /crisp-audit | `expected/bad-dashboard.md` |
 | `fixtures/slop-prose.md` | /crisp-unslop | `expected/slop-prose.md` |
 | `fixtures/duplicated-actions.ts` | /crisp-structure | `expected/duplicated-actions.md` |
+| `fixtures/bad-dashboard.md` + `fixtures/decisions/.crisp.md` | /crisp-review, /crisp-audit | `expected/decisions.md` |

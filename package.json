@@ -1,6 +1,6 @@
 {
   "name": "@laith-wallace/crisp",
-  "version": "1.9.1",
+  "version": "1.10.0",
   "description": "CRISP design intelligence skills for AI agents",
   "type": "module",
   "bin": {
@@ -18,7 +18,8 @@
   "scripts": {
     "sync": "node scripts/sync.mjs",
     "install-global": "node scripts/install.mjs",
-    "prepublishOnly": "node scripts/sync.mjs"
+    "prepublishOnly": "node scripts/sync.mjs",
+    "check": "node scripts/sync.mjs --check"
   },
   "engines": {
     "node": ">=18.0.0"

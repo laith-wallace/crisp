@@ -31,6 +31,77 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const SKILLS_DIR = join(ROOT, 'skills');
 
+const SHARED_DIR = join(SKILLS_DIR, '_shared');
+const CHECK_ONLY = process.argv.includes('--check');
+
+// ─── Shared blocks ───
+// skills/_shared/[block].md is the single source for rules several skills state.
+// A skill marks the region with <!-- crisp:shared name --> ... <!-- /crisp:shared name -->
+// and this step rewrites the region in place, before any platform copy.
+
+const sharedBlocks = existsSync(SHARED_DIR)
+  ? Object.fromEntries(readdirSync(SHARED_DIR)
+      .filter(f => extname(f) === '.md' && f !== 'README.md')
+      .map(f => [basename(f, '.md'), readFileSync(join(SHARED_DIR, f), 'utf8').trim()]))
+  : {};
+
+const SHARED_RE = /<!-- crisp:shared ([a-z0-9-]+) -->\n[\s\S]*?<!-- \/crisp:shared \1 -->/g;
+
+function renderShared(text, file) {
+  const opens = [...text.matchAll(/<!-- crisp:shared ([a-z0-9-]+) -->/g)].map(m => m[1]);
+  const closes = [...text.matchAll(/<!-- \/crisp:shared ([a-z0-9-]+) -->/g)].map(m => m[1]);
+  if (opens.join() !== closes.join()) {
+    throw new Error(`${file}: unbalanced crisp:shared markers (open: ${opens.join(', ') || 'none'}; close: ${closes.join(', ') || 'none'})`);
+  }
+  return text.replace(SHARED_RE, (_, name) => {
+    if (!(name in sharedBlocks)) throw new Error(`${file}: unknown shared block "${name}" (no skills/_shared/${name}.md)`);
+    return `<!-- crisp:shared ${name} -->\n${sharedBlocks[name]}\n<!-- /crisp:shared ${name} -->`;
+  });
+}
+
+function sharedTargets() {
+  return readdirSync(SKILLS_DIR).flatMap(entry => {
+    const full = join(SKILLS_DIR, entry);
+    if (entry === '_shared') return [];
+    if (statSync(full).isDirectory()) {
+      const refs = join(full, 'references');
+      const refFiles = existsSync(refs) ? readdirSync(refs).filter(f => extname(f) === '.md').map(f => join(refs, f)) : [];
+      return [join(full, 'SKILL.md'), ...refFiles].filter(f => existsSync(f));
+    }
+    return extname(entry) === '.md' ? [full] : [];
+  });
+}
+
+const drifted = [];
+let rendered = 0;
+for (const file of sharedTargets()) {
+  const rel = relative(ROOT, file);
+  const before = readFileSync(file, 'utf8');
+  let after;
+  try {
+    after = renderShared(before, rel);
+  } catch (err) {
+    console.error(`  ✗ ${err.message}`);
+    process.exit(1);
+  }
+  if (after === before) continue;
+  drifted.push(rel);
+  if (!CHECK_ONLY) {
+    writeFileSync(file, after);
+    rendered++;
+  }
+}
+
+if (CHECK_ONLY) {
+  if (drifted.length > 0) {
+    console.error(`\nShared block drift in ${drifted.length} file(s):\n${drifted.map(f => `  ✗ ${f}`).join('\n')}\n\nEdit skills/_shared/, then run npm run sync.\n`);
+    process.exit(1);
+  }
+  console.log(`\nShared blocks: ${Object.keys(sharedBlocks).length} blocks, no drift.\n`);
+  process.exit(0);
+}
+if (rendered > 0) console.log(`\nShared blocks: refreshed ${rendered} file(s): ${drifted.join(', ')}`);
+
 const dirEntries = readdirSync(SKILLS_DIR);
 
 // Directory skills: skills/[name]/SKILL.md

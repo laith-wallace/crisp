@@ -3,7 +3,7 @@ name: crisp-teach
 description: One-time project onboarding - interviews you about users, design system, and benchmarks, then writes .crisp.md, the context file every other CRISP command reads.
 user-invocable: true
 disable-model-invocation: true
-version: "1.3.0"
+version: "1.4.0"
 ---
 
 # /crisp-teach - Project Onboarding
@@ -162,6 +162,10 @@ Priority CRISP dimension: [C / R / I / S / P]
 ## History
 <!-- CRISP appends a summary line here after each /crisp-audit or /crisp-review run. -->
 <!-- Format: - YYYY-MM-DD | /command | C:x R:x I:x S:x P:x | Grade: X | Top issue: [summary] -->
+
+## Decisions
+<!-- Findings the team ruled on. Review skills skip a matching finding instead of raising it again. -->
+<!-- Format: - YYYY-MM-DD | <rule, tell, or issue> | <surface path, or "all"> | accepted | <reason> -->
 ```
 
 When writing any date into `.crisp.md`, get today's date from the `date` command (`date +%Y-%m-%d`) - never from memory. For `[SKILL_VERSION]`, use this skill's own `version` field from its frontmatter (the `version: "X.Y.Z"` line at the top of this file) - this stamp is what `/crisp-doctor` later reads to tell whether a project's `.crisp.md` predates fields a newer version expects.

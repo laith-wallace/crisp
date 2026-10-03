@@ -2,7 +2,7 @@
 name: crisp-ai
 description: Evaluate and design AI-native UI surfaces - chat, streaming responses, generative UI, agents, inline assist - across 6 AI-specific dimensions mapped to CRISP. Use when building or reviewing any feature where AI is a primary interaction.
 user-invocable: true
-version: "1.1.0"
+version: "1.2.0"
 ---
 
 # /crisp-ai - AI UI Design Patterns
@@ -163,6 +163,42 @@ Good patterns:
 - Visual hierarchy between core AI actions and advanced options
 - Feature discovery hints after a user action: "Did you know you can ask AI to summarize this?"
 - Keyboard shortcuts for power users without cluttering the interface for novices
+
+---
+
+<!-- crisp:shared evidence-gate -->
+## Evidence Gate
+
+Every finding passes this gate before it reaches the output. A finding you cannot evidence is a guess, and guesses erode trust in the real findings.
+
+1. **Quote the evidence.** Live code: `file:line` plus the verbatim line. Screenshot or Figma: name the element and where it sits. Written description: quote the sentence that shows the problem.
+2. **Name the broken principle.** The CRISP dimension, WCAG criterion, UX law, or `.crisp.md` Named Rule the evidence violates. "Feels off" is not a finding. Taste is debuggable: trace it to a principle or drop it.
+3. **Score confidence 1-10.** No quoted evidence caps the score at 4.
+
+| Confidence | Meaning | What happens |
+|---|---|---|
+| 8-10 | Evidence quoted, principle named, problem confirmed | Report normally |
+| 5-7 | Evidence quoted, but impact depends on context you lack (traffic, user type, intent) | Report with `(verify: <the one thing to check>)` after the fix |
+| 1-4 | No evidence, or speculation | Leave out of the main output. List under `Unverified` at the end only when it would be a P0 if true |
+
+Severity and confidence are separate. A P0 at confidence 5 is still a P0; the `verify` note tells the reader what would confirm it. Scores stay internal unless the output format shows them. Their effect is which findings appear and how.
+<!-- /crisp:shared evidence-gate -->
+
+<!-- crisp:shared decisions -->
+## Settled Decisions
+
+Before reporting, read the `## Decisions` section of `.crisp.md` if it exists. Each line is a finding the team already ruled on:
+
+```
+- YYYY-MM-DD | <rule, tell, or issue> | <surface path, or "all"> | accepted | <reason>
+```
+
+- **Same issue, same surface:** drop the finding. Add `Suppressed by decisions: N` as the last line of the output so nothing disappears silently.
+- **The reason no longer holds** (the decision cites Brand register but this surface is Product, or the accepted element now blocks a task): report the finding, cite the decision's date, and state in one line what changed.
+- **Never re-raise a settled decision on judgement alone.** New evidence reopens it; a different opinion does not.
+
+When the user rejects a finding in this session with explicit words ("that's intentional", "on-brand", "won't fix", "leave it"), append one line to `## Decisions`, creating the section at the end of `.crisp.md` if it is missing. Get the date from `date +%Y-%m-%d`. Record only what the user said. Never log a decision on your own initiative.
+<!-- /crisp:shared decisions -->
 
 ---
 

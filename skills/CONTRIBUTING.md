@@ -76,6 +76,7 @@ All CRISP skills follow these conventions:
 - **P0–P3 severity** on every violation or issue.
 - **Timeless criteria first, benchmarks second.** The evaluation rubric should work without the named benchmarks. The benchmarks are examples, not the basis of the criteria.
 - **Output formats are templates.** Use code blocks for output structure so users know exactly what to expect.
+- **Shared rules live in `skills/_shared/`.** If a rule appears in more than one skill (severity, grading, slop tells, the evidence gate, settled decisions), mark the region with `<!-- crisp:shared name -->` and `<!-- /crisp:shared name -->` and edit the block, never the copy. Run `npm run sync`, then `npm run check` before opening a PR.
 
 ---
 

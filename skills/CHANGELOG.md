@@ -11,6 +11,21 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ---
 
+## [1.10.0] - 2026-10-03
+
+### Shared blocks (one source of truth)
+- **P0** `/crisp-review` and `/crisp-audit` disagreed on grading while both claimed to share one mapping: review graded one P0 as D, audit capped any P0 at C. Both now read one count rule (A: zero P0 and P1; B: one or two P1; C: three or more P1; D: one P0; F: two or more P0). Audit takes the lower of its /50 grade and the count grade, so an audit with one P0 now grades D, not C. `tests/expected/bad-dashboard.md` updated to match.
+- **P1** `skills/_shared/` holds rules that several skills state: `severity`, `grade-scale`, `slop-tells`, `evidence-gate`, `decisions`. Skills mark the region with `<!-- crisp:shared name -->` and `npm run sync` rewrites it in place before the platform copy. `npm run check` exits 1 when a skill's copy has drifted, a marker names an unknown block, or markers are unbalanced. Pattern adapted from gstack's template resolvers, kept in place so `skills/*.md` stays readable without a build.
+- **P2** `/crisp-review` now defines P0-P3 itself instead of pointing at a scale it never stated.
+
+### Evidence gate
+- **P1** `/crisp-review`, `/crisp-audit`, `/crisp-a11y`, `/crisp-ai`: every finding quotes its evidence, names the broken principle, and carries a 1-10 confidence score. No quoted evidence caps confidence at 4, which keeps the finding out of the main output (listed under `Unverified` only when it would be a P0). 5-7 reports with a `(verify: ...)` note. "Feels off" is not a finding. Adapted from gstack's confidence calibration.
+
+### Settled decisions
+- **P1** `.crisp.md` gains an optional `## Decisions` section. `/crisp-review`, `/crisp-audit`, `/crisp-a11y`, `/crisp-ai`, and `/crisp-improve-ui` skip a finding the team already accepted for that surface, report `Suppressed by decisions: N`, and reopen a decision only on new evidence. A line is appended only when the user rejects a finding in explicit words, never on the agent's judgement. Adapted from gstack's learnings and decision log.
+- **P2** `/crisp-teach` writes the empty section. `crisp doctor --fix` appends it to older files.
+- **P2** Eval fixture `tests/fixtures/decisions/.crisp.md` with `tests/expected/decisions.md`: one decision must suppress, one scoped to `marketing/` must not.
+
 ## [1.9.1] - 2026-10-01
 
 ### Skill structure (Anthropic skill authoring best practices)
