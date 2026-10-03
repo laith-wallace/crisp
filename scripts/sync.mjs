@@ -45,11 +45,12 @@ const sharedBlocks = existsSync(SHARED_DIR)
       .map(f => [basename(f, '.md'), readFileSync(join(SHARED_DIR, f), 'utf8').trim()]))
   : {};
 
-const SHARED_RE = /<!-- crisp:shared ([a-z0-9-]+) -->\n[\s\S]*?<!-- \/crisp:shared \1 -->/g;
+// Markers count only on a line of their own, so prose that mentions the syntax inline is left alone.
+const SHARED_RE = /^<!-- crisp:shared ([a-z0-9-]+) -->\n[\s\S]*?^<!-- \/crisp:shared \1 -->$/gm;
 
 function renderShared(text, file) {
-  const opens = [...text.matchAll(/<!-- crisp:shared ([a-z0-9-]+) -->/g)].map(m => m[1]);
-  const closes = [...text.matchAll(/<!-- \/crisp:shared ([a-z0-9-]+) -->/g)].map(m => m[1]);
+  const opens = [...text.matchAll(/^<!-- crisp:shared ([a-z0-9-]+) -->$/gm)].map(m => m[1]);
+  const closes = [...text.matchAll(/^<!-- \/crisp:shared ([a-z0-9-]+) -->$/gm)].map(m => m[1]);
   if (opens.join() !== closes.join()) {
     throw new Error(`${file}: unbalanced crisp:shared markers (open: ${opens.join(', ') || 'none'}; close: ${closes.join(', ') || 'none'})`);
   }
