@@ -3,7 +3,7 @@ name: crisp-teach
 description: One-time project onboarding - interviews you about users, design system, and benchmarks, then writes .crisp.md, the context file every other CRISP command reads.
 user-invocable: true
 disable-model-invocation: true
-version: "1.3.0"
+version: "1.4.0"
 ---
 
 # /crisp-teach - Project Onboarding

@@ -2,7 +2,7 @@
 name: crisp-improve-ui
 description: Evidence-locked improvement audit of an existing UI surface - read-only on product source, keeps only findings that pass a three-proof gate, writes self-contained implementation plans to design-plans/. Use for 'improve this UI', 'tighten this up without redesigning', 'find design drift', or 'why does this page feel inconsistent'. Identity is preserved - for overhauls use /crisp-redesign.
 user-invocable: true
-version: "1.0.0"
+version: "1.1.0"
 metadata:
   author: Laith Wallace - FlowConverts
 ---

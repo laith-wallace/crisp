@@ -2,7 +2,7 @@
 name: crisp-review
 description: 30-second CRISP design scan - a grade A-F and the top 3 issues by user impact with specific fixes. Use during rapid iteration when a full audit would slow you down: 'quick look at this', 'sanity check this screen', 'grade this'.
 user-invocable: true
-version: "1.2.0"
+version: "1.3.0"
 ---
 
 # /crisp-review - Quick CRISP Scan

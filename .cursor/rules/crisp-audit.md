@@ -2,7 +2,7 @@
 name: crisp-audit
 description: Full CRISP evaluation of a UI design - scores all five dimensions with P0-P3 severity, benchmarks against world-class products, and delivers a prioritised action plan. Use for a thorough design review: 'audit this', 'score this design', 'how good is this UI, really'.
 user-invocable: true
-version: "1.2.0"
+version: "1.3.0"
 ---
 
 # /crisp-audit - Full CRISP Evaluation

@@ -2,7 +2,7 @@
 name: crisp-a11y
 description: WCAG 2.2 AA accessibility evaluation of product UI, including all five new 2.2 criteria - P0-P3 severity, code-level remediation, and a portable a11y-checklist.md. Use for accessibility or WCAG compliance reviews, or whenever the user mentions screen readers, keyboard navigation, or contrast.
 user-invocable: true
-version: "1.1.0"
+version: "1.2.0"
 ---
 
 # /crisp-a11y - Accessibility Deep Audit
