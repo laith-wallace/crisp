@@ -14,7 +14,7 @@ Edit the block here, never inside a skill. `npm run sync` rewrites every marked 
 |---|---|
 | `severity.md` | /crisp-audit, /crisp-review |
 | `grade-scale.md` | /crisp-audit, /crisp-review |
-| `slop-tells.md` | /crisp-audit, /crisp-review |
+| `slop-tells.md` | /crisp-audit, /crisp-review, /crisp-redesign, /crisp-funnel, /crisp-improve-ui |
 | `evidence-gate.md` | /crisp-audit, /crisp-review, /crisp-a11y, /crisp-ai |
 | `decisions.md` | /crisp-audit, /crisp-review, /crisp-a11y, /crisp-ai, /crisp-improve-ui |
 

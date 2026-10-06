@@ -2,7 +2,7 @@
 name: crisp-design-eng
 description: Design engineering craft layer - motion decisions, micro-interaction quality, component polish, the invisible details that make an interface feel right. Use when an interaction feels janky or 'off', when adding or reviewing motion, or when polishing before ship: 'make it feel better', 'the modal feels wrong', 'add motion'. Home of the Mechanical Pre-Flight Checks run by /crisp-redesign and /crisp-funnel.
 user-invocable: true
-version: "1.2.0"
+version: "1.2.1"
 ---
 
 # CRISP Design Engineering - `/crisp-design-eng`
@@ -178,7 +178,7 @@ Component-building philosophy (zero-configuration defaults, defaults-are-the-pro
 
 ## Mechanical Pre-Flight Checks
 
-Run these before any surface ships. `/crisp-redesign` and `/crisp-funnel` call this checklist by name. Every check is countable - no judgement required. All ten must pass.
+Run these before any surface ships. `/crisp-redesign` and `/crisp-funnel` call this checklist by name. Every check is countable - no judgement required. All eleven must pass.
 
 | # | Check | Pass condition |
 |---|---|---|
@@ -192,8 +192,9 @@ Run these before any surface ships. `/crisp-redesign` and `/crisp-funnel` call t
 | 8 | Transition lock | 0 uses of `transition: all` |
 | 9 | Entry scale | 0 elements entering from `scale(0)` |
 | 10 | Press feedback | Every interactive element has an `:active` state |
+| 11 | Body text size | Body copy ≥ 16px at every viewport |
 
-Report as a single line: `Pre-flight: 10/10 pass`, or list each failure with file:line and the fix.
+Report as a single line: `Pre-flight: 11/11 pass`, or list each failure with file:line and the fix.
 
 ---
 

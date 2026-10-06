@@ -2,7 +2,7 @@
 name: crisp-improve-ui
 description: Evidence-locked improvement audit of an existing UI surface - read-only on product source, keeps only findings that pass a three-proof gate, writes self-contained implementation plans to design-plans/. Use for 'improve this UI', 'tighten this up without redesigning', 'find design drift', or 'why does this page feel inconsistent'. Identity is preserved - for overhauls use /crisp-redesign.
 user-invocable: true
-version: "1.1.0"
+version: "1.1.1"
 metadata:
   author: Laith Wallace - FlowConverts
 ---
@@ -158,6 +158,32 @@ If findings survive, stop and ask which to turn into plans. If the user already 
 Load `references/plan-template.md`. Write one plan per selected change - never one per symptom - to `design-plans/<kebab-case-outcome>.md`.
 
 Before writing: re-open every cited source, record the current commit (`git rev-parse --short HEAD`, or `unavailable`), name the exact reusable primitives and exemplars, and trace every affected consumer. If a plan for this change already exists in `design-plans/`, reconcile it - update stale evidence, affected surfaces, and status - instead of duplicating it.
+
+A plan's proposed change must add zero of these tells to the surface. This check gates the plan only. A tell already on the surface is not a finding unless a cited contract forbids it (Step 3):
+
+<!-- crisp:shared slop-tells -->
+**Would someone look at this and immediately say "AI made that"?**
+
+| Tell | What it looks like |
+|------|--------------------|
+| Hero metric template | Big number, small label, supporting stats below, gradient accent, with no context that explains the product |
+| Identical card grid | Same-sized cards repeating icon + heading + text with equal visual weight |
+| Side-stripe borders | Coloured left or right border (>1px) on cards or alerts as the primary decorative element, not a real alert or status |
+| Gradient text | `background-clip: text` treatment on headings or CTAs |
+| Off-brand purple-blue gradient | Purple or indigo to blue gradient on a background, button, or accent when the brand colour is not purple |
+| Glassmorphism default | Blur + transparency used as the primary surface treatment, not as a specific elevated element |
+| Glow halo | Radial glow, blurred colour blob, or soft spotlight behind a hero or section to show importance |
+| Hero pill badge | Pill or eyebrow label above the hero headline ("New", "Introducing", "Now with AI") |
+| Icon tile stack | An icon in a rounded-square tile above every card or section heading |
+| Nested cards | A bordered or shadowed card inside another bordered or shadowed card |
+| Fake sequence labels | Numbered labels (01, 02, 03) on items that are not steps a user follows in order |
+| Decorative motion | Pulsing dots, bounce or elastic easing, hover zoom on cards, or an auto-scrolling logo strip where no state changes |
+| Template copy | "Supercharge", "world-class", "seamless", or "Not a feature. A platform." in a headline or hero |
+| SaaS cream + generic sans | Off-white background with no tint, Inter, Geist, Roboto or DM Sans on every level, zero distinctive colour decision |
+| Saturated aesthetic lane | Editorial-typographic (italic display serif + mono labels + ruled separators) used as a default not a deliberate choice |
+
+**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count. A purple gradient on a brand that is purple is not a tell.
+<!-- /crisp:shared slop-tells -->
 
 Introduce a new primitive only after proving the existing system cannot express the decision, where the primitive lives, and which consumers share it. Repetition alone never justifies a new shared primitive.
 

@@ -11,6 +11,15 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ---
 
+## [1.10.1] - 2026-10-06
+
+### Slop Check
+- **P1** The shared Slop Check grows from 7 to 15 tells. New: off-brand purple-blue gradient, glow halo, hero pill badge, icon tile stack, nested cards, fake sequence labels (01, 02, 03), decorative motion (pulsing dots, bounce easing, hover zoom, scrolling logo strip), and template copy ("supercharge", "world-class"). Hero metric, side-stripe, and cream + generic sans rows are tightened. A purple gradient on a purple brand is not a tell.
+- **P1** `/crisp-redesign`, `/crisp-funnel`, and `/crisp-improve-ui` now load the Slop Check. Builds and plans must pass it before delivery, so tells are stopped at build time, not only found later by `/crisp-audit` and `/crisp-review`. `/crisp-improve-ui` uses it to gate plans only; an existing tell still needs a cited contract to be a finding.
+
+### Pre-flight
+- **P2** `/crisp-design-eng` Mechanical Pre-Flight Check 11: body copy is 16px or larger at every viewport. Report line is now `Pre-flight: 11/11 pass`.
+
 ## [1.10.0] - 2026-10-03
 
 ### Shared blocks (one source of truth)
