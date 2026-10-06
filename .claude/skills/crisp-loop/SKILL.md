@@ -1,9 +1,8 @@
 ---
 name: crisp-loop
 description: Bounded review-fix-review loop - runs /crisp-review, fixes every P0 and P1 it names, re-reviews, and repeats until the target grade (default B with zero P0) or the iteration cap (default 5), then reports the trend. Use for 'keep fixing until it's good', 'get this screen to an A', or to land a batch of design fixes with a measured result instead of a hope.
-user-invocable: true
-version: "1.0.0"
 metadata:
+  version: "1.0.0"
   author: Laith Wallace - FlowConverts
   adapted-from: greptileai/skills greploop (loop shape, MIT) - reviewer swapped for /crisp-review and the crisp detector
 ---

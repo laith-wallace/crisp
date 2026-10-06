@@ -1,9 +1,9 @@
 ---
 name: crisp
-description: Router for the CRISP skill pack - names every skill and when to reach for it.
-user-invocable: true
+description: Router for the CRISP skill pack - names every skill, its pipeline stage, and when to reach for it. Use when unsure which design or workflow skill fits: 'which crisp command should I use', 'what can CRISP do', 'where do I start with this design'.
 disable-model-invocation: true
-version: "1.3.0"
+metadata:
+  version: "1.4.0"
 ---
 
 # /crisp - Skill Pack Router
@@ -18,10 +18,13 @@ One place to find the right CRISP skill. Read the user's situation, name the mat
 | Onboard | `/crisp-teach` | Once per project - interviews you and writes `.crisp.md`, the context every other skill reads |
 | Scope | `/crisp-brief` | A request is vague - converts it into a `.brief.md` with success criteria and scope boundaries |
 | Research | `/crisp-research` | Before designing - competitive patterns, anti-patterns, dimension risks, writes `.research.md` |
+| Research | `/crisp-study` | A URL, screenshot, or codebase has a look worth learning from - extracts its design DNA into a `DESIGN.md` with provenance |
 | Design | `/feature-design` | Designing a new feature from a problem statement - reads `.brief.md` and `.research.md` |
+| Design | `/crisp-variants` | Choosing between directions - 3 to 5 live variants of one component behind a dev-only switcher, then deletes the losers |
 | Build | `/crisp-structure` | Deciding where code goes - actions own why and when, services own how; auditing duplicated mechanics or leaky services |
 | Check | `/crisp-review` | 30-second scan mid-iteration - grade A-F plus top 3 issues |
 | Check | `/crisp-audit` | Full scored evaluation across all five dimensions with a prioritised action plan |
+| Check | `/crisp-stress` | Worst-case data - empty, 1000 items, 200-char names, RTL, 200% zoom, 320px, slow network - with a pass/fail table |
 | Prove | `/crisp-evidence` | A change needs recorded, annotated runtime proof - not "tested locally" |
 | Ship | `/handoff` | Design has passed review - produces the developer-ready spec |
 | Ship | `/crisp-loop` | Fixes should land with a measured result - review, fix P0/P1s, re-review, stop at the target grade or the cap |
@@ -31,6 +34,7 @@ One place to find the right CRISP skill. Read the user's situation, name the mat
 
 | Skill | Reach for it when |
 |---|---|
+| `/crisp-tune` | A UI is right but the tone is wrong - `bolder`, `quieter`, or `simpler`, plus variance, motion, and density dials, all on-token |
 | `/crisp-design-eng` | An interaction feels janky or "off"; motion, micro-interaction, and polish decisions; Mechanical Pre-Flight Checks |
 | `/crisp-copy` | Any UI wording - labels, errors, empty states, CTAs - audit or generate |
 | `/crisp-a11y` | Deep WCAG 2.2 AA evaluation with code-level remediation |
@@ -55,3 +59,7 @@ One place to find the right CRISP skill. Read the user's situation, name the mat
 | `/crisp-agents-md` | A repo needs an `AGENTS.md` that embeds the whole chain above (the workflow file Codex, Cursor, Copilot, Gemini, and Claude Code read), or the one it has lists skills or commands that no longer exist |
 
 If no `.crisp.md` exists yet, suggest `/crisp-teach` first - every skill above reads it.
+
+## Always on
+
+The design detector runs without being asked once its hooks are installed (plugin installs get them automatically; the npm installer offers them). After each UI file edit it reports only the issues that edit added. Before the agent stops it checks every changed UI file once and blocks on new P0/P1 findings. Run it by hand with `npx @laith-wallace/crisp detect <path>`.

@@ -1,8 +1,8 @@
 ---
 name: crisp-research
-description: Design research synthesis before designing - searches designated reference sources, surfaces competitive patterns, anti-patterns, CRISP dimension risks, and brief gaps. Writes .research.md, which /feature-design reads.
-user-invocable: true
-version: "1.1.0"
+description: Design research synthesis before designing - searches designated reference sources, surfaces competitive patterns, anti-patterns, CRISP dimension risks, and brief gaps. Writes .research.md, which /feature-design reads. Use when a brief exists and you need patterns before designing: 'how do others do this', 'competitor patterns for onboarding', 'research before we design'.
+metadata:
+  version: "1.1.0"
 ---
 
 # CRISP Research Synthesis - `/crisp-research`

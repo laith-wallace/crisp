@@ -1,9 +1,8 @@
 ---
 name: crisp-structure
 description: Two-layer code structure - actions own the why and when (business rules, auth, state transitions), a service layer owns the how (reusable operational mechanics with explicit inputs and structured returns). Audits an existing codebase for duplicated mechanics and leaky services with file:line evidence, decides where new-feature code belongs, and writes a one-caller-at-a-time extraction plan. Use for 'where should this go', 'this logic is copy-pasted', 'a fix in one flow didn't reach the others', or before adding a feature that shares mechanics with an existing one.
-user-invocable: true
-version: "1.0.0"
 metadata:
+  version: "1.0.0"
   author: Laith Wallace - FlowConverts
   adapted-from: michaelshimeles/skills code-structure (two-layer model)
 ---

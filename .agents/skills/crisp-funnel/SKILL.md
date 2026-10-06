@@ -1,9 +1,8 @@
 ---
 name: crisp-funnel
 description: Build, critique, and optimise funnels and landing pages using the ATM (Attention, Trust, Money) methodology and the ten-section Funnel Kit. Use for any landing page, sales page, opt-in, lead-gen offer, or ad-to-page flow, or when the user mentions conversion rate, CAC vs CPL, stages of awareness, or a page that is not converting - even if they never say 'funnel'.
-user-invocable: true
-version: "2.1.1"
 metadata:
+  version: "2.1.1"
   author: Laith Wallace - FlowConverts
 ---
 

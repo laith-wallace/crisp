@@ -1,0 +1,20 @@
+{
+  "description": "CRISP design detector: checks each UI file edit for new design and accessibility issues, and gives one full pass on the changed files before the agent stops.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hook.mjs\"", "timeout": 10 }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/hook.mjs\" --stop", "timeout": 20 }
+        ]
+      }
+    ]
+  }
+}

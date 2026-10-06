@@ -12,9 +12,9 @@ Edit the block here, never inside a skill. `npm run sync` rewrites every marked 
 
 | Block | Used by |
 |---|---|
-| `severity.md` | /crisp-audit, /crisp-review |
+| `severity.md` | /crisp-audit, /crisp-review, /crisp-stress |
 | `grade-scale.md` | /crisp-audit, /crisp-review |
-| `slop-tells.md` | /crisp-audit, /crisp-review, /crisp-redesign, /crisp-funnel, /crisp-improve-ui |
+| `slop-tells.md` | /crisp-audit, /crisp-review, /crisp-redesign, /crisp-funnel, /crisp-improve-ui, /crisp-tune, /crisp-variants |
 | `evidence-gate.md` | /crisp-audit, /crisp-review, /crisp-a11y, /crisp-ai |
 | `decisions.md` | /crisp-audit, /crisp-review, /crisp-a11y, /crisp-ai, /crisp-improve-ui |
 

@@ -1,7 +1,7 @@
 {
   "name": "@laith-wallace/crisp",
-  "version": "1.10.1",
-  "description": "CRISP design intelligence skills for AI agents",
+  "version": "1.11.0",
+  "description": "CRISP design intelligence skills for AI agents: reviews, audits, accessibility, motion craft, DESIGN.md, and an edit-time design detector",
   "type": "module",
   "bin": {
     "crisp": "./bin/crisp.mjs"
@@ -10,16 +10,19 @@
     "bin/",
     "skills/",
     "scripts/",
+    "hooks/",
+    ".claude-plugin/",
     ".claude/skills/",
-    ".cursor/rules/",
     ".agents/skills/",
+    ".cursor/skills/",
     ".gemini/skills/"
   ],
   "scripts": {
     "sync": "node scripts/sync.mjs",
+    "check": "node scripts/sync.mjs --check",
+    "test": "node --test tests/unit/*.test.mjs && node scripts/sync.mjs --check",
     "install-global": "node scripts/install.mjs",
-    "prepublishOnly": "node scripts/sync.mjs",
-    "check": "node scripts/sync.mjs --check"
+    "prepublishOnly": "node scripts/sync.mjs && node --test tests/unit/*.test.mjs"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -30,20 +33,28 @@
     "figlet": "^1.7.0"
   },
   "keywords": [
-    "design",
-    "ux",
-    "ai",
-    "skills",
-    "claude",
-    "cursor",
-    "crisp",
     "accessibility",
-    "microcopy"
+    "agent-skills",
+    "ai",
+    "anti-slop",
+    "claude",
+    "claude-code",
+    "codex",
+    "crisp",
+    "cursor",
+    "design",
+    "design-md",
+    "design-review",
+    "gemini-cli",
+    "microcopy",
+    "skills",
+    "ux"
   ],
   "author": "Laith Wallace",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/laith-wallace/crisp"
-  }
+  },
+  "homepage": "https://github.com/laith-wallace/crisp"
 }

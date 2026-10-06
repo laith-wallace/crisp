@@ -1,8 +1,8 @@
 ---
 name: crisp-doctor
 description: Reports and repairs drift between a project's CRISP artifacts (.crisp.md, .crisp/config.json) and what the installed crisp version expects. Use when the user asks what's out of date, stale, or needs refreshing, or after upgrading the crisp package.
-user-invocable: true
-version: "1.0.0"
+metadata:
+  version: "1.0.0"
 ---
 
 # /crisp-doctor - Artifact Drift Check

@@ -2,7 +2,7 @@
 /**
  * scripts/ignores-cli.mjs
  *
- * `crisp ignores list|add-file|add-value` — manage .crisp/config.json's
+ * `crisp ignores list|add-file|add-value` - manage .crisp/config.json's
  * detector ignores without hand-editing JSON. Mirrors the shape the detector
  * engine reads in scripts/detector/ignores.mjs.
  */
@@ -26,7 +26,7 @@ function printConfig(config) {
     for (const ruleId of ruleIds) {
       for (const entry of ignoreValues[ruleId]) {
         const value = typeof entry === 'string' ? entry : entry.value;
-        const reason = typeof entry === 'object' && entry.reason ? ` — ${entry.reason}` : '';
+        const reason = typeof entry === 'object' && entry.reason ? ` - ${entry.reason}` : '';
         console.log(`  - ${ruleId}: "${value}"${reason}`);
       }
     }

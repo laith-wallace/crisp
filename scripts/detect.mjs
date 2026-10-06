@@ -38,7 +38,7 @@ export function runDetect(argv) {
       const config = loadConfig();
       isIgnored = makeIsIgnored(config);
     } catch (err) {
-      console.error(`Warning: ${err.message} — continuing with no config-level ignores.`);
+      console.error(`Warning: ${err.message} - continuing with no config-level ignores.`);
     }
   }
 
@@ -49,10 +49,10 @@ export function runDetect(argv) {
     console.log(JSON.stringify({ filesScanned, findingCount: findings.length, findings }, null, 2));
   } else {
     if (findings.length === 0) {
-      console.log(`crisp detect: clean — ${filesScanned} file(s) scanned, 0 findings.`);
+      console.log(`crisp detect: clean - ${filesScanned} file(s) scanned, 0 findings.`);
     } else {
       for (const f of findings) {
-        console.log(`${f.file}:${f.line}  [${f.severity}] ${f.id} — ${f.message}`);
+        console.log(`${f.file}:${f.line}  [${f.severity}] ${f.id} - ${f.message}`);
         if (f.snippet) console.log(`    ${f.snippet}`);
       }
       console.log(`\ncrisp detect: ${findings.length} finding(s) across ${filesScanned} file(s) scanned.`);
@@ -64,5 +64,5 @@ export function runDetect(argv) {
 
 const isMain = import.meta.url === `file://${process.argv[1]}`;
 if (isMain) {
-  process.exit(runDetect(process.argv.slice(2)));
+  process.exitCode = runDetect(process.argv.slice(2));
 }

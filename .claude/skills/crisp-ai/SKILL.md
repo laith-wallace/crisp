@@ -1,8 +1,8 @@
 ---
 name: crisp-ai
 description: Evaluate and design AI-native UI surfaces - chat, streaming responses, generative UI, agents, inline assist - across 6 AI-specific dimensions mapped to CRISP. Use when building or reviewing any feature where AI is a primary interaction.
-user-invocable: true
-version: "1.2.0"
+metadata:
+  version: "1.2.0"
 ---
 
 # /crisp-ai - AI UI Design Patterns

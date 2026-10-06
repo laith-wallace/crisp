@@ -1,8 +1,8 @@
 ---
 name: crisp-redesign
 description: Redesign an existing UI or website without breaking what works - detects preserve vs overhaul mode, audits the current state first, applies modernisation levers in priority order, and protects SEO, analytics, and accessibility wins from regression. Use when the request is to redesign, modernise, refresh, or upgrade an existing surface.
-user-invocable: true
-version: "1.1.1"
+metadata:
+  version: "1.1.1"
 ---
 
 # /crisp-redesign - Redesign Without Regression

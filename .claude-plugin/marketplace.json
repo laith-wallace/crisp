@@ -2,19 +2,20 @@
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "crisp-skills",
   "owner": {
-    "name": "laith-wallace"
+    "name": "Laith Wallace"
   },
-  "description": "CRISP framework skills for Claude Code - design evaluation, accessibility, AI, copy, research, and more.",
+  "description": "CRISP design intelligence skills for Claude Code.",
   "plugins": [
     {
       "name": "crisp",
-      "source": ".",
-      "description": "CRISP design evaluation framework - audit, review, brief, teach, accessibility, copy, research, and design engineering skills.",
-      "version": "1.0.0",
+      "source": "./",
+      "description": "Design reviews, audits, accessibility, motion craft, funnels, DESIGN.md study, before/after proof, and an edit-time design detector.",
+      "version": "1.11.0",
       "author": {
-        "name": "laith-wallace"
+        "name": "Laith Wallace"
       },
-      "tags": ["design", "crisp", "ui", "accessibility", "review", "audit"]
+      "license": "MIT",
+      "keywords": ["design", "ux", "ui", "accessibility", "design-review", "anti-slop"]
     }
   ]
 }

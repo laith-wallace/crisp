@@ -1,9 +1,8 @@
 ---
 name: crisp-production-ready
 description: Production-readiness audit ending in a visual HTML remediation playbook - repeated passes through 24 lenses until two consecutive passes surface nothing new, every finding verified against the real code, delivered as a findings list plus production-playbook.html. Use for 'production ready', 'can we ship', 'pre-launch audit', or any launch-readiness check.
-user-invocable: true
-version: "1.0.0"
 metadata:
+  version: "1.0.0"
   author: Laith Wallace - FlowConverts
 ---
 

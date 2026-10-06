@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, mkdirSync, copyFileSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, cpSync, readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -15,12 +15,18 @@ if (process.argv.includes('--version') || process.argv.includes('-v')) {
   process.exit(0);
 }
 
+// Exit only after stdout drains, so large --json output is never cut off when piped.
+async function exitAfterFlush(code) {
+  await new Promise(resolve => process.stdout.write('', resolve));
+  process.exit(code);
+}
+
 // Non-interactive subcommands short-circuit the installer entirely.
 const [subcommand, ...subArgs] = process.argv.slice(2);
 
 if (subcommand === 'detect') {
   const { runDetect } = await import(join(PKG_ROOT, 'scripts', 'detect.mjs'));
-  process.exit(runDetect(subArgs));
+  await exitAfterFlush(runDetect(subArgs));
 }
 
 if (subcommand === 'ignores') {
@@ -30,7 +36,7 @@ if (subcommand === 'ignores') {
 
 if (subcommand === 'hook') {
   const { runHook } = await import(join(PKG_ROOT, 'scripts', 'hook.mjs'));
-  await runHook();
+  await runHook(subArgs);
   process.exit(0); // hooks never fail the tool call, whatever happened inside
 }
 
@@ -39,66 +45,76 @@ if (subcommand === 'critique') {
   process.exit(await runCritiqueStorage(subArgs));
 }
 
+if (subcommand === 'design-md') {
+  const { runDesignMd } = await import(join(PKG_ROOT, 'scripts', 'design-md.mjs'));
+  await exitAfterFlush(await runDesignMd(subArgs));
+}
+
+if (subcommand === 'help' || process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log(`@laith-wallace/crisp
+
+  crisp                               interactive installer (skills + optional hooks)
+  crisp detect [--json] <path...>     run the design detector (exit 0 clean, 2 findings, 1 error)
+  crisp hook [--stop]                 Claude Code hook entry (reads the hook payload on stdin)
+  crisp ignores list|add-file|add-value   manage .crisp/config.json detector ignores
+  crisp design-md lint [file] [--json]    lint a DESIGN.md (tokens, references, contrast)
+  crisp design-md diff <old> <new>        token-level diff of two DESIGN.md files
+  crisp critique slug|write|trend     per-surface review history in .crisp/critique/
+  crisp doctor [--fix]                check .crisp.md and .crisp/config.json for drift
+  crisp --version`);
+  process.exit(0);
+}
+
 if (subcommand === 'doctor') {
   const { runDoctor } = await import(join(PKG_ROOT, 'scripts', 'doctor.mjs'));
   process.exit(await runDoctor(subArgs));
 }
 
-const SKILLS = [
-  // Core skills
-  { value: 'crisp-teach',    label: '/crisp-teach',    hint: 'Onboard your AI to your product — writes .crisp.md' },
-  { value: 'crisp-review',   label: '/crisp-review',   hint: '30-second design scan, A–F grade, top 3 issues' },
-  { value: 'crisp-audit',    label: '/crisp-audit',    hint: 'Full CRISP evaluation across 5 dimensions' },
-  { value: 'feature-design', label: '/feature-design', hint: 'Design new features using CRISP principles' },
-  { value: 'handoff',        label: '/handoff',        hint: 'Convert designs to developer-ready specs' },
-  // CRISP Extensions
-  { value: 'crisp-brief',    label: '/crisp-brief',    hint: 'Turn vague requests into structured design briefs' },
-  { value: 'crisp-copy',     label: '/crisp-copy',     hint: 'Write and evaluate all UI microcopy' },
-  { value: 'crisp-a11y',     label: '/crisp-a11y',     hint: 'Full WCAG 2.2 AA accessibility audit' },
-  { value: 'crisp-ai',       label: '/crisp-ai',       hint: 'Evaluate and design AI-native UI surfaces' },
-  { value: 'crisp-research',    label: '/crisp-research',    hint: 'Research synthesis — patterns, anti-patterns, brief gaps' },
-  { value: 'crisp-design-eng', label: '/crisp-design-eng', hint: 'Motion decisions, micro-interaction quality, and invisible polish' },
-  { value: 'crisp-doctor',     label: '/crisp-doctor',     hint: 'Check .crisp.md and .crisp/config.json for drift' },
-];
+// Every folder under skills/ with a SKILL.md is a skill; the hint is the
+// first clause of its description, so the list can never fall out of date.
+const SKILLS_SRC = join(PKG_ROOT, 'skills');
+const SKILLS = readdirSync(SKILLS_SRC)
+  .filter(name => name !== '_shared' && existsSync(join(SKILLS_SRC, name, 'SKILL.md')))
+  .map(name => {
+    const text = readFileSync(join(SKILLS_SRC, name, 'SKILL.md'), 'utf8');
+    const description = (text.match(/^description:\s*(.*)$/m)?.[1] ?? '').replace(/^["']|["']$/g, '');
+    const hint = description.split(/ - |\. /)[0].slice(0, 70);
+    return { value: name, label: `/${name}`, hint };
+  });
 
 const AGENTS = [
   {
     value: 'claude',
     label: 'Claude Code',
     hint: '~/.claude/skills/',
-    src: join(PKG_ROOT, '.claude', 'skills'),
     dest: () => join(homedir(), '.claude', 'skills'),
     detect: () => existsSync(join(homedir(), '.claude')),
   },
   {
-    value: 'cursor',
-    label: 'Cursor',
-    hint: '.cursor/rules/ (current project)',
-    src: join(PKG_ROOT, '.cursor', 'rules'),
-    dest: () => join(process.cwd(), '.cursor', 'rules'),
-    detect: () => existsSync(join(process.cwd(), '.cursor')) || existsSync(join(homedir(), '.cursor')),
+    value: 'agents',
+    label: 'Codex, Copilot, Antigravity',
+    hint: '~/.agents/skills/ (shared agent skills folder)',
+    dest: () => join(homedir(), '.agents', 'skills'),
+    detect: () => existsSync(join(homedir(), '.agents')) || existsSync(join(homedir(), '.codex')),
   },
   {
-    value: 'antigravity',
-    label: 'Antigravity',
-    hint: '~/.agents/skills/',
-    src: join(PKG_ROOT, '.agents', 'skills'),
-    dest: () => join(homedir(), '.agents', 'skills'),
-    detect: () => existsSync(join(homedir(), '.agents')),
+    value: 'cursor',
+    label: 'Cursor',
+    hint: '~/.cursor/skills/',
+    dest: () => join(homedir(), '.cursor', 'skills'),
+    detect: () => existsSync(join(homedir(), '.cursor')),
   },
   {
     value: 'gemini',
     label: 'Gemini CLI',
     hint: '~/.gemini/skills/',
-    src: join(PKG_ROOT, '.gemini', 'skills'),
     dest: () => join(homedir(), '.gemini', 'skills'),
     detect: () => existsSync(join(homedir(), '.gemini')),
   },
   {
     value: 'manual',
     label: 'Manual copy',
-    hint: 'Show file paths — copy yourself',
-    src: join(PKG_ROOT, 'files'),
+    hint: 'Show folder paths - copy yourself',
     dest: () => null,
     detect: () => false,
   },
@@ -107,7 +123,7 @@ const AGENTS = [
 // The interactive installer's UI deps are loaded lazily, here, rather than
 // at module top-level. `crisp detect`/`crisp ignores` exit before reaching
 // this function, so they never pay for or require @clack/prompts, chalk, or
-// figlet — that's the whole point of the detector being dependency-free.
+// figlet - that's the whole point of the detector being dependency-free.
 async function main() {
   const [p, { default: chalk }, { default: figlet }] = await Promise.all([
     import('@clack/prompts'),
@@ -143,7 +159,7 @@ async function main() {
     })
   );
 
-  // Agent selection — pre-select detected agents
+  // Agent selection - pre-select detected agents
   const detectedValues = AGENTS.filter(a => a.detect()).map(a => a.value);
 
   const selectedAgentValues = cancelIfNeeded(
@@ -181,10 +197,10 @@ async function main() {
     }
 
     for (const skill of selectedSkills) {
-      const src = join(agent.src, skill + '.md');
-      const dst = join(dest, skill + '.md');
+      const src = join(SKILLS_SRC, skill);
+      const dst = join(dest, skill);
       try {
-        copyFileSync(src, dst);
+        cpSync(src, dst, { recursive: true, force: true });
         results[agent.value].files.push({ skill, path: dst, ok: true });
       } catch (e) {
         results[agent.value].files.push({ skill, path: dst, ok: false, error: e.message });
@@ -199,8 +215,7 @@ async function main() {
     if (agent.value === 'manual') {
       console.log('\n' + chalk.dim('  ── Manual copy ──'));
       for (const skill of selectedSkills) {
-        const src = join(agent.src, skill + '.md');
-        console.log('  ' + chalk.dim(src));
+        console.log('  ' + chalk.dim(join(SKILLS_SRC, skill) + '/'));
       }
       continue;
     }
@@ -215,13 +230,13 @@ async function main() {
       if (f.ok) {
         console.log('  ' + chalk.hex(LIME)('✓') + ' ' + chalk.dim(f.path));
       } else {
-        console.log('  ' + chalk.red('✗') + ' ' + f.skill + chalk.red(` — ${f.error}`));
+        console.log('  ' + chalk.red('✗') + ' ' + f.skill + chalk.red(` - ${f.error}`));
       }
     }
   }
 
   // The design-detector hook is Claude Code-specific for now (PostToolUse
-  // hooks in .claude/settings.local.json) — Cursor and Gemini CLI use
+  // hooks in .claude/settings.local.json) - Cursor and Gemini CLI use
   // different hook formats this installer doesn't write yet.
   if (selectedAgentValues.includes('claude')) {
     await offerClaudeHook(p, chalk);
@@ -236,6 +251,11 @@ async function main() {
 }
 
 const HOOK_COMMAND = 'npx @laith-wallace/crisp hook';
+const STOP_HOOK_COMMAND = 'npx @laith-wallace/crisp hook --stop';
+
+function hasCommand(entries, command) {
+  return (entries ?? []).some(entry => entry.hooks?.some(h => h.command === command));
+}
 
 async function offerClaudeHook(p, chalk) {
   const settingsPath = join(process.cwd(), '.claude', 'settings.local.json');
@@ -245,42 +265,45 @@ async function offerClaudeHook(p, chalk) {
     try {
       settings = JSON.parse(readFileSync(settingsPath, 'utf8'));
     } catch {
-      console.log('\n' + chalk.red(`  ✗ .claude/settings.local.json exists but isn't valid JSON — skipping hook install.`));
+      console.log('\n' + chalk.red(`  ✗ .claude/settings.local.json exists but isn't valid JSON - skipping hook install.`));
       return;
     }
   }
 
-  const postToolUse = settings.hooks?.PostToolUse ?? [];
-  const alreadyInstalled = postToolUse.some(entry =>
-    entry.hooks?.some(h => h.command === HOOK_COMMAND)
-  );
-
-  if (alreadyInstalled) {
-    console.log('\n' + chalk.dim('  Design-detector hook already installed in this project.'));
+  const hasPost = hasCommand(settings.hooks?.PostToolUse, HOOK_COMMAND);
+  const hasStop = hasCommand(settings.hooks?.Stop, STOP_HOOK_COMMAND);
+  if (hasPost && hasStop) {
+    console.log('\n' + chalk.dim('  Design-detector hooks already installed in this project.'));
     return;
   }
 
   const install = await p.confirm({
-    message: 'Install the design-detector hook for this project? Runs `crisp detect` after every UI file edit (Edit/Write) and surfaces findings automatically.',
+    message: 'Install the design-detector hooks for this project? After each UI file edit they report only the issues that edit added, and before the agent stops they check all changed UI files once.',
     initialValue: true,
   });
 
   if (p.isCancel(install) || !install) {
-    console.log('\n' + chalk.dim('  Skipped the hook. Run this installer again anytime to add it.'));
+    console.log('\n' + chalk.dim('  Skipped the hooks. Run this installer again anytime to add them.'));
     return;
   }
 
   settings.hooks = settings.hooks ?? {};
-  settings.hooks.PostToolUse = postToolUse;
-  postToolUse.push({
-    matcher: 'Edit|Write',
-    hooks: [{ type: 'command', command: HOOK_COMMAND }],
-  });
+  if (!hasPost) {
+    settings.hooks.PostToolUse = settings.hooks.PostToolUse ?? [];
+    settings.hooks.PostToolUse.push({
+      matcher: 'Edit|Write|MultiEdit',
+      hooks: [{ type: 'command', command: HOOK_COMMAND }],
+    });
+  }
+  if (!hasStop) {
+    settings.hooks.Stop = settings.hooks.Stop ?? [];
+    settings.hooks.Stop.push({ hooks: [{ type: 'command', command: STOP_HOOK_COMMAND }] });
+  }
 
   try {
     mkdirSync(dirname(settingsPath), { recursive: true });
     writeFileSync(settingsPath, JSON.stringify(settings, null, 2) + '\n');
-    console.log('\n' + chalk.hex(LIME)('  ✓') + chalk.dim(` Hook installed: ${settingsPath}`));
+    console.log('\n' + chalk.hex(LIME)('  ✓') + chalk.dim(` Hooks installed: ${settingsPath}`));
   } catch (e) {
     console.log('\n' + chalk.red(`  ✗ Could not write ${settingsPath}: ${e.message}`));
   }

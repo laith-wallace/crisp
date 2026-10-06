@@ -2,37 +2,64 @@
 /**
  * scripts/sync.mjs
  *
- * Copies every skill from skills/ to all four platform directories.
+ * Builds every platform copy of the pack from the canonical skills/ sources.
  *
- * Two source shapes:
- *   Flat skill        skills/[name].md, with optional companion .html assets
- *                     (a sibling whose name matches the skill, e.g.
- *                     crisp-funnel-kit.html for crisp-funnel).
- *   Directory skill   skills/[name]/SKILL.md plus references/ and assets.
- *                     The whole tree travels to tree-based platforms; flat
- *                     platforms receive SKILL.md and references concatenated
- *                     into a single file.
+ * Source shape (one only): skills/[name]/SKILL.md plus optional references/,
+ * scripts/, and assets. This is the Agent Skills layout
+ * (https://agentskills.io/specification); every supported harness now reads
+ * it natively, so each skill travels as a whole folder.
+ *
+ * Steps:
+ *   1. Shared blocks: rewrite <!-- crisp:shared name --> regions in place.
+ *   2. Lint: name matches folder, description says what and when, version
+ *      lives under metadata, no flat skill files left in skills/.
+ *   3. Version: copy package.json's version into .claude-plugin/*.json.
+ *   4. Copy: wipe and rebuild each platform folder below.
  *
  * Run manually:    npm run sync
  * Run on publish:  prepublishOnly hook calls this automatically.
+ * Check only:      npm run check  (exits 1 on any drift, writes nothing)
  *
- * Platform targets:
- *   Claude Code    .claude/skills/[name]/   (tree)
- *   Antigravity    .agents/skills/[name]/   (tree)
- *   Cursor         .cursor/rules/[name].md  (flat)
- *   Gemini CLI     .gemini/skills/[name].md (flat)
+ * Platform targets (all full folders):
+ *   Claude Code    .claude/skills/[name]/
+ *   Codex, Antigravity, Copilot (agents standard)  .agents/skills/[name]/
+ *   Cursor         .cursor/skills/[name]/
+ *   Gemini CLI     .gemini/skills/[name]/
  */
 
-import { readdirSync, readFileSync, mkdirSync, writeFileSync, copyFileSync, statSync, existsSync } from 'node:fs';
+import { readdirSync, readFileSync, mkdirSync, writeFileSync, copyFileSync, statSync, existsSync, rmSync } from 'node:fs';
 import { join, basename, extname, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const SKILLS_DIR = join(ROOT, 'skills');
-
 const SHARED_DIR = join(SKILLS_DIR, '_shared');
 const CHECK_ONLY = process.argv.includes('--check');
+
+const DOC_FILES = new Set(['BENCHMARKS.md', 'CHANGELOG.md', 'CONTRIBUTING.md']);
+const PLATFORM_DIRS = [
+  join(ROOT, '.claude', 'skills'),
+  join(ROOT, '.agents', 'skills'),
+  join(ROOT, '.cursor', 'skills'),
+  join(ROOT, '.gemini', 'skills'),
+];
+// Output shapes from before 1.11 (flat files). Removed on sync so stale copies never linger.
+const LEGACY_OUTPUTS = [join(ROOT, '.cursor', 'rules')];
+
+const problems = [];
+
+// ─── Skills ───
+
+const skills = readdirSync(SKILLS_DIR)
+  .filter(f => f !== '_shared' && statSync(join(SKILLS_DIR, f)).isDirectory())
+  .map(name => ({ name, path: join(SKILLS_DIR, name) }));
+
+for (const f of readdirSync(SKILLS_DIR)) {
+  const full = join(SKILLS_DIR, f);
+  if (statSync(full).isDirectory() || DOC_FILES.has(f)) continue;
+  problems.push(`skills/${f}: only skill folders and ${[...DOC_FILES].join(', ')} belong in skills/`);
+}
 
 // ─── Shared blocks ───
 // skills/_shared/[block].md is the single source for rules several skills state.
@@ -60,188 +87,135 @@ function renderShared(text, file) {
   });
 }
 
-function sharedTargets() {
-  return readdirSync(SKILLS_DIR).flatMap(entry => {
-    const full = join(SKILLS_DIR, entry);
-    if (entry === '_shared') return [];
-    if (statSync(full).isDirectory()) {
-      const refs = join(full, 'references');
-      const refFiles = existsSync(refs) ? readdirSync(refs).filter(f => extname(f) === '.md').map(f => join(refs, f)) : [];
-      return [join(full, 'SKILL.md'), ...refFiles].filter(f => existsSync(f));
-    }
-    return extname(entry) === '.md' ? [full] : [];
-  });
-}
-
-const drifted = [];
-let rendered = 0;
-for (const file of sharedTargets()) {
-  const rel = relative(ROOT, file);
-  const before = readFileSync(file, 'utf8');
-  let after;
-  try {
-    after = renderShared(before, rel);
-  } catch (err) {
-    console.error(`  ✗ ${err.message}`);
-    process.exit(1);
-  }
-  if (after === before) continue;
-  drifted.push(rel);
-  if (!CHECK_ONLY) {
-    writeFileSync(file, after);
-    rendered++;
-  }
-}
-
-if (CHECK_ONLY) {
-  if (drifted.length > 0) {
-    console.error(`\nShared block drift in ${drifted.length} file(s):\n${drifted.map(f => `  ✗ ${f}`).join('\n')}\n\nEdit skills/_shared/, then run npm run sync.\n`);
-    process.exit(1);
-  }
-  console.log(`\nShared blocks: ${Object.keys(sharedBlocks).length} blocks, no drift.\n`);
-  process.exit(0);
-}
-if (rendered > 0) console.log(`\nShared blocks: refreshed ${rendered} file(s): ${drifted.join(', ')}`);
-
-const dirEntries = readdirSync(SKILLS_DIR);
-
-// Directory skills: skills/[name]/SKILL.md
-const dirSkills = dirEntries
-  .filter(f => statSync(join(SKILLS_DIR, f)).isDirectory() && existsSync(join(SKILLS_DIR, f, 'SKILL.md')))
-  .map(f => ({ name: f, path: join(SKILLS_DIR, f) }));
-const dirSkillNames = new Set(dirSkills.map(s => s.name));
-
-// Read all .md files from skills/
-const sourceFiles = dirEntries
-  .filter(f => extname(f) === '.md')
-  .map(f => ({ name: basename(f, '.md'), path: join(SKILLS_DIR, f), file: f }))
-  .filter(f => !dirSkillNames.has(f.name)); // a directory skill owns its name
-
-// Companion assets (e.g. crisp-funnel-kit.html) — copied alongside the skill they belong to.
-const assetFiles = dirEntries
-  .filter(f => extname(f) === '.html')
-  .map(f => ({ name: basename(f, '.html'), path: join(SKILLS_DIR, f), file: f }));
-
-const skillFiles = sourceFiles.filter(f => !['BENCHMARKS', 'CHANGELOG', 'CONTRIBUTING'].includes(f.name));
-const docFiles = sourceFiles.filter(f => ['BENCHMARKS', 'CHANGELOG', 'CONTRIBUTING'].includes(f.name));
-
-// An asset belongs to a skill when its name equals the skill name or starts with `${skill}-`.
-function assetsForSkill(skillName) {
-  return assetFiles.filter(a => a.name === skillName || a.name.startsWith(`${skillName}-`));
-}
-
-let copied = 0;
-let errors = 0;
-
-function ensureDir(dir) {
-  mkdirSync(dir, { recursive: true });
-}
-
-function copy(src, dest) {
-  try {
-    ensureDir(dirname(dest));
-    copyFileSync(src, dest);
-    console.log(`  ✓ ${dest.replace(ROOT + '/', '')}`);
-    copied++;
-  } catch (err) {
-    console.error(`  ✗ ${dest.replace(ROOT + '/', '')} — ${err.message}`);
-    errors++;
-  }
-}
-
-// Recursively list every file in a directory skill, as paths relative to its root.
 function treeFiles(root, dir = root) {
   return readdirSync(dir).flatMap(entry => {
+    if (entry === '.DS_Store') return [];
     const full = join(dir, entry);
     return statSync(full).isDirectory() ? treeFiles(root, full) : [relative(root, full)];
   });
 }
 
-// Flatten a directory skill into one markdown document for flat platforms:
-// SKILL.md first, then each references/*.md appended under a labelled divider.
-function flattenSkill(skill) {
-  let out = readFileSync(join(skill.path, 'SKILL.md'), 'utf8');
-  const refsDir = join(skill.path, 'references');
-  if (existsSync(refsDir)) {
-    for (const ref of readdirSync(refsDir).filter(f => extname(f) === '.md').sort()) {
-      out += `\n\n---\n\n<!-- references/${ref} -->\n\n${readFileSync(join(refsDir, ref), 'utf8')}`;
+const sharedDrift = [];
+for (const skill of skills) {
+  for (const rel of treeFiles(skill.path).filter(f => extname(f) === '.md')) {
+    const file = join(skill.path, rel);
+    const before = readFileSync(file, 'utf8');
+    let after;
+    try {
+      after = renderShared(before, relative(ROOT, file));
+    } catch (err) {
+      console.error(`  ✗ ${err.message}`);
+      process.exit(1);
+    }
+    if (after === before) continue;
+    sharedDrift.push(relative(ROOT, file));
+    if (!CHECK_ONLY) writeFileSync(file, after);
+  }
+}
+
+// ─── Lint frontmatter ───
+
+function frontmatter(text) {
+  const m = text.match(/^---\n([\s\S]*?)\n---\n/);
+  if (!m) return null;
+  const fm = {};
+  for (const line of m[1].split('\n')) {
+    const kv = line.match(/^([a-zA-Z-]+):\s*(.*)$/);
+    if (kv) fm[kv[1]] = kv[2].replace(/^["']|["']$/g, '');
+  }
+  fm.metadataVersion = (m[1].match(/^metadata:\n(?:  .*\n)*?  version:\s*"?([^"\n]+)"?/m) || [])[1];
+  return fm;
+}
+
+for (const skill of skills) {
+  const rel = `skills/${skill.name}/SKILL.md`;
+  if (!existsSync(join(skill.path, 'SKILL.md'))) { problems.push(`${rel}: missing`); continue; }
+  const fm = frontmatter(readFileSync(join(skill.path, 'SKILL.md'), 'utf8'));
+  if (!fm) { problems.push(`${rel}: no frontmatter`); continue; }
+  if (fm.name !== skill.name) problems.push(`${rel}: name "${fm.name}" does not match folder "${skill.name}"`);
+  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(skill.name) || skill.name.length > 64) problems.push(`${rel}: folder name must be lowercase-hyphenated, 64 chars max`);
+  if (!fm.description) problems.push(`${rel}: description missing`);
+  else {
+    if (fm.description.length > 1024) problems.push(`${rel}: description is ${fm.description.length} chars (max 1024)`);
+    if (!/\bUse (when|for|it|this|after|before|to|during|at|on|as|in)\b/i.test(fm.description)) problems.push(`${rel}: description needs a "Use when ..." trigger clause`);
+  }
+  if ('version' in fm) problems.push(`${rel}: version belongs under metadata, not top level`);
+  if (!fm.metadataVersion) problems.push(`${rel}: metadata.version missing`);
+}
+
+// ─── Plugin manifest version ───
+
+const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
+const manifestDrift = [];
+for (const file of ['plugin.json', 'marketplace.json']) {
+  const path = join(ROOT, '.claude-plugin', file);
+  if (!existsSync(path)) continue;
+  const json = JSON.parse(readFileSync(path, 'utf8'));
+  const targets = file === 'plugin.json' ? [json] : json.plugins ?? [];
+  if (targets.some(t => t.version !== pkg.version)) {
+    manifestDrift.push(`.claude-plugin/${file}`);
+    targets.forEach(t => { t.version = pkg.version; });
+    if (!CHECK_ONLY) writeFileSync(path, JSON.stringify(json, null, 2) + '\n');
+  }
+}
+
+// ─── Platform copies ───
+
+function platformDrift() {
+  const drift = [];
+  for (const out of PLATFORM_DIRS) {
+    const label = relative(ROOT, out);
+    const expected = new Set();
+    for (const skill of skills) {
+      for (const rel of treeFiles(skill.path)) {
+        const key = join(skill.name, rel);
+        expected.add(key);
+        const dest = join(out, key);
+        if (!existsSync(dest) || !readFileSync(dest).equals(readFileSync(join(skill.path, rel)))) drift.push(`${label}/${key}`);
+      }
+    }
+    if (existsSync(out)) {
+      for (const rel of treeFiles(out)) if (!expected.has(rel)) drift.push(`${label}/${rel} (stale)`);
     }
   }
-  return out;
+  for (const legacy of LEGACY_OUTPUTS) if (existsSync(legacy)) drift.push(`${relative(ROOT, legacy)} (legacy flat output)`);
+  return drift;
 }
 
-function writeOut(dest, content) {
-  try {
-    ensureDir(dirname(dest));
-    writeFileSync(dest, content);
-    console.log(`  ✓ ${dest.replace(ROOT + '/', '')} (flattened)`);
-    copied++;
-  } catch (err) {
-    console.error(`  ✗ ${dest.replace(ROOT + '/', '')} — ${err.message}`);
-    errors++;
+if (problems.length > 0) {
+  console.error(`\nSkill lint failed:\n${problems.map(p => `  ✗ ${p}`).join('\n')}\n`);
+  process.exit(1);
+}
+
+if (CHECK_ONLY) {
+  const drift = [
+    ...sharedDrift.map(f => `${f} (shared block)`),
+    ...manifestDrift.map(f => `${f} (version is not ${pkg.version})`),
+    ...platformDrift(),
+  ];
+  if (drift.length > 0) {
+    console.error(`\nDrift in ${drift.length} file(s):\n${drift.slice(0, 40).map(f => `  ✗ ${f}`).join('\n')}${drift.length > 40 ? `\n  ...and ${drift.length - 40} more` : ''}\n\nEdit skills/ or skills/_shared/, then run npm run sync.\n`);
+    process.exit(1);
   }
+  console.log(`\nCheck passed: ${skills.length} skills, ${Object.keys(sharedBlocks).length} shared blocks, version ${pkg.version}, no drift.\n`);
+  process.exit(0);
 }
 
-console.log(`\nCRISP sync — ${skillFiles.length + dirSkills.length} skills, ${docFiles.length} docs\n`);
+if (sharedDrift.length > 0) console.log(`\nShared blocks: refreshed ${sharedDrift.length} file(s): ${sharedDrift.join(', ')}`);
+if (manifestDrift.length > 0) console.log(`Plugin manifests: version set to ${pkg.version} in ${manifestDrift.join(', ')}`);
 
-// Sync each directory skill: full tree to Claude Code and Antigravity,
-// flattened single file (plus .html assets) to Cursor and Gemini.
-for (const skill of dirSkills) {
-  console.log(`[${skill.name}]`);
+for (const dir of [...PLATFORM_DIRS, ...LEGACY_OUTPUTS]) rmSync(dir, { recursive: true, force: true });
 
+let copied = 0;
+for (const skill of skills) {
   for (const rel of treeFiles(skill.path)) {
-    copy(join(skill.path, rel), join(ROOT, '.claude', 'skills', skill.name, rel));
-    copy(join(skill.path, rel), join(ROOT, '.agents', 'skills', skill.name, rel));
+    for (const out of PLATFORM_DIRS) {
+      const dest = join(out, skill.name, rel);
+      mkdirSync(dirname(dest), { recursive: true });
+      copyFileSync(join(skill.path, rel), dest);
+      copied++;
+    }
   }
-
-  const flat = flattenSkill(skill);
-  writeOut(join(ROOT, '.cursor', 'rules', `${skill.name}.md`), flat);
-  writeOut(join(ROOT, '.gemini', 'skills', `${skill.name}.md`), flat);
-
-  for (const rel of treeFiles(skill.path).filter(f => extname(f) === '.html')) {
-    copy(join(skill.path, rel), join(ROOT, '.cursor', 'rules', basename(rel)));
-    copy(join(skill.path, rel), join(ROOT, '.gemini', 'skills', basename(rel)));
-  }
-
-  console.log('');
 }
 
-// Sync each skill file to all four platform directories
-for (const skill of skillFiles) {
-  console.log(`[${skill.name}]`);
-
-  // Claude Code: .claude/skills/[name]/SKILL.md
-  copy(skill.path, join(ROOT, '.claude', 'skills', skill.name, 'SKILL.md'));
-
-  // Cursor: .cursor/rules/[name].md
-  copy(skill.path, join(ROOT, '.cursor', 'rules', `${skill.name}.md`));
-
-  // Antigravity: .agents/skills/[name]/SKILL.md
-  copy(skill.path, join(ROOT, '.agents', 'skills', skill.name, 'SKILL.md'));
-
-  // Gemini CLI: .gemini/skills/[name].md
-  copy(skill.path, join(ROOT, '.gemini', 'skills', `${skill.name}.md`));
-
-  // Companion assets travel into the same skill location on each platform.
-  for (const asset of assetsForSkill(skill.name)) {
-    copy(asset.path, join(ROOT, '.claude', 'skills', skill.name, asset.file));
-    copy(asset.path, join(ROOT, '.cursor', 'rules', asset.file));
-    copy(asset.path, join(ROOT, '.agents', 'skills', skill.name, asset.file));
-    copy(asset.path, join(ROOT, '.gemini', 'skills', asset.file));
-  }
-
-  console.log('');
-}
-
-// Doc files (BENCHMARKS.md, CHANGELOG.md, CONTRIBUTING.md) stay canonical in skills/
-// They're already there — no platform copy needed for these
-if (docFiles.length > 0) {
-  console.log(`[docs — skills/ only]`);
-  for (const doc of docFiles) {
-    console.log(`  ✓ skills/${doc.file} (already canonical)`);
-  }
-  console.log('');
-}
-
-console.log(`Sync complete: ${copied} files copied, ${errors} errors.\n`);
-if (errors > 0) process.exit(1);
+console.log(`\nCRISP sync: ${skills.length} skills to ${PLATFORM_DIRS.length} platforms, ${copied} files copied.\n`);

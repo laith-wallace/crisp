@@ -5,7 +5,7 @@
  * Per-slug critique/audit snapshots, so score history is queryable per
  * surface instead of grep'd out of one growing `## History` section in
  * .crisp.md. .crisp.md's History line stays too (cheap, project-wide,
- * human-skimmable) — this is the structured trend source for one target.
+ * human-skimmable) - this is the structured trend source for one target.
  *
  * Layout: .crisp/critique/<slug>--<YYYY-MM-DD>--<HHMMSS>.md
  *   ---
@@ -36,11 +36,11 @@ export function slug(target) {
     .replace(/^https?:\/\//, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
-  return s || null; // vague/root-level targets slug to null — caller should skip persistence
+  return s || null; // vague/root-level targets slug to null - caller should skip persistence
 }
 
 function timestampParts(date) {
-  // date: 'YYYY-MM-DD' (required — callers pass it from `date +%Y-%m-%d`, never guess it here).
+  // date: 'YYYY-MM-DD' (required - callers pass it from `date +%Y-%m-%d`, never guess it here).
   // The time-of-day suffix only needs to make same-day runs sort uniquely, so wall-clock
   // time + a random tiebreaker is fine here (unlike Workflow scripts, this is plain Node).
   const now = new Date();
@@ -68,7 +68,7 @@ function parseFrontmatter(text) {
 
 export function write(target, bodyPath, meta) {
   const s = slug(target);
-  if (!s) return { skipped: true, reason: 'target slugged to empty/null — vague or root-level target' };
+  if (!s) return { skipped: true, reason: 'target slugged to empty/null - vague or root-level target' };
 
   mkdirSync(STORE_DIR, { recursive: true });
   const body = readFileSync(bodyPath, 'utf8');
