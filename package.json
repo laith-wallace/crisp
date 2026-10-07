@@ -4,7 +4,7 @@
   "description": "CRISP design intelligence skills for AI agents: reviews, audits, accessibility, motion craft, DESIGN.md, and an edit-time design detector",
   "type": "module",
   "bin": {
-    "crisp": "./bin/crisp.mjs"
+    "crisp": "bin/crisp.mjs"
   },
   "files": [
     "bin/",
@@ -54,7 +54,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/laith-wallace/crisp"
+    "url": "git+https://github.com/laith-wallace/crisp.git"
   },
   "homepage": "https://github.com/laith-wallace/crisp"
 }
