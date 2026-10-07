@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: decisions-suppression
+context:
+  scaffold_script: fixture.sh

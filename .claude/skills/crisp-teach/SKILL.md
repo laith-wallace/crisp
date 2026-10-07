@@ -1,9 +1,9 @@
 ---
 name: crisp-teach
-description: One-time project onboarding - interviews you about users, design system, and benchmarks, then writes .crisp.md, the context file every other CRISP command reads.
-user-invocable: true
+description: One-time project onboarding - interviews you about users, design system, and benchmarks, then writes .crisp.md, the context file every other CRISP command reads. Use when starting CRISP on a project or when .crisp.md is missing: 'set up CRISP', 'teach CRISP about my product', 'onboard the design skills'.
 disable-model-invocation: true
-version: "1.4.0"
+metadata:
+  version: "1.5.0"
 ---
 
 # /crisp-teach - Project Onboarding
@@ -12,7 +12,7 @@ Run this command once per project. It learns your design context through a struc
 
 ## Step 0: Scan Before Asking
 
-If running inside a codebase, scan it before interviewing: `package.json` and the app framework, existing UI components and design tokens (CSS variables, theme files, Tailwind config), marketing pages, and the README. Pre-fill a draft answer for every section you can infer - product type, register, design system, key tokens, primary action - and present each as a confirmation ("This looks like a B2B SaaS product surface using Tailwind with a violet accent - right?") rather than a cold question.
+If running inside a codebase, scan it before interviewing: `package.json` and the app framework, existing UI components and design tokens (CSS variables, theme files, Tailwind config, and `DESIGN.md` if present), marketing pages, and the README. Pre-fill a draft answer for every section you can infer - product type, register, design system, key tokens, primary action - and present each as a confirmation ("This looks like a B2B SaaS product surface using Tailwind with a violet accent - right?") rather than a cold question.
 
 Only ask cold the questions the code cannot answer: who the users are, the job-to-be-done, failure modes, benchmarks, and known weaknesses. This turns a ten-minute interview into a two-minute confirmation.
 
@@ -76,6 +76,8 @@ Ask:
 ---
 
 ### Section 4: Design System
+
+If `DESIGN.md` exists ([Google's open token format](https://github.com/google-labs-code/design.md)), it is the source for tokens: confirm it instead of asking, and write `Key tokens: see DESIGN.md` in `.crisp.md` so the two files never disagree. If there is no `DESIGN.md` and the user wants one, suggest `/crisp-study` on the codebase after this interview.
 
 Ask:
 - "Do you have a design system or component library? If so, name it or describe it briefly."

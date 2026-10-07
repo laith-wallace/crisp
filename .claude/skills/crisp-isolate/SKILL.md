@@ -1,9 +1,8 @@
 ---
 name: crisp-isolate
 description: Start every task in its own Git worktree and branch cut from origin/main, after a scope check against open PRs and other agents' uncommitted work - so parallel agents never collide and nothing is built on main. Use at the start of any feature, fix, or task before writing code, and for cleanup once the PR merges. Claude Code and Cursor manage the worktree themselves; the scope check and verification still apply.
-user-invocable: true
-version: "1.0.0"
 metadata:
+  version: "1.0.0"
   author: Laith Wallace - FlowConverts
   adapted-from: michaelshimeles/skills new-feature (worktree-per-task convention)
 ---

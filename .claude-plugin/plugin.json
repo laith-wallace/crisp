@@ -1,9 +1,13 @@
 {
   "name": "crisp",
-  "description": "CRISP design evaluation framework for Claude Code. Includes skills for auditing, reviewing, briefing, teaching, accessibility, copy, AI, and design engineering.",
-  "version": "1.0.0",
+  "version": "1.11.0",
+  "description": "CRISP design intelligence for AI agents: design reviews and audits with A-F grades, accessibility, AI surfaces, motion craft, funnels, DESIGN.md study, before/after proof, and a design detector that checks every UI edit.",
   "author": {
-    "name": "laith-wallace"
+    "name": "Laith Wallace",
+    "url": "https://github.com/laith-wallace"
   },
-  "tags": ["design", "crisp", "ui", "accessibility", "review", "audit", "copy", "research"]
+  "homepage": "https://github.com/laith-wallace/crisp",
+  "repository": "https://github.com/laith-wallace/crisp",
+  "license": "MIT",
+  "keywords": ["design", "ux", "ui", "crisp", "accessibility", "design-review", "audit", "anti-slop", "design-md", "motion"]
 }

@@ -1,8 +1,8 @@
 ---
 name: crisp-copy
 description: Write and evaluate UI microcopy - labels, empty states, errors, tooltips, CTAs, onboarding hints - in audit or generate mode. Use when the user asks for button labels, error wording, or empty state text, even if they never say 'microcopy'.
-user-invocable: true
-version: "1.1.0"
+metadata:
+  version: "1.1.0"
 ---
 
 # /crisp-copy - UX Microcopy Specialist

@@ -11,6 +11,40 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ---
 
+## [1.11.0] - 2026-10-06
+
+### Shipping (everyone gets the real pack)
+- **P0** Every skill is now a folder: `skills/<name>/SKILL.md`, the [Agent Skills](https://agentskills.io/specification) layout. 18 skills were flat files, so a Claude Code plugin install loaded only 7 of them. All 29 now load on every route.
+- **P0** The npm installer copied `<skill>.md` files that no longer existed and listed only 12 skills. It now reads the skill list from `skills/` and copies whole folders to Claude Code, the shared `~/.agents/skills` folder (Codex, Copilot, Antigravity), Cursor, and Gemini CLI.
+- **P0** `.claude-plugin/plugin.json` and `marketplace.json` pinned version 1.0.0, which held plugin users on 1.0.0. `npm run sync` now writes the package version into both, and `npm run check` fails when they disagree. `tags` replaced by `keywords`; `license`, `repository`, and `homepage` added. Both pass `claude plugin validate --strict`.
+- **P1** Cursor and Gemini CLI now get skill folders (`.cursor/skills/`, `.gemini/skills/`) instead of flattened files they did not load as skills. Bundled scripts such as `crisp-evidence/scripts/evidence.sh` now reach every platform. `.cursor/rules/` is removed.
+- **P1** Frontmatter: `version` moved under `metadata`, the default `user-invocable: true` removed. Sync lints every skill: name matches folder, description under 1024 characters with a "Use when" trigger clause, `metadata.version` present. Trigger clauses added to `/crisp`, `/crisp-brief`, `/crisp-research`, `/crisp-teach`, and `/feature-design`.
+- **P2** Removed stale copies and stray files: `files/`, `files.zip`, `funnel-kit/`, `skills/*.skill`, root `crisp-design-eng.html`, and the third-party `GSAPskills/`.
+
+### Design detector
+- **P1** 14 rules grow to 43, each with positive and negative unit tests. New slop tells: glow-halo, decorative-blur-blob, hero-pill-badge, icon-tile-stack, template-copy, aphoristic-cadence, cream-generic-sans, grid-pattern-background, repeating-stripes-gradient, thin-border-wide-shadow, hover-zoom, pulsing-dot, logo-marquee, emoji-heading-icon. New quality and accessibility rules: tiny-text, viewport-zoom-disabled, positive-tabindex, clickable-div, icon-button-no-label, placeholder-as-label, autoplay-unmuted-video, transition-all, missing-reduced-motion, heading-level-skip, lorem-ipsum, dead-href, z-index-arms-race, low-contrast-pair (WCAG ratio computed per rule block), paragraph-tight-leading. `numbered-section-label` also catches 3+ `01 / 02 / 03` text nodes.
+- **P1** Three false positives fixed in v1 rules: `background-color: #fff` read as text colour, `disabled={isSubmitting}` read as a pre-disabled submit, `.card .card-title` read as nested cards.
+- **P1** The PostToolUse hook now reports only findings the edit added. The pre-edit text is rebuilt from the Edit or MultiEdit input, or read from `git HEAD` for Write, so old problems never repeat on every edit.
+- **P1** New Stop hook (`crisp hook --stop`): one full pass over every changed UI file against `git HEAD` before the agent stops. New P0/P1 findings block the stop once; a second stop always passes.
+- **P1** Plugin installs register both hooks automatically through `hooks/hooks.json`. The npm installer offers both for Claude Code projects.
+- **P2** `crisp detect --json` no longer truncates output over 64KB when piped.
+
+### DESIGN.md
+- **P1** `crisp design-md lint` and `crisp design-md diff` for [Google's DESIGN.md format](https://github.com/google-labs-code/design.md): broken and circular token references, invalid values, and contrast. `diff --git <ref>` compares with a commit. Zero dependencies.
+- **P1** Detector rule `off-token-color`: with a `DESIGN.md` in the repo, hex colours outside the token set are flagged.
+- **P2** `/crisp-teach` reads tokens from `DESIGN.md` when it exists instead of asking for them.
+
+### New skills
+- **P1** `/crisp-study` - extracts the design DNA of a URL, screenshot, or codebase into a linted `DESIGN.md` with provenance for every token. Study, not clone. Inspired by nutlope/hallmark `study`.
+- **P1** `/crisp-tune` - `bolder`, `quieter`, `simpler` as fixed, countable moves, plus VARIANCE, MOTION, and DENSITY dials (1-10), all on-token, checked by the detector. Inspired by impeccable and taste-skill.
+- **P1** `/crisp-stress` - 16-case worst-data matrix with a binary pass condition per case and P0-P3 severity; `--fix` repairs P0/P1 only. Inspired by emilkowalski/skills `break-ui`.
+- **P1** `/crisp-variants` - 2 to 5 genuinely different variants of one component behind a dev-only switcher; picking one deletes the rest with zero dead code. Inspired by emilkowalski/skills `prototype`.
+- **P2** `/crisp` router lists all four and explains the always-on detector.
+
+### Tests and evals
+- **P1** `npm test`: 146 unit tests (detector rules, hooks, CLI, DESIGN.md) plus the skill lint and drift check. GitHub Actions runs it on Node 18 and 22 and checks that package and plugin versions agree.
+- **P1** `evals/` for `claude plugin eval`: one triggering case per skill, 5 negative cases, and 7 graded cases built from `tests/fixtures` and `tests/expected`. See `evals/README.md`.
+
 ## [1.10.1] - 2026-10-06
 
 ### Slop Check

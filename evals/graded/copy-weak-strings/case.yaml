@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: copy-weak-strings
+context:
+  add_dirs: [fixture]

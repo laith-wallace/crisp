@@ -5,7 +5,7 @@
  * Reports drift between a project's CRISP artifacts (.crisp.md, .crisp/config.json)
  * and what the installed crisp package currently expects. This is honest about
  * what it can and can't know: it does not fabricate a schema-migration history
- * for versions before the version stamp existed (see crisp-teach.md's
+ * for versions before the version stamp existed (see crisp-teach/SKILL.md's
  * `<!-- crisp-teach: vX -->` line) - an unstamped file is reported as
  * "unknown vintage", not silently assumed current or silently assumed stale.
  *
@@ -198,14 +198,14 @@ export async function runDoctor(argv) {
   if (json) {
     console.log(JSON.stringify(output, null, 2));
   } else if (output.findings.length === 0) {
-    console.log('crisp doctor: clean — no drift found.');
+    console.log('crisp doctor: clean - no drift found.');
   } else {
     for (const f of output.findings) {
       console.log(`[${f.severity}] ${f.id} (${f.artifact})\n  ${f.summary}\n  Fix: ${f.fix}\n`);
     }
   }
 
-  return 0; // findings are reported, not failures — never exit non-zero here
+  return 0; // findings are reported, not failures - never exit non-zero here
 }
 
 const isMain = import.meta.url === `file://${process.argv[1]}`;

@@ -1,9 +1,8 @@
 ---
 name: crisp-evidence
 description: Runtime proof that a change works - the agent drives the app live while a recorder captures the session with timestamped setup, test_start, and assertion annotations (passed, failed, untested), then writes report.md and manifest.json for the PR. Headless environments swap the recorder for numbered screenshots; non-UI changes ship measured numbers or output pairs. Use when a change needs verifiable evidence instead of a prose claim, when reproducing a bug before fixing it, or before any PR that says 'tested'. Before/after design deltas belong to /crisp-proof.
-user-invocable: true
-version: "1.0.0"
 metadata:
+  version: "1.0.0"
   author: Laith Wallace - FlowConverts
   adapted-from: michaelshimeles/skills evidence-driven-testing (annotation protocol and guardrails; recorder rewritten as bash)
 ---

@@ -10,12 +10,13 @@
  *
  * Platform targets:
  *   Claude Code    ~/.claude/skills/[name]        → {project}/.claude/skills/[name]
- *   Cursor         ~/.cursor/skills-cursor/[name] → {project}/.agents/skills/[name]
- *   Antigravity    ~/.agents/skills/[name]         → {project}/.agents/skills/[name]
+ *   Cursor         ~/.cursor/skills/[name]         → {project}/.cursor/skills/[name]
+ *   Codex/Agents   ~/.agents/skills/[name]         → {project}/.agents/skills/[name]
+ *   Gemini CLI     ~/.gemini/skills/[name]         → {project}/.gemini/skills/[name]
  */
 
 import { readdirSync, mkdirSync, symlinkSync, lstatSync, unlinkSync, readlinkSync, existsSync, statSync } from 'node:fs';
-import { join, extname, basename, dirname } from 'node:path';
+import { join, dirname } from 'node:path';
 import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 
@@ -23,19 +24,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const HOME = homedir();
 
-// Skill names come from the canonical skills/ sources: flat skills/[name].md
-// plus directory skills skills/[name]/SKILL.md.
-const NON_SKILLS = new Set(['BENCHMARKS', 'CHANGELOG', 'CONTRIBUTING']);
+// Every skills/[name]/SKILL.md folder is a skill.
 const SKILLS_SRC = join(ROOT, 'skills');
-const skillEntries = readdirSync(SKILLS_SRC);
-const SKILLS = [
-  ...skillEntries
-    .filter(f => extname(f) === '.md')
-    .map(f => basename(f, '.md'))
-    .filter(name => !NON_SKILLS.has(name)),
-  ...skillEntries
-    .filter(f => statSync(join(SKILLS_SRC, f)).isDirectory() && existsSync(join(SKILLS_SRC, f, 'SKILL.md'))),
-];
+const SKILLS = readdirSync(SKILLS_SRC)
+  .filter(f => f !== '_shared' && statSync(join(SKILLS_SRC, f)).isDirectory() && existsSync(join(SKILLS_SRC, f, 'SKILL.md')));
 
 const PLATFORMS = [
   {
@@ -47,14 +39,20 @@ const PLATFORMS = [
   {
     name: 'Cursor',
     requireHome: join(HOME, '.cursor'),
-    globalDir:   join(HOME, '.cursor', 'skills-cursor'),
-    srcForSkill: name => join(ROOT, '.agents', 'skills', name),
+    globalDir:   join(HOME, '.cursor', 'skills'),
+    srcForSkill: name => join(ROOT, '.cursor', 'skills', name),
   },
   {
-    name: 'Antigravity',
+    name: 'Codex, Copilot, Antigravity',
     requireHome: join(HOME, '.agents'),
     globalDir:   join(HOME, '.agents', 'skills'),
     srcForSkill: name => join(ROOT, '.agents', 'skills', name),
+  },
+  {
+    name: 'Gemini CLI',
+    requireHome: join(HOME, '.gemini'),
+    globalDir:   join(HOME, '.gemini', 'skills'),
+    srcForSkill: name => join(ROOT, '.gemini', 'skills', name),
   },
 ];
 
@@ -79,11 +77,11 @@ function createOrUpdateSymlink(linkPath, targetPath) {
 
 let created = 0, updated = 0, skipped = 0, conflicts = 0, errors = 0;
 
-console.log(`\nCRISP install-global — ${SKILLS.length} skills, ${PLATFORMS.length} platforms\n`);
+console.log(`\nCRISP install-global - ${SKILLS.length} skills, ${PLATFORMS.length} platforms\n`);
 
 for (const platform of PLATFORMS) {
   if (!existsSync(platform.requireHome)) {
-    console.log(`[${platform.name}] — skipped (${platform.requireHome} not found)\n`);
+    console.log(`[${platform.name}] - skipped (${platform.requireHome} not found)\n`);
     continue;
   }
 
@@ -103,7 +101,7 @@ for (const platform of PLATFORMS) {
     const linkPath = join(platform.globalDir, skill);
 
     if (!existsSync(src)) {
-      console.error(`  ✗ ${skill} — source missing, run "npm run sync" first`);
+      console.error(`  ✗ ${skill} - source missing, run "npm run sync" first`);
       errors++;
       continue;
     }
@@ -114,7 +112,7 @@ for (const platform of PLATFORMS) {
       if (result === 'created')  { console.log(`  + ${shortLink}`); created++; }
       if (result === 'updated')  { console.log(`  ↺ ${shortLink} (replaced stale link)`); updated++; }
       if (result === 'skipped')  { console.log(`  ✓ ${shortLink}`); skipped++; }
-      if (result === 'conflict') { console.warn(`  ⚠ ${shortLink} — real file exists, skipping`); conflicts++; }
+      if (result === 'conflict') { console.warn(`  ⚠ ${shortLink} - real file exists, skipping`); conflicts++; }
     } catch (err) {
       console.error(`  ✗ ${skill}: ${err.message}`);
       errors++;

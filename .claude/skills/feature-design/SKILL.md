@@ -1,8 +1,8 @@
 ---
 name: feature-design
-description: Design a new product feature using CRISP principles - takes a problem statement and produces user flows, component decisions, compliance checks, and decision rationale. Reads .brief.md and .research.md when present.
-user-invocable: true
-version: "1.1.0"
+description: Design a new product feature using CRISP principles - takes a problem statement and produces user flows, component decisions, compliance checks, and decision rationale. Reads .brief.md and .research.md when present. Use when designing a new feature from a problem statement: 'design this feature', 'give me the user flow', 'spec the screens for X'. Developer specs belong to /handoff.
+metadata:
+  version: "1.1.0"
 ---
 
 # /feature-design - CRISP Feature Design

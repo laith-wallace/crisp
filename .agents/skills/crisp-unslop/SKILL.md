@@ -1,9 +1,8 @@
 ---
 name: crisp-unslop
 description: Edit prose so it reads human and keeps the writer's voice, or detect AI-slop patterns without rewriting - landing page copy, blog posts, docs, release notes, emails, PR bodies. Use when text 'sounds like AI', needs to be sharper or more direct, or before any human-facing text ships. UI strings (labels, errors, CTAs) belong to /crisp-copy.
-user-invocable: true
-version: "1.0.0"
 metadata:
+  version: "1.0.0"
   author: Laith Wallace - FlowConverts
   adapted-from: cursor/plugins pstack unslop (MIT), petergyang/no-ai-slop (MIT)
 ---

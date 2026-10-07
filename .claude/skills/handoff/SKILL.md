@@ -1,8 +1,8 @@
 ---
 name: handoff
 description: Convert a CRISP-reviewed design into a developer-ready specification - component states, implementation notes, token references, edge cases, and an accessibility checklist. Use after /crisp-audit or /crisp-review, or for 'dev handoff', 'spec this for engineering'.
-user-invocable: true
-version: "1.1.0"
+metadata:
+  version: "1.1.0"
 ---
 
 # /handoff - Developer Handoff Spec
