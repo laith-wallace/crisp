@@ -1,6 +1,6 @@
 ---
 name: crisp-teach
-description: One-time project onboarding - interviews you about users, design system, and benchmarks, then writes .crisp.md, the context file every other CRISP command reads. Use when starting CRISP on a project or when .crisp.md is missing: 'set up CRISP', 'teach CRISP about my product', 'onboard the design skills'.
+description: "One-time project onboarding - interviews you about users, design system, and benchmarks, then writes .crisp.md, the context file every other CRISP command reads. Use when starting CRISP on a project or when .crisp.md is missing: 'set up CRISP', 'teach CRISP about my product', 'onboard the design skills'."
 disable-model-invocation: true
 metadata:
   version: "1.5.0"

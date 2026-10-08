@@ -1,6 +1,6 @@
 ---
 name: crisp-brief
-description: Turn a vague design request into a structured, unambiguous design brief - writes .brief.md with problem statement, target user, observable success criteria, scope, constraints, and CRISP priority. Use when a request is vague or before designing anything new: 'write a brief', 'scope this feature', 'what exactly are we building'.
+description: "Turn a vague design request into a structured, unambiguous design brief - writes .brief.md with problem statement, target user, observable success criteria, scope, constraints, and CRISP priority. Use when a request is vague or before designing anything new: 'write a brief', 'scope this feature', 'what exactly are we building'."
 metadata:
   version: "1.2.0"
 ---

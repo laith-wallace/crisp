@@ -1,6 +1,6 @@
 ---
 name: crisp
-description: Router for the CRISP skill pack - names every skill, its pipeline stage, and when to reach for it. Use when unsure which design or workflow skill fits: 'which crisp command should I use', 'what can CRISP do', 'where do I start with this design'.
+description: "Router for the CRISP skill pack - names every skill, its pipeline stage, and when to reach for it. Use when unsure which design or workflow skill fits: 'which crisp command should I use', 'what can CRISP do', 'where do I start with this design'."
 disable-model-invocation: true
 metadata:
   version: "1.4.0"
