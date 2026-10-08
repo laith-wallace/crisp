@@ -1,6 +1,6 @@
 ---
 name: crisp-design-eng
-description: Design engineering craft layer - motion decisions, micro-interaction quality, component polish, the invisible details that make an interface feel right. Use when an interaction feels janky or 'off', when adding or reviewing motion, or when polishing before ship: 'make it feel better', 'the modal feels wrong', 'add motion'. Home of the Mechanical Pre-Flight Checks run by /crisp-redesign and /crisp-funnel.
+description: "Design engineering craft layer - motion decisions, micro-interaction quality, component polish, the invisible details that make an interface feel right. Use when an interaction feels janky or 'off', when adding or reviewing motion, or when polishing before ship: 'make it feel better', 'the modal feels wrong', 'add motion'. Home of the Mechanical Pre-Flight Checks run by /crisp-redesign and /crisp-funnel."
 metadata:
   version: "1.2.1"
 ---

@@ -136,6 +136,9 @@ for (const skill of skills) {
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(skill.name) || skill.name.length > 64) problems.push(`${rel}: folder name must be lowercase-hyphenated, 64 chars max`);
   if (!fm.description) problems.push(`${rel}: description missing`);
   else {
+    // Strict YAML parsers (npx skills) reject an unquoted value containing ": " or " #".
+    const rawDesc = (readFileSync(join(skill.path, 'SKILL.md'), 'utf8').match(/^description: (.*)$/m) || [])[1] ?? '';
+    if (!/^["'|>]/.test(rawDesc) && /: | #/.test(rawDesc)) problems.push(`${rel}: description contains ": " or " #" so it must be wrapped in double quotes`);
     if (fm.description.length > 1024) problems.push(`${rel}: description is ${fm.description.length} chars (max 1024)`);
     if (!/\bUse (when|for|it|this|after|before|to|during|at|on|as|in)\b/i.test(fm.description)) problems.push(`${rel}: description needs a "Use when ..." trigger clause`);
   }
