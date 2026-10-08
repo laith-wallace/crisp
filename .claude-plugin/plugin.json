@@ -1,6 +1,6 @@
 {
   "name": "crisp",
-  "version": "1.11.0",
+  "version": "1.11.1",
   "description": "CRISP design intelligence for AI agents: design reviews and audits with A-F grades, accessibility, AI surfaces, motion craft, funnels, DESIGN.md study, before/after proof, and a design detector that checks every UI edit.",
   "author": {
     "name": "Laith Wallace",
@@ -9,5 +9,16 @@
   "homepage": "https://github.com/laith-wallace/crisp",
   "repository": "https://github.com/laith-wallace/crisp",
   "license": "MIT",
-  "keywords": ["design", "ux", "ui", "crisp", "accessibility", "design-review", "audit", "anti-slop", "design-md", "motion"]
+  "keywords": [
+    "design",
+    "ux",
+    "ui",
+    "crisp",
+    "accessibility",
+    "design-review",
+    "audit",
+    "anti-slop",
+    "design-md",
+    "motion"
+  ]
 }
