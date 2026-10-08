@@ -10,12 +10,19 @@
       "name": "crisp",
       "source": "./",
       "description": "Design reviews, audits, accessibility, motion craft, funnels, DESIGN.md study, before/after proof, and an edit-time design detector.",
-      "version": "1.11.0",
+      "version": "1.11.1",
       "author": {
         "name": "Laith Wallace"
       },
       "license": "MIT",
-      "keywords": ["design", "ux", "ui", "accessibility", "design-review", "anti-slop"]
+      "keywords": [
+        "design",
+        "ux",
+        "ui",
+        "accessibility",
+        "design-review",
+        "anti-slop"
+      ]
     }
   ]
 }

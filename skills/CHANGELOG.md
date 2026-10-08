@@ -11,6 +11,12 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ---
 
+## [1.11.1] - 2026-10-08
+
+### Install fix
+- **P0** `npx skills add laith-wallace/crisp` skipped 8 skills with a YAML parse error: /crisp, /crisp-audit, /crisp-brief, /crisp-design-eng, /crisp-research, /crisp-review, /crisp-teach, and /feature-design. Their unquoted `description` contained ": ". Those descriptions are now in double quotes, so all 29 skills install.
+- **P1** Sync lint fails when an unquoted description contains ": " or " #", so this cannot come back.
+
 ## [1.11.0] - 2026-10-06
 
 ### Shipping (everyone gets the real pack)
