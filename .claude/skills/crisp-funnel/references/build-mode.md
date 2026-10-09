@@ -1,6 +1,6 @@
 # Build Mode
 
-Use this when the user wants a new funnel built from a brief, or a rebuild of a failing one. Read the SKILL.md core first, then work the seven steps below in order. Page structure, copy voice, ad angles, and form design live in `landing-page-and-copy.md`.
+Use this when the user wants a new funnel built from a brief, or a rebuild of a failing one. Read the SKILL.md core first, then work the steps below in order. Page structure, copy voice, ad angles, and form design live in `landing-page-and-copy.md`. Look and feel lives in `art-direction.md`.
 
 ## Contents
 
@@ -9,6 +9,7 @@ Use this when the user wants a new funnel built from a brief, or a rebuild of a 
 - Step 2 - Set the strategy
 - Step 3 - Sequence the funnel
 - Step 4 - Write the copy
+- Step 4b - Set the art direction
 - Step 5 - Output the build plan
 - Step 6 - Assemble and review
 - Step 7 - Instrument tracking
@@ -89,6 +90,10 @@ Write every section to the offer and the audience, using the swipe file from Ste
 - Capture (08): the fewest fields the goal needs. Earn every field.
 - Confirmation (10): confirm the action, restate any booking, name the next step. Congratulate and point forward; do not just thank.
 
+## Step 4b - Set the art direction
+
+Load `art-direction.md` and work Steps 1 to 5 there: art direction, lane, palette, type, and the check against past builds. The kit's look is the CRISP brand. It is never the client's look unless the client is CRISP.
+
 ## Step 5 - Output the build plan
 
 Return this structure. Do not deviate.
@@ -103,6 +108,15 @@ Awareness assumed: [level] · offer type: [consultation / ready-now]
 Traffic: [source]
 Mechanism: [the named method]
 Transformation: [before-state] → [after-state]
+
+ART DIRECTION
+Scene: [scene sentence]
+Concept: [one idea]
+Signature moment: [the one thing they remember]
+Lane: [lane] · because [reason from the brief]
+Palette: bg [oklch] · text [oklch] · accent [oklch] (actions only)
+Type: display [font] · text [font]
+Past builds: differs on [axes] from the last [N] log lines
 
 SEQUENCE
 [01 Hook] → [02 Qualifier] → ... → [10 Confirmation]
@@ -147,10 +161,14 @@ Keep it decision-ready. Give options where a real choice exists (headlines), sin
 
 ## Step 6 - Assemble and review
 
-1. Assemble the HTML by pulling the named sections from `crisp-funnel-kit.html` in sequence and dropping in the Step 4 copy. Keep the tokens, the primitives, and the interaction behaviour intact. Do not restyle.
-2. Run `/crisp-review` on the assembled funnel. Return the grade and the top three issues with fixes.
-3. Apply the fixes. Re-run if the grade is below B.
-4. Only then present to the client.
+1. Assemble the HTML by pulling the named sections from `crisp-funnel-kit.html` in sequence and dropping in the Step 4 copy. Keep the structure, the spacing, the motion tokens, and the interaction behaviour intact.
+2. Swap the skin: replace every colour, font and radius token with the Step 4b values (`art-direction.md` Step 6). Do not keep the CRISP black and lime.
+3. Add the page furniture from `landing-page-and-copy.md` "Page furniture": meta and share tags, the product visual, and the legal footer.
+4. Run `/crisp-review` on the assembled funnel. Return the grade and the top three issues with fixes.
+5. Apply the fixes. Re-run if the grade is below B.
+6. Run the Mechanical Pre-Flight Checks, the art direction pre-flight (D1-D6), and the Award Pre-Flight (A1-A10).
+7. Append the build's line to `~/.crisp/art-direction-log.md`.
+8. Only then present to the client.
 
 No funnel ships unaudited. The review pass is the difference between this kit and a template marketplace.
 
@@ -173,3 +191,6 @@ Before calling a build done, confirm each:
 - [ ] Awareness level named in the output.
 - [ ] No invented proof anywhere: every testimonial and number is real or flagged as placeholder.
 - [ ] crisp-review pass run, grade B or above.
+- [ ] Art direction pre-flight: D1-D6 all pass. No CRISP black and lime on a client page.
+- [ ] Award pre-flight: A1-A10 reported, every failure named with its fix.
+- [ ] Meta, share tags and legal footer present (`landing-page-and-copy.md`, "Page furniture").

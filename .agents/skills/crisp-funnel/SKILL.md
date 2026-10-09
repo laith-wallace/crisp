@@ -1,8 +1,8 @@
 ---
 name: crisp-funnel
-description: Build, critique, and optimise funnels and landing pages using the ATM (Attention, Trust, Money) methodology and the ten-section Funnel Kit. Use for any landing page, sales page, opt-in, lead-gen offer, or ad-to-page flow, or when the user mentions conversion rate, CAC vs CPL, stages of awareness, or a page that is not converting - even if they never say 'funnel'.
+description: Build, critique, and optimise funnels and landing pages using the ATM (Attention, Trust, Money) methodology and the ten-section Funnel Kit. Use for any landing page, sales page, opt-in, lead-gen offer, or ad-to-page flow, or when the user mentions conversion rate, CAC vs CPL, stages of awareness, or a page that is not converting or looks generic - even if they never say 'funnel'. Builds to the Awwwards bar with a client-specific art direction.
 metadata:
-  version: "2.1.1"
+  version: "2.2.0"
   author: Laith Wallace - FlowConverts
 ---
 
@@ -14,9 +14,12 @@ This skill does two jobs: **build** a funnel from a brief, and **critique** an e
 
 - Building from a brief, or rebuilding a failing funnel → `references/build-mode.md`
 - Auditing or fixing an existing funnel → `references/critique-mode.md`
-- Either mode → `references/landing-page-and-copy.md` for page structure, copy voice, ad angles, and form design.
+- Either mode → `references/landing-page-and-copy.md` for page structure, page furniture (meta, product visual, legal footer), copy voice, ad angles, and form design.
+- Build mode, and critique mode when the page looks generic → `references/art-direction.md` for the client's own look.
 
 The section library for step funnels is `crisp-funnel-kit.html`. It holds ten tested sections. Reference them by name and number. Do not design new section types; if a brief needs one the library lacks, flag it for a library addition.
+
+**The kit is structure, not skin.** It ships in the CRISP brand look (near-black and lime). A client page keeps the kit's structure and behaviour and gets its own colours and type from `references/art-direction.md`. A client page in CRISP black and lime is a fail.
 
 ## The one idea
 
@@ -98,15 +101,23 @@ Three engines, run in sequence.
 | 09 | Booking | S | In-funnel slot selection. No redirect. |
 | 10 | Confirmation | C · S | Confirms the action, names the next step. |
 
+## Build target
+
+Default output is one self-contained HTML file built from the kit. When the user wants the page inside their own codebase, build it in their stack. With no stack named, use Next.js (App Router) with TypeScript, Tailwind CSS, and shadcn/ui (`npx shadcn@latest add button accordion input`), `next/font` for the chosen faces, and `next/image` for every image. Treat shadcn components as structure: restyle them to the art direction. Export `metadata` from a server component, never from a `use client` file.
+
 ## Benchmarks
 
 When critiquing or citing patterns, compare against strong B2B SaaS acquisition pages. Default set: **Stripe, Linear, Notion**. Swap or extend if the user names their own references. Show a concrete example of a pattern done well rather than abstract advice: name what the exemplar does and why it converts, then map it to the page in front of you.
 
 For direct-response and lead-gen offers (coaching, local service, info products), the SaaS defaults are the wrong register - use funnel-native exemplars instead: **Hims / Ro** (quiz-to-offer intake), **Typeform** (multi-step form craft), **Calendly** (in-flow booking), **Lemonade** (conversational qualifying). Match the exemplar set to the offer type before citing it.
 
+For the look, benchmark against current Awwwards Site of the Day and Honourable Mention winners in the client's category. Name one winner and the one craft decision to borrow (type, layout, motion, imagery). Borrow the decision, never the palette.
+
 ### Quality gate
 
 Before delivery, run the **Mechanical Pre-Flight Checks** from `/crisp-design-eng` on any assembled build - all eleven checks are countable and all must pass.
+
+Then run the **art direction pre-flight (D1-D6)** in `references/art-direction.md` and the **Award Pre-Flight (A1-A10)** in `/crisp-design-eng` `references/award-level-landing.md`. Report both as one line each, with every failure and its fix.
 
 Then run the Slop Check on the assembled build. Build every section so it passes the first time:
 

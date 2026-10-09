@@ -17,6 +17,28 @@ Top to bottom. Each block has one job: earn the scroll to the next. A single-pur
 
 When critiquing, check these in order and flag the first block that fails to earn the next scroll. That is usually where the leak starts.
 
+## Page furniture
+
+Both formats need these. They are not sections that sell; a missing one still costs trust, search traffic, or legal cover.
+
+**Meta and share tags**
+- One `<h1>`, and it holds the primary keyword.
+- URL slug: short, lowercase, holds the primary keyword (`/bathroom-fitting-leeds`, not `/lp-v3-final`).
+- `<title>`: primary keyword first, brand last, 60 characters or fewer.
+- `<meta name="description">`: keyword, one benefit, one call to action, 155 characters or fewer.
+- Open Graph: `og:title`, `og:description`, `og:url`, `og:image` at 1200x630. A favicon.
+- `<link rel="canonical">` that matches the final URL exactly.
+
+**Product visual**
+- Show the real thing above or just below the fold: the product, the service result, the place, the people. A screenshot in a device frame, real photography, or a graphic made from real content.
+- Never stock photos of people pointing at laptops. If no real visual exists yet, leave a flagged placeholder and name it in the open questions.
+- Every content image: descriptive `alt`, explicit `width` and `height`, WebP or AVIF, `loading="lazy"` below the fold.
+
+**Legal footer**
+- The page full stop (block 8) still ends with a small footer: privacy policy, terms, cookie notice if cookies are set, and a contact route.
+- A UK limited company shows its registered name, company number, and registered office on its website.
+- Keep it quiet: no navigation maze, no links that compete with the CTA.
+
 ## Copy voice
 
 - Write like a letter from a knowledgeable friend, not a brochure. The prospect should feel the copy describes their internal dialogue better than they could.

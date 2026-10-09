@@ -11,6 +11,15 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ---
 
+## [Unreleased]
+
+### /crisp-funnel 2.2.0 (client look, award bar)
+- **P1** Builds kept coming out in CRISP near-black and lime. Build mode told the agent to keep the kit tokens and "not restyle", and the kit ships in the CRISP brand skin. The kit is now structure only: every client build swaps the colour, font and radius tokens.
+- **P1** New `references/art-direction.md`: scene sentence, concept and signature moment; nine named aesthetic lanes; palette taken from the client; banned defaults (black and acid green, black and one neon, purple-blue gradient, cream and generic sans); a cross-project log at `~/.crisp/art-direction-log.md` so each build differs from the last 5 on 2 of 4 axes; pre-flight D1-D6.
+- **P1** Every build now runs the Award Pre-Flight (A1-A10) from `/crisp-design-eng`, and benchmarks the look against Awwwards winners in the client's category.
+- **P2** Page furniture added to `landing-page-and-copy.md`: meta and share tags, canonical, keyword slug, a real product visual, and a legal footer (UK company details).
+- **P2** Build target: Next.js, Tailwind and shadcn/ui when the page goes into a codebase. Critique mode flags a generic look as P1.
+
 ## [1.11.1] - 2026-10-08
 
 ### Install fix
