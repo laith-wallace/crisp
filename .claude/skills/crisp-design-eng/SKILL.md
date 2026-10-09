@@ -2,7 +2,7 @@
 name: crisp-design-eng
 description: "Design engineering craft layer - motion decisions, micro-interaction quality, component polish, the invisible details that make an interface feel right. Use when an interaction feels janky or 'off', when adding or reviewing motion, or when polishing before ship: 'make it feel better', 'the modal feels wrong', 'add motion'. Home of the Mechanical Pre-Flight Checks run by /crisp-redesign and /crisp-funnel."
 metadata:
-  version: "1.2.1"
+  version: "1.3.0"
 ---
 
 # CRISP Design Engineering - `/crisp-design-eng`
@@ -17,6 +17,7 @@ This file holds the decision frameworks and the checkable rules. Load the deeper
 - Reviewing animation performance, or debugging motion that drops frames or feels wrong → `references/performance.md`
 - Picking colours or typefaces, or the surface under review declares colour values or font choices → `references/color-typography.md` (the OKLCH-only rule, the never-pure-black-or-white rule, and the reflex-reject font list are binding)
 - Writing the code fix for a craft rule violation, or building reusable components → `references/component-craft.md`
+- Building or reviewing a marketing or landing page that should reach award level (Awwwards directory, Site of the Day), or any client landing page where the look must not default to the CRISP brand → `references/award-level-landing.md` (its Award Pre-Flight runs after the Mechanical Pre-Flight Checks)
 
 ---
 
@@ -196,6 +197,8 @@ Run these before any surface ships. `/crisp-redesign` and `/crisp-funnel` call t
 
 Report as a single line: `Pre-flight: 11/11 pass`, or list each failure with file:line and the fix.
 
+For marketing and landing pages aimed at award level, also run the Award Pre-Flight in `references/award-level-landing.md`. The eleven checks above are the floor, not the bar.
+
 ---
 
 ## The Review Format
@@ -278,7 +281,7 @@ These are the canonical CRISP motion tokens. If the project ships its own `CRISP
 - Does not evaluate visual design - that is `/crisp-audit` or `/crisp-review`
 - Does not score against CRISP dimensions - that is `/crisp-audit`
 - Does not generate design specifications - that is `/handoff`
-- Does not introduce tokens outside the canonical set (or the project's `CRISP-STYLE-KIT.md` when present)
+- Does not introduce tokens outside the canonical set (or the project's `CRISP-STYLE-KIT.md` when present). Client work is the exception: a client page takes its palette and type from its own art direction (`references/award-level-landing.md`), never from the CRISP brand tokens
 - Does not add animation because it looks refined - only because it repairs R, S, C, or P
 
 ---
