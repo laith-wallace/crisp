@@ -50,6 +50,11 @@ if (subcommand === 'design-md') {
   await exitAfterFlush(await runDesignMd(subArgs));
 }
 
+if (subcommand === 'worlds') {
+  const { runWorlds } = await import(join(PKG_ROOT, 'scripts', 'worlds.mjs'));
+  await exitAfterFlush(await runWorlds(subArgs));
+}
+
 if (subcommand === 'help' || process.argv.includes('--help') || process.argv.includes('-h')) {
   console.log(`@laith-wallace/crisp
 
@@ -59,7 +64,8 @@ if (subcommand === 'help' || process.argv.includes('--help') || process.argv.inc
   crisp ignores list|add-file|add-value   manage .crisp/config.json detector ignores
   crisp design-md lint [file] [--json]    lint a DESIGN.md (tokens, references, contrast)
   crisp design-md diff <old> <new>        token-level diff of two DESIGN.md files
-  crisp critique slug|write|trend     per-surface review history in .crisp/critique/
+  crisp worlds list|show|picker|serve|choice|to-design-md   visual worlds and the direction picker
+  crisp critique slug|write|trend    per-surface review history in .crisp/critique/
   crisp doctor [--fix]                check .crisp.md and .crisp/config.json for drift
   crisp --version`);
   process.exit(0);
