@@ -6,7 +6,7 @@ Every case is a directory holding a `prompt.md` (frontmatter = run limits, body 
 
 | Folder | Cases | What it measures |
 |---|---|---|
-| `triggering/<skill>/` | 29 | A natural request (no skill name in it) makes Claude invoke that skill. One free `tool_used: Skill` grader each |
+| `triggering/<skill>/` | 31 | A natural request (no skill name in it) makes Claude invoke that skill. One free `tool_used: Skill` grader each |
 | `negative/<name>/` | 5 | Ordinary coding requests where no CRISP skill may fire. `tool_used` with `min: 0`, `max: 0`, `arm: both` |
 | `graded/<name>/` | 7 | Output quality on the regression fixtures in `tests/fixtures/`, graded against `tests/expected/` |
 
@@ -55,7 +55,7 @@ To also check that `decisions-suppression` never writes to `## Decisions`, grant
 
 ## Cost
 
-Every agent run and every `llm` judge vote is a real model call on your account. The full suite is 41 cases x 3 runs x 2 arms = 246 agent runs, plus 3 judge votes per `llm` grader per run (27 `llm` graders across the 7 graded cases). Triggering and negative cases use only free graders, so they cost just their agent runs. Set `--max-cost-usd` as a ceiling, use `--ablation none` to halve the cost when you don't need the delta, and use `--runs 1` while iterating (then confirm at 3 runs). Results land in `evals/results/<timestamp>/` (git-ignored).
+Every agent run and every `llm` judge vote is a real model call on your account. The full suite is 43 cases x 3 runs x 2 arms = 258 agent runs, plus 3 judge votes per `llm` grader per run (27 `llm` graders across the 7 graded cases). Triggering and negative cases use only free graders, so they cost just their agent runs. Set `--max-cost-usd` as a ceiling, use `--ablation none` to halve the cost when you don't need the delta, and use `--runs 1` while iterating (then confirm at 3 runs). Results land in `evals/results/<timestamp>/` (git-ignored).
 
 ## After a run
 

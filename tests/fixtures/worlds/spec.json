@@ -1,0 +1,83 @@
+{
+  "project": "Tally",
+  "surface": "the Tally homepage",
+  "register": "product",
+  "brief": "Invoicing for small design studios. The homepage must show the product working, and the first screen after sign-in is the invoices dashboard.",
+  "recommended": "C",
+  "directions": [
+    {
+      "id": "A",
+      "title": "Category default",
+      "worldId": null,
+      "isBaseline": true,
+      "thesis": "What an invoicing tool ships by default: centred hero, pill badge, three icon cards and gradient stats.",
+      "decisions": [
+        "Centred hero with an \"AI\" pill badge and a gradient button",
+        "Three equal icon cards for features",
+        "Hero metrics with gradient text"
+      ],
+      "borrowedFrom": [],
+      "palette": {
+        "bg": "#f7f5f0",
+        "surface": "#ffffff",
+        "ink": "#1f2937",
+        "muted": "#6b7280",
+        "accent": "#6366f1"
+      },
+      "html": "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<style>\nbody{margin:0;background:#f7f5f0;color:#1f2937;font:16px/1.5 system-ui,-apple-system,\"Segoe UI\",Roboto,sans-serif}\nnav{display:flex;justify-content:space-between;align-items:center;padding:20px 48px}\nnav b{font-size:18px}nav span{color:#6b7280;font-size:14px;margin-left:24px}\n.cta{background:linear-gradient(90deg,#6366f1,#3b82f6);color:#fff;border-radius:999px;padding:10px 20px;font-weight:600;font-size:14px}\n.hero{text-align:center;padding:48px 24px 32px}\n.pill{display:inline-block;background:#eef2ff;color:#4f46e5;border-radius:999px;padding:4px 12px;font-size:13px;font-weight:600}\nh1{font-size:52px;line-height:1.1;margin:16px auto;max-width:760px;letter-spacing:-.02em}\n.hero p{color:#6b7280;max-width:560px;margin:0 auto 24px;font-size:18px}\n.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:16px 48px}\n.card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.06)}\n.icon{width:40px;height:40px;border-radius:10px;background:#eef2ff;display:grid;place-items:center;font-size:20px;margin-bottom:12px}\n.card h3{margin:0 0 6px;font-size:17px}.card p{margin:0;color:#6b7280;font-size:14px}\n.stat{display:flex;gap:24px;padding:24px 48px}.stat div{flex:1;background:#fff;border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,.06)}\n.stat strong{display:block;font-size:30px;background:linear-gradient(90deg,#6366f1,#3b82f6);-webkit-background-clip:text;color:transparent}.stat span{color:#6b7280;font-size:13px}\n</style></head><body>\n<nav><b>Tally</b><div><span>Features</span><span>Pricing</span><span>Login</span></div><span class=\"cta\">Get started free</span></nav>\n<section class=\"hero\"><span class=\"pill\">✨ Now with AI</span><h1>Supercharge your invoicing workflow</h1><p>The all-in-one platform for seamless billing, payments and insights.</p><span class=\"cta\">Start free trial</span></section>\n<section class=\"cards\"><div class=\"card\"><div class=\"icon\">⚡</div><h3>Lightning fast</h3><p>Send invoices in seconds with smart templates.</p></div><div class=\"card\"><div class=\"icon\">🔒</div><h3>Secure payments</h3><p>Bank-grade security for every transaction.</p></div><div class=\"card\"><div class=\"icon\">📈</div><h3>Real-time insights</h3><p>Track revenue with beautiful dashboards.</p></div></section>\n<section class=\"stat\"><div><strong>$48,210</strong><span>Revenue this month</span></div><div><strong>124</strong><span>Invoices sent</span></div><div><strong>98%</strong><span>Paid on time</span></div></section>\n</body></html>"
+    },
+    {
+      "id": "B",
+      "title": "Books an accountant would keep",
+      "worldId": "ledger-book",
+      "isBaseline": false,
+      "thesis": "Money lives in ruled, right-aligned columns; red only ever means someone owes you.",
+      "decisions": [
+        "A live receivables ledger is the hero image",
+        "Slab display for headings, tabular sans for every figure",
+        "Double rules under totals instead of cards"
+      ],
+      "borrowedFrom": [],
+      "html": "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600&family=Zilla+Slab:wght@600&display=swap\">\n<style>\n:root{--bg:oklch(0.965 0.02 140);--surface:oklch(0.98 0.012 140);--ink:oklch(0.24 0.02 250);--muted:oklch(0.44 0.02 200);--accent:oklch(0.42 0.12 255);--neg:oklch(0.5 0.18 25);--line:oklch(0.8 0.05 150)}\nbody{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 \"Public Sans\",system-ui,sans-serif;font-variant-numeric:tabular-nums}\nnav{display:flex;justify-content:space-between;align-items:baseline;padding:18px 48px;border-bottom:2px solid var(--ink)}\nnav b{font:600 22px \"Zilla Slab\",serif}nav a{color:var(--accent);margin-left:24px;font-size:14px}\n.top{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;padding:36px 48px 24px}\nh1{font:600 46px/1.08 \"Zilla Slab\",serif;margin:0 0 12px}\n.top p{margin:0 0 18px;color:var(--muted);max-width:44ch}\n.btn{display:inline-block;background:var(--accent);color:var(--surface);padding:10px 18px;border-radius:2px;font-weight:600;font-size:14px}\n.ledger{background:var(--surface);border:1px solid var(--line);padding:4px 20px 16px}\n.ledger h2{font:600 15px \"Zilla Slab\",serif;margin:12px 0 4px;letter-spacing:.02em}\ntable{width:100%;border-collapse:collapse;font-size:14px}\ntd,th{padding:7px 0;border-bottom:1px solid var(--line);text-align:left}th{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}\ntd.n,th.n{text-align:right}.neg{color:var(--neg)}\ntr.total td{border-bottom:3px double var(--ink);font-weight:600}\n.accts{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:8px 48px}\n.accts div{border-top:2px solid var(--ink);padding-top:8px}.accts span{display:block;color:var(--muted);font-size:13px}.accts strong{font-size:22px}\n</style></head><body>\n<nav><b>Tally</b><div><a>Ledgers</a><a>Pricing</a><a>Sign in</a></div></nav>\n<section class=\"top\"><div><h1>Your studio's books, kept the way an accountant would.</h1><p>Invoices, payments and what is still owed, in ruled columns that add up. Red only means someone owes you.</p><span class=\"btn\">Open a ledger</span></div>\n<div class=\"ledger\"><h2>Receivables, October</h2><table><tr><th>Date</th><th>Client</th><th class=\"n\">Amount</th></tr>\n<tr><td>02 Oct</td><td>Harbour Coffee</td><td class=\"n\">£1,240.00</td></tr><tr><td>09 Oct</td><td>Mill Lane Dental</td><td class=\"n\">£860.00</td></tr><tr><td>14 Oct</td><td>Orrin &amp; Co</td><td class=\"n neg\">(£420.00)</td></tr><tr><td>21 Oct</td><td>Northfield School</td><td class=\"n\">£2,100.00</td></tr><tr class=\"total\"><td></td><td>Total</td><td class=\"n\">£3,780.00</td></tr></table></div></section>\n<section class=\"accts\"><div><span>Cash</span><strong>£12,406.18</strong></div><div><span>Receivable</span><strong>£3,780.00</strong></div><div><span>Overdue</span><strong class=\"neg\">£420.00</strong></div></section>\n</body></html>"
+    },
+    {
+      "id": "C",
+      "title": "Timetable of what is due",
+      "worldId": "swiss-timetable",
+      "isBaseline": false,
+      "thesis": "Invoices read as a timetable: due date first, one red for today, everything on the grid.",
+      "decisions": [
+        "Section labels in a left gutter, content on a strict column",
+        "The dashboard table is the homepage hero",
+        "One red for the current day and the primary action"
+      ],
+      "borrowedFrom": [
+        {
+          "from": "B",
+          "what": "red reserved for overdue amounts",
+          "why": "it makes the one red mean money at risk"
+        },
+        {
+          "from": "D",
+          "what": "dot leaders on the total line",
+          "why": "the eye runs straight to the figure"
+        }
+      ],
+      "html": "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&display=swap\">\n<style>\n:root{--bg:oklch(0.98 0.002 100);--surface:oklch(0.955 0.003 100);--ink:oklch(0.2 0 0);--muted:oklch(0.45 0.005 100);--accent:oklch(0.54 0.21 27);--neg:oklch(0.5 0.18 25)}\nbody{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 \"Hanken Grotesk\",system-ui,sans-serif;font-variant-numeric:tabular-nums}\n.wrap{display:grid;grid-template-columns:200px 1fr;column-gap:32px;padding:0 48px}\nnav{grid-column:1/-1;display:flex;justify-content:space-between;padding:20px 0 14px;border-bottom:2px solid var(--ink);font-weight:700}\nnav span{font-weight:400;margin-left:24px}\n.lbl{padding-top:22px;font-weight:700;font-size:13px}\n.sec{padding:20px 0 24px;border-top:0}\nh1{font-size:58px;line-height:1.02;letter-spacing:-.02em;margin:0 0 14px;max-width:16ch}\n.sec p{margin:0 0 18px;color:var(--muted);max-width:52ch;font-size:17px}\n.btn{display:inline-block;background:var(--accent);color:oklch(0.99 0 0);padding:11px 18px;font-weight:700;font-size:14px}\n.rule{grid-column:1/-1;border-top:2px solid var(--ink)}\ntable{width:100%;border-collapse:collapse;font-size:14px}\nth{text-align:left;font-size:12px;font-weight:700;padding:6px 0;border-bottom:1px solid var(--ink)}\ntd{padding:7px 0;border-bottom:1px solid oklch(0.85 0 0)}td.n,th.n{text-align:right}\n.lead{border-bottom:1px dotted var(--muted)}\n.now{color:var(--accent);font-weight:700}.neg{color:var(--neg)}\n</style></head><body>\n<div class=\"wrap\">\n<nav>Tally<div><span>Invoices</span><span>Clients</span><span>Pricing</span><span>Sign in</span></div></nav>\n<div class=\"lbl\">Tally</div><div class=\"sec\"><h1>Every invoice, in order.</h1><p>Send, chase and reconcile from one timetable of what is due. Right-aligned, on time, nothing decorative.</p><span class=\"btn\">Send your first invoice</span></div>\n<div class=\"rule\"></div>\n<div class=\"lbl\">Due this week</div><div class=\"sec\"><table><tr><th>Due</th><th>No.</th><th>Client</th><th>Status</th><th class=\"n\">Amount</th></tr>\n<tr><td class=\"now\">Today</td><td>0412</td><td>Harbour Coffee</td><td>Sent</td><td class=\"n\">£1,240.00</td></tr>\n<tr><td>Wed 16</td><td>0413</td><td>Mill Lane Dental</td><td>Viewed</td><td class=\"n\">£860.00</td></tr>\n<tr><td>Thu 17</td><td>0409</td><td>Orrin &amp; Co</td><td>Overdue 6 days</td><td class=\"n neg\">£420.00</td></tr>\n<tr><td>Fri 18</td><td>0414</td><td>Northfield School</td><td>Draft</td><td class=\"n\">£2,100.00</td></tr>\n<tr><td></td><td></td><td><strong>Total due</strong></td><td class=\"lead\"></td><td class=\"n\"><strong>£4,620.00</strong></td></tr></table></div>\n</div></body></html>"
+    },
+    {
+      "id": "D",
+      "title": "Invoice as receipt",
+      "worldId": "thermal-receipt",
+      "isBaseline": false,
+      "thesis": "One narrow strip, itemised and totalled, so a client sees exactly what they pay for.",
+      "decisions": [
+        "The hero is a printed invoice strip, not a screenshot",
+        "Mono throughout with dot leaders between label and amount",
+        "A carbon-violet status stamp is the only colour"
+      ],
+      "borrowedFrom": [],
+      "html": "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Sometype+Mono:wght@400;700&display=swap\">\n<style>\n:root{--bg:oklch(0.91 0.004 90);--paper:oklch(0.985 0.003 90);--ink:oklch(0.2 0 0);--muted:oklch(0.4 0.003 90);--accent:oklch(0.42 0.14 275)}\nbody{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 \"Sometype Mono\",ui-monospace,monospace}\nnav{display:flex;justify-content:space-between;padding:18px 48px;font-weight:700}nav span{font-weight:400;margin-left:20px}\n.row{display:flex;gap:40px;justify-content:center;padding:12px 48px;align-items:flex-start}\n.copy{max-width:420px;padding-top:24px}\nh1{font-size:40px;line-height:1.1;margin:0 0 14px;text-transform:uppercase}\n.copy p{color:var(--muted);margin:0 0 18px}\n.btn{display:inline-block;background:var(--accent);color:var(--paper);padding:10px 16px;font-weight:700}\n.strip{background:var(--paper);width:340px;padding:20px 22px;box-shadow:0 2px 0 oklch(0.8 0.004 90)}\n.c{text-align:center}.dash{border-top:1px dashed var(--muted);margin:10px 0}\n.l{display:flex;gap:6px}.l span:nth-child(2){flex:1;border-bottom:1px dotted var(--muted);transform:translateY(-5px)}\n.tot{border-top:3px double var(--ink);margin-top:8px;padding-top:6px;font-weight:700;text-transform:uppercase}\n.stamp{display:inline-block;border:2px solid var(--accent);color:var(--accent);padding:2px 10px;font-weight:700;transform:rotate(-4deg);margin-top:10px}\n</style></head><body>\n<nav>TALLY<div><span>Orders</span><span>Pricing</span><span>Sign in</span></div></nav>\n<div class=\"row\"><div class=\"copy\"><h1>Invoices that read like a receipt.</h1><p>Every line itemised, every total plain. Clients see exactly what they pay for, top to bottom.</p><span class=\"btn\">Print your first invoice</span></div>\n<div class=\"strip\"><div class=\"c\"><strong>TALLY STUDIO</strong><br>INVOICE 0412 · 14 OCT</div><div class=\"dash\"></div>\n<div class=\"l\"><span>Brand workshop</span><span></span><span>£800.00</span></div>\n<div class=\"l\"><span>Logo files ×3</span><span></span><span>£300.00</span></div>\n<div class=\"l\"><span>Print setup</span><span></span><span>£140.00</span></div>\n<div class=\"dash\"></div><div class=\"l\"><span>Subtotal</span><span></span><span>£1,240.00</span></div><div class=\"l\"><span>VAT 0%</span><span></span><span>£0.00</span></div>\n<div class=\"l tot\"><span>Total</span><span></span><span>£1,240.00</span></div><div class=\"c\"><span class=\"stamp\">SENT</span></div></div></div>\n</body></html>"
+    }
+  ]
+}

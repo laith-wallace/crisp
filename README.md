@@ -39,6 +39,8 @@ as the agent works and reports only the problems that edit added.
 | `/crisp-study`      | Study a reference. Extracts the design DNA of a URL, screenshot, or codebase into a `DESIGN.md` (Google's open token format) with provenance for every token. Study, not clone. |
 | `/crisp-tune`       | Tone dials for a UI that is right but feels wrong: `bolder`, `quieter`, `simpler`, plus VARIANCE, MOTION, and DENSITY dials (1-10). Every move is on-token and checked by the detector. |
 | `/crisp-stress`     | Worst-case data stress test: empty, one item, 1000 items, 200-char names, RTL, emoji, 200% zoom, 320px, slow network, +40% translations. Pass/fail table with P0-P3 fixes. |
+| `/crisp-worlds`     | Visual directions before any code. Shows the category default next to 3 distinct worlds from a curated library of 30, in a local picker with a Build this button. The pick becomes a linted `DESIGN.md`. |
+| `/crisp-live`       | Edit your running dev site in place. A dev-only toolbar lets you click an element, press Bolder, Quieter, Animate, Rewrite copy and more, get variants back, and accept one. Everything stays on 127.0.0.1. |
 | `/crisp-variants`   | 3 to 5 genuinely different variants of one component, live in your app behind a dev-only switcher. Pick one and the others are deleted, with zero dead code left. |
 | `/crisp-improve-ui` | Evidence-locked improvement audit. Read-only on product source: traces the rendered path, keeps only findings that pass a three-proof gate (contract, runtime, correction), tags each with a CRISP dimension and P0–P3 severity, then writes self-contained execution plans to `design-plans/`. Improves a surface without replacing its identity. |
 
@@ -199,8 +201,10 @@ are grounded in your specific context, not generic advice.
 /crisp-brief       ->  structures your idea into a .brief.md
 /crisp-research    ->  competitor patterns, anti-patterns, brief gaps
 /crisp-study       ->  DESIGN.md from a reference URL, screenshot, or codebase (optional)
+/crisp-worlds      ->  category default vs 3 visual worlds in a picker, pick one (optional)
 /feature-design    ->  user flows + component decisions, reads .crisp.md + .brief.md
 /crisp-variants    ->  3-5 live variants behind a dev-only switcher (optional)
+/crisp-live        ->  click-to-edit toolbar in your dev server (optional)
 /crisp-design-eng  ->  motion, micro-interaction + craft polish (optional pass)
 /crisp-ai          ->  AI surface evaluation if feature includes AI interactions (optional pass)
 /handoff           ->  developer-ready spec
