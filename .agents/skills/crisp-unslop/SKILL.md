@@ -2,7 +2,7 @@
 name: crisp-unslop
 description: Edit prose so it reads human and keeps the writer's voice, or detect AI-slop patterns without rewriting - landing page copy, blog posts, docs, release notes, emails, PR bodies. Use when text 'sounds like AI', needs to be sharper or more direct, or before any human-facing text ships. UI strings (labels, errors, CTAs) belong to /crisp-copy.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   author: Laith Wallace - FlowConverts
   adapted-from: cursor/plugins pstack unslop (MIT), petergyang/no-ai-slop (MIT)
 ---
@@ -59,7 +59,7 @@ grep -cE "^\s*[^:\n]{3,60}: [a-z]" draft.md                                 # co
 grep -ciE "^(#+ )?.*(here's the thing|let me be clear|what nobody tells you|the part everyone misses|plot twist|what if i told you)" draft.md   # rhetorical setups
 ```
 
-Rule: a non-zero count on any of these lines is a finding, not a suggestion. The word "seamless" is exempt only when it names the CRISP dimension.
+Rule: a non-zero count marks candidates, and every candidate is checked by eye before it becomes a finding, because grep cannot see context. Exclude hits inside code blocks and inline code, and en dashes in number or date ranges (`10–20`, `Mon–Fri`), since those are correct typography. A confirmed candidate is a finding, not a suggestion. The word "seamless" is exempt only when it names the CRISP dimension.
 
 ## Step 1 - Read the whole draft, then write the Voice Card
 

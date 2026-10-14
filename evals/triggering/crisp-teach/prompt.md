@@ -1,6 +1,6 @@
 ---
 description: Triggering - a natural request that should make Claude choose the crisp-teach skill without naming it.
-tags: [triggering, model-invocation-disabled]
+tags: [triggering]
 expected_outcome: Claude invokes the crisp-teach skill.
 max_turns: 8
 timeout_seconds: 300

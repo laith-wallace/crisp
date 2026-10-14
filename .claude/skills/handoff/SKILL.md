@@ -2,7 +2,7 @@
 name: handoff
 description: Convert a CRISP-reviewed design into a developer-ready specification - component states, implementation notes, token references, edge cases, and an accessibility checklist. Use after /crisp-audit or /crisp-review, or for 'dev handoff', 'spec this for engineering'.
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
 ---
 
 # /handoff - Developer Handoff Spec
@@ -223,13 +223,13 @@ Document every string that appears in this design:
 ## Handoff Style
 
 - Be precise. "Fade in" is not enough. "Opacity 0→1, 200ms, ease-out" is.
-- Every string should be exact. No "TBD" in copy.
+- Copy you do not have goes in Open Questions for Product, never invented, because made-up copy ships as if it were approved. Every string you do have is exact.
 - Every error state needs a recovery action, not just an error message.
 - If a state isn't documented, a developer will invent it. That's a design decision you've abdicated.
 
 ## Real Content Mandate
 
-Every string in this spec is production copy. No Lorem ipsum. No `[Username]` placeholders. No "Click here" CTAs. No "Sample data" in table previews.
+If real copy is unavailable for a section, flag it explicitly as an Open Question for Product - do not use placeholder or invented copy as a stand-in. Every other string in this spec is production copy. No Lorem ipsum. No `[Username]` placeholders. No "Click here" CTAs. No "Sample data" in table previews.
 
 Before delivering the spec, check:
 
@@ -241,5 +241,3 @@ Before delivering the spec, check:
 | Error messages | Specific failure type + specific recovery action |
 | Success confirmations | Name exactly what changed, not "Success" or "Done" |
 | Table/list preview data | Realistic production-representative values, not "John Doe / example@email.com" |
-
-If real copy is unavailable for a section, flag it explicitly as an Open Question for Product - do not use placeholder copy as a stand-in.

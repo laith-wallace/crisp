@@ -2,7 +2,7 @@
 name: crisp-proof
 description: Visual proof that a design change did what it claims - before/after screenshot pairs across states and breakpoints, a PR-ready markdown table, and /crisp-review grades on both sides so the improvement is a measured delta, not a sentence. Use when a PR needs screenshots, 'show me before and after', 'prove the redesign is better', or after /crisp-redesign, /crisp-improve-ui, or /crisp-loop lands changes.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   author: Laith Wallace - FlowConverts
   adapted-from: vercel-labs/before-and-after skill (workflow only, no vendored code), michaelshimeles/skills evidence-driven-testing
 ---
@@ -17,8 +17,8 @@ Load `.crisp.md` if it exists - its breakpoints, theme modes, and register decid
 
 Six rules. Breaking any one invalidates the proof:
 
-1. **Never switch branches, stash, reset, or check out** to manufacture a "before". The current working tree is **After**. Before comes from a URL the user names (production, a preview deployment, another local port) or an existing image.
-2. **Never assume what Before is.** If only one URL is given, ask exactly one question: "What URL or image is the Before state - production, a preview deployment, or another port?" Then proceed.
+1. **Never switch branches, stash, reset, or check out** to manufacture a "before". The current working tree is **After**. Before comes from a URL the user names (production, a preview deployment, another local port) or an existing image. When Before is a commit (for example the start commit `/crisp-loop` hands off), serve it from a separate checkout: `git worktree add .artifacts/proof/before-tree <commit>`, start its dev server on a second port, capture, then `git worktree remove .artifacts/proof/before-tree`. This leaves the current tree untouched, which is why it is allowed.
+2. **Never assume what Before is.** If neither a Before URL nor a commit is given, ask exactly one question: "What URL, image, or commit is the Before state - production, a preview deployment, another port, or a commit to serve from a temporary worktree?" Then proceed.
 3. **Never fabricate or reuse a capture.** Every image is captured in this run, from the URL and commit stated in the report. A screenshot from a different commit is not evidence.
 4. **Never capture secrets.** If the surface shows tokens, customer data, or payment details, mark that pair `untested` with the reason.
 5. **Never use full-page capture** unless the user asks for it. Default is the viewport, or the selector the user names.
@@ -35,7 +35,7 @@ git branch --show-current
 
 | Side | Source | Default |
 |---|---|---|
-| Before | URL, image path, or preview deployment named by the user | Ask (rule 2) |
+| Before | URL, image path, or preview deployment named by the user, or a commit served from a temporary worktree (rule 1) | Ask (rule 2) |
 | After | Current tree - local dev server or the deployment of HEAD | `http://localhost:<port>` |
 
 Confirm the After port serves **your** process before trusting it, especially on a shared machine:
@@ -175,6 +175,12 @@ Image files cannot be attached through `gh pr edit`. Two options, state which yo
 Run the PR title and body through `/crisp-unslop` before posting.
 
 ## Longitudinal tracking
+
+<!-- crisp:shared history -->
+**Top-level runs only.** Write `## History` lines and `crisp critique write` snapshots only when the user invoked this skill directly. When another skill calls it (`/crisp-loop`, `/crisp-proof`, `/crisp-variants`, or a CRISP Live session), skip both writes and hand the result back to the caller, because the caller writes one line for the whole run and nested writes would multiply entries (a five-iteration loop would otherwise log six lines). `## Decisions` lines are not affected: they record what the user said, whoever ran the skill.
+<!-- /crisp:shared history -->
+
+The two `/crisp-review` runs in Step 4 are nested calls, so they write no History lines of their own; this one line records both grades.
 
 Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y-%m-%d`:
 

@@ -2,7 +2,7 @@
 name: crisp-improve-ui
 description: Evidence-locked improvement audit of an existing UI surface - read-only on product source, keeps only findings that pass a three-proof gate, writes self-contained implementation plans to design-plans/. Use for 'improve this UI', 'tighten this up without redesigning', 'find design drift', or 'why does this page feel inconsistent'. Identity is preserved - for overhauls use /crisp-redesign.
 metadata:
-  version: "1.1.1"
+  version: "1.1.2"
   author: Laith Wallace - FlowConverts
 ---
 
@@ -22,7 +22,7 @@ If `.crisp.md` exists in the project root, load it first. Its documented design 
 
 Ten hard rules. Violating any one invalidates the run:
 
-1. Never modify product source. Create or edit files only under `design-plans/`.
+1. Never modify product source. Create or edit files only under `design-plans/`. The one exception is appending lines to `.crisp.md` `## Decisions` and `## History` as described below, because those are the pack's shared memory, not product source.
 2. Never install dependencies, run formatters, commit, or push.
 3. Never update design documentation - record accepted doc changes inside the plan for its executor.
 4. Use rendered evidence (screenshots, live pages) only when the user provides it or explicitly asks for visual inspection.

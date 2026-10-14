@@ -2,7 +2,7 @@
 name: crisp-study
 description: Study a reference - a live URL, a screenshot, or the current codebase - and extract its design DNA into a DESIGN.md file in Google's DESIGN.md format (YAML tokens plus prose rationale), with provenance for every token and a lint pass at the end. Use when "study this site", "extract the design system from this URL", "what makes this look good", "turn this screenshot into tokens", "write a DESIGN.md", or before a redesign that should borrow a reference's direction. Interviewing the team for product context belongs to /crisp-teach; competitive pattern research belongs to /crisp-research; applying the tokens to a live surface belongs to /crisp-redesign.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   author: Laith Wallace - FlowConverts
   adapted-from: workflow inspired by nutlope/hallmark study and superdesign extract-website (no vendored code)
 ---
@@ -40,7 +40,7 @@ Load `.crisp.md` if it exists. Its register and Named Rules decide which extract
    - **URL:** harness browser or Playwright -> `getComputedStyle` on body, h1-h3, p, a, button, input, card-like containers, and `:root` custom properties. Capture at 1280px and 375px. If no browser is available, fetch the HTML and its stylesheets and read declared values; mark every token `source: declared-css`.
    - **Screenshot:** vision. Sample colours from flat regions only, estimate sizes against a known anchor (body text ~16px unless shown otherwise). Every value is `source: vision-estimate` with confidence `low` or `medium`, never `high`.
    - **Codebase:** grep CSS custom properties, `tailwind.config.*` / `@theme` blocks, theme files, and design-token JSON. Count usage of each value so orphans are visible.
-3. **Normalise.** Cluster near-duplicate values (colours within deltaE 2, sizes within 1px) into one token and record the cluster size. Convert colours to hex or OKLCH. Round spacing to the observed base unit (4 or 8) only when 80% or more of samples already sit on it; otherwise keep raw values and note "no base unit".
+3. **Normalise.** Cluster near-duplicate values (colours within deltaE 2, sizes within 1px) into one token and record the cluster size. Convert colours to OKLCH, matching `/crisp-design-eng`'s OKLCH-only rule so a DESIGN.md token drops into code unchanged. Round spacing to the observed base unit (4 or 8) only when 80% or more of samples already sit on it; otherwise keep raw values and note "no base unit".
 4. **Name by role, not by look.** `primary`, `surface`, `on-surface`, `muted`, `danger` - never `blue-500` or the brand's colour name. Typography tokens are `display`, `headline`, `title`, `body`, `label`, `mono` as observed.
 5. **Write provenance.** Every token gets one row in the Provenance table at the end of the file: token, value, source method, where (selector, CSS var, file:line, or image region), sample count, confidence. A token without a row is deleted.
 6. **Strip the brand.** Zero logos, wordmarks, product names, trademarked phrases, illustration assets, or proprietary font files copied. A licensed or proprietary typeface is recorded as `fontFamily` with a named open alternative in the prose (e.g. "Reference uses a proprietary grotesk; adapt with Inter Tight or Geist"), never with a file URL.

@@ -59,7 +59,8 @@ Every agent run and every `llm` judge vote is a real model call on your account.
 
 ## Known gaps
 
-- `crisp` (router) and `crisp-teach` set `disable-model-invocation: true`, so Claude cannot pick them on its own. Their triggering cases are tagged `model-invocation-disabled` and will score 0 until that flag changes. They stay in the suite as a record of the intended trigger phrasing.
+- `crisp` (router) sets `disable-model-invocation: true`, so Claude cannot pick it on its own. Its triggering case is tagged `model-invocation-disabled` and will score 0 until that flag changes. It stays in the suite as a record of the intended trigger phrasing.
+- `crisp-teach` no longer sets the flag, so its triggering case is a normal case and should pass.
 - `crisp-study`, `crisp-tune`, `crisp-stress`, and `crisp-variants` are tagged `new-skill` so they can be run on their own while their descriptions settle.
 - `crisp-study` and `crisp-variants` need network or write access to do their work. Their triggering grader only checks that the skill was chosen, so no grant is needed.
 

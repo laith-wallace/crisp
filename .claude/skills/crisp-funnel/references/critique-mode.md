@@ -26,6 +26,8 @@ For a step funnel built from the kit, map the drop to the section:
 
 Fix the choke point first. Anything upstream of the leak is wasted effort if the leak stays open. If you lack the numbers to locate it, ask for the stage-by-stage conversion figures, or state which stage you are assuming and why.
 
+Then check functional first: the 2 things a visitor came for (e.g. hours and phone for a restaurant, balance for a banking app, price and booking for a local service) are visible without scrolling at 375px and 1280px. If either needs a scroll, log it as a P1, because a visitor who cannot find what they came for leaves before any persuasion runs.
+
 Separately from the choke point, check the look. If the page is in CRISP black and lime, uses a banned default from `art-direction.md` Step 3, or could belong to any competitor, log it as a P1: a generic page loses trust before a word is read. The fix is a client-specific art direction from `art-direction.md`.
 
 ## Step 2 - Score findings by severity

@@ -2,7 +2,7 @@
 name: crisp-research
 description: "Design research synthesis before designing - searches designated reference sources, surfaces competitive patterns, anti-patterns, CRISP dimension risks, and brief gaps. Writes .research.md, which /feature-design reads. Use when a brief exists and you need patterns before designing: 'how do others do this', 'competitor patterns for onboarding', 'research before we design'."
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
 ---
 
 # CRISP Research Synthesis - `/crisp-research`
@@ -17,14 +17,16 @@ You do not generate designs. You do not give vague inspiration. You return named
 
 Before doing anything else:
 
-1. Check for `.crisp.md` in the project root. If it exists, read it. Extract:
+1. Check for `.brief.md` (or `.brief-<slug>.md`) in the project root. If it exists, read it first: its problem, user, scope, anti-goals, and CRISP priority set what to research, and its Open Questions are the brief gaps to test. Do not re-ask anything it answers.
+
+2. Check for `.crisp.md` in the project root. If it exists, read it. Extract:
    - Product type and domain
    - Primary user types and their goals
    - Existing benchmark products already defined for this project
    - Design system or component conventions mentioned
    - Any prior CRISP audit history that is relevant
 
-2. If `.crisp.md` does not exist, note this. You will work without product context and flag this gap in your output.
+3. If `.crisp.md` does not exist, note this. You will work without product context and flag this gap in your output.
 
 ---
 

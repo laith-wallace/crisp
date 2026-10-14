@@ -2,7 +2,7 @@
 name: crisp-tune
 description: Turn the tone of an existing UI up or down without redesigning it - three modes (bolder, quieter, simpler) each made of a fixed, countable list of moves, plus --dial overrides for VARIANCE, MOTION, and DENSITY on a 1-10 scale, all inside the project's tokens. Use when "make it bolder", "tone it down", "this is too loud", "too busy", "simplify this", "distill it", "more personality", "less motion", or "denser". Fixing specific usability issues belongs to /crisp-improve-ui; changing the brand or the IA belongs to /crisp-redesign; motion craft details belong to /crisp-design-eng.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   author: Laith Wallace - FlowConverts
   adapted-from: workflow inspired by impeccable bolder/quieter/distill and taste-skill dials (no vendored code)
 ---
@@ -33,12 +33,18 @@ Load `.crisp.md` if it exists. Its **register** caps how far a mode may go (tabl
 
 ## Register caps
 
-| Register | bolder may reach | quieter may reach | Dial range |
-|---|---|---|---|
-| Brand | VARIANCE 9, MOTION 8 | VARIANCE 3, MOTION 2 | 1-10 |
-| Product | VARIANCE 5, MOTION 4 | VARIANCE 1, MOTION 1 | VARIANCE 1-6, MOTION 1-5, DENSITY 3-10 |
+One table for modes and `--dial`, so a mode can never reach further than an explicit dial:
 
-A dial request above the cap is clamped and the clamp is reported. It is never silently applied.
+| Register | Dial | `--dial` range | quieter floor | bolder ceiling |
+|---|---|---|---|---|
+| Brand | VARIANCE | 1-10 | 3 | 9 |
+| Brand | MOTION | 1-10 | 2 | 8 |
+| Brand | DENSITY | 1-10 | - | - |
+| Product | VARIANCE | 1-6 | 1 | 6 |
+| Product | MOTION | 1-5 | 1 | 5 |
+| Product | DENSITY | 3-10 | - | - |
+
+A dial request outside the range is clamped and the clamp is reported. It is never silently applied.
 
 ## The dials
 
@@ -139,7 +145,7 @@ Run on the baseline and on the result.
 5. Detector findings after <= detector findings before.
 6. Slop tells after <= slop tells before. A bolder run that adds a tell (gradient text, glow halo, hero pill) has failed that move; revert it.
 7. Zero edits outside the target's files.
-8. Zero changes to copy, IA, routes, anchor IDs, or tracked element labels.
+8. Zero changes to copy, IA, routes, anchor IDs, or tracked element labels. Exception: `simpler` moves 1, 3 and 7 may delete copy, because distilling is their purpose; every deletion is listed in the report.
 9. Build passes after the run.
 10. `bolder` and `quieter` never run in the same pass.
 
@@ -183,11 +189,15 @@ If the result regressed, the first line is `REGRESSED` and the table follows.
 - [ ] Every row has a before and after count, or a skip reason
 - [ ] Detector and Slop counts are quoted from this run's output, not predicted
 - [ ] `git diff` adds zero hex, rgb, oklch, or px values that are not already tokens
-- [ ] No copy, route, or tracked label changed
+- [ ] No copy, route, or tracked label changed (except listed `simpler` deletions)
 - [ ] Dials stayed inside the register caps
 - [ ] Zero em dashes in the report
 
 ## Longitudinal tracking
+
+<!-- crisp:shared history -->
+**Top-level runs only.** Write `## History` lines and `crisp critique write` snapshots only when the user invoked this skill directly. When another skill calls it (`/crisp-loop`, `/crisp-proof`, `/crisp-variants`, or a CRISP Live session), skip both writes and hand the result back to the caller, because the caller writes one line for the whole run and nested writes would multiply entries (a five-iteration loop would otherwise log six lines). `## Decisions` lines are not affected: they record what the user said, whoever ran the skill.
+<!-- /crisp:shared history -->
 
 Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y-%m-%d`:
 

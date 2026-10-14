@@ -17,5 +17,6 @@ Edit the block here, never inside a skill. `npm run sync` rewrites every marked 
 | `slop-tells.md` | /crisp-audit, /crisp-review, /crisp-redesign, /crisp-funnel, /crisp-improve-ui, /crisp-tune, /crisp-variants |
 | `evidence-gate.md` | /crisp-audit, /crisp-review, /crisp-a11y, /crisp-ai |
 | `decisions.md` | /crisp-audit, /crisp-review, /crisp-a11y, /crisp-ai, /crisp-improve-ui |
+| `history.md` | /crisp-audit, /crisp-review, /crisp-loop, /crisp-proof, /crisp-tune, /crisp-variants |
 
 This folder has no `SKILL.md`, so sync never ships it as a skill.
