@@ -2,7 +2,7 @@
 name: crisp-structure
 description: Two-layer code structure - actions own the why and when (business rules, auth, state transitions), a service layer owns the how (reusable operational mechanics with explicit inputs and structured returns). Audits an existing codebase for duplicated mechanics and leaky services with file:line evidence, decides where new-feature code belongs, and writes a one-caller-at-a-time extraction plan. Use for 'where should this go', 'this logic is copy-pasted', 'a fix in one flow didn't reach the others', or before adding a feature that shares mechanics with an existing one.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   author: Laith Wallace - FlowConverts
   adapted-from: michaelshimeles/skills code-structure (two-layer model)
 ---
@@ -44,8 +44,9 @@ Infer the mode from the request, declare it in one line, and proceed. Ask only w
 Nothing is a finding without a location. Run these before reading for meaning:
 
 ```bash
-# Candidate duplicated mechanics: the same provider or SDK call from 2+ files
-grep -rnE "\b(sendEmail|stripe\.|resend\.|sgMail|s3\.|createSandbox|exec\(|spawn\(|fetch\(['\"]https?://)" --include='*.ts' --include='*.tsx' --include='*.js' --include='*.py' -l . | grep -v node_modules | sort | uniq -c | sort -rn
+# Candidate duplicated mechanics: call sites per provider or SDK identifier (2+ is a candidate)
+grep -rhoE "\b(sendEmail|stripe\.|resend\.|sgMail|s3\.|createSandbox|exec\(|spawn\(|fetch\(['\"]https?://)" --include='*.ts' --include='*.tsx' --include='*.js' --include='*.py' --exclude-dir=node_modules . | sort | uniq -c | sort -rn
+# Then list the files for any identifier with a count of 2+: grep -rlF "stripe." --exclude-dir=node_modules .
 
 # Services reaching into domain state (leaky service tells)
 grep -rnE "\b(db\.|prisma\.|supabase\.from|knex\(|\.update\(|\.insert\(|status\s*=)" --include='*.ts' --include='*.js' --include='*.py' services/ lib/services/ 2>/dev/null | head -40

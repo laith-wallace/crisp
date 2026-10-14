@@ -2,7 +2,7 @@
 name: crisp-improve-ui
 description: Evidence-locked improvement audit of an existing UI surface - read-only on product source, keeps only findings that pass a three-proof gate, writes self-contained implementation plans to design-plans/. Use for 'improve this UI', 'tighten this up without redesigning', 'find design drift', or 'why does this page feel inconsistent'. Identity is preserved - for overhauls use /crisp-redesign.
 metadata:
-  version: "1.1.1"
+  version: "1.1.2"
   author: Laith Wallace - FlowConverts
 ---
 
@@ -22,7 +22,7 @@ If `.crisp.md` exists in the project root, load it first. Its documented design 
 
 Ten hard rules. Violating any one invalidates the run:
 
-1. Never modify product source. Create or edit files only under `design-plans/`.
+1. Never modify product source. Create or edit files only under `design-plans/`. The one exception is appending lines to `.crisp.md` `## Decisions` and `## History` as described below, because those are the pack's shared memory, not product source.
 2. Never install dependencies, run formatters, commit, or push.
 3. Never update design documentation - record accepted doc changes inside the plan for its executor.
 4. Use rendered evidence (screenshots, live pages) only when the user provides it or explicitly asks for visual inspection.
@@ -181,7 +181,16 @@ A plan's proposed change must add zero of these tells to the surface. This check
 | SaaS cream + generic sans | Off-white background with no tint, Inter, Geist, Roboto or DM Sans on every level, zero distinctive colour decision |
 | Saturated aesthetic lane | Editorial-typographic (italic display serif + mono labels + ruled separators) used as a default not a deliberate choice |
 
-**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count. A purple gradient on a brand that is purple is not a tell.
+**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count. A purple gradient on a brand that is purple is not a tell. A pattern documented in the project's DESIGN.md or .crisp.md tokens is a decision, not a tell.
+
+**Model overlay: Gemini.** Seed list, unverified: confirm with scripts/slop-harvest.mjs before trusting. These are tells commonly attributed to Gemini-family output, not measured ones. Until a harvest run confirms a row, a match is a note in the report, not a Fail.
+
+| Tell | What it looks like | Nearest detector rule |
+|------|--------------------|-----------------------|
+| Sparkle for AI | A sparkle icon or emoji next to anything AI-powered, often in a gradient | `emoji-heading-icon` (partial) |
+| Blue-violet gradient wash | Blue to violet gradient across hero backgrounds or headline text | `purple-blue-gradient`, `gradient-text` |
+| Alternating tinted bands | Every section on a different pastel background with no reason in the content | none yet |
+| Generic sans on every level | Roboto or the platform sans for display, body and labels alike | `generic-font-stack-only` |
 <!-- /crisp:shared slop-tells -->
 
 Introduce a new primitive only after proving the existing system cannot express the decision, where the primitive lives, and which consumers share it. Repetition alone never justifies a new shared primitive.

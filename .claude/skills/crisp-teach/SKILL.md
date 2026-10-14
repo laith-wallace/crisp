@@ -1,14 +1,24 @@
 ---
 name: crisp-teach
-description: "One-time project onboarding - interviews you about users, design system, and benchmarks, then writes .crisp.md, the context file every other CRISP command reads. Use when starting CRISP on a project or when .crisp.md is missing: 'set up CRISP', 'teach CRISP about my product', 'onboard the design skills'."
-disable-model-invocation: true
+description: "Project onboarding - interviews you about users, design system, and benchmarks, then writes .crisp.md, the context file every other CRISP command reads. Re-running it merges updates and keeps History and Decisions. Use when starting CRISP on a project, when .crisp.md is missing or stale, or before design work that needs product context: 'set up CRISP', 'teach CRISP about my product', 'onboard the design skills'."
 metadata:
-  version: "1.5.0"
+  version: "1.5.1"
 ---
 
 # /crisp-teach - Project Onboarding
 
-Run this command once per project. It learns your design context through a structured interview, then writes `.crisp.md` to your project root. All other CRISP commands (`/crisp-audit`, `/crisp-review`, `/feature-design`, `/handoff`) inherit this context automatically.
+Run this command once per project, and again whenever the product context changes. It learns your design context through a structured interview, then writes `.crisp.md` to your project root. All other CRISP commands (`/crisp-audit`, `/crisp-review`, `/feature-design`, `/handoff`) inherit this context automatically.
+
+## Re-runs: merge, never replace
+
+If `.crisp.md` already exists, read it first and treat every filled field as a pre-filled answer to confirm, not a question to ask again. Ask only about what changed. Then merge:
+
+- Update only the fields the user changed or confirmed differently.
+- Copy the `## History` and `## Decisions` sections verbatim, every line and comment, because they are the pack's record of past grades and team rulings and no interview answer can recreate them.
+- Keep any section this skill does not write (a team's own notes) where it was.
+- Refresh the `<!-- crisp-teach: vX -->` stamp to this skill's version.
+
+Before writing, diff the old and new file and confirm that History and Decisions are byte-identical. If they are not, stop and fix the merge.
 
 ## Step 0: Scan Before Asking
 
@@ -18,7 +28,9 @@ Only ask cold the questions the code cannot answer: who the users are, the job-t
 
 ## Interview Protocol
 
-Work through the following questions with the user. Ask them one section at a time, and wait for the answer before moving to the next section - asking multiple sections at once is bewildering. Facts belong to the environment: anything the codebase can answer gets inferred in Step 0 and presented for confirmation. Decisions belong to the user: benchmarks, priorities, and known weaknesses are theirs to make - put each one to them and wait. Don't rush - good context makes every subsequent command significantly more accurate.
+Work through the following questions with the user. Ask cold questions one section at a time, and wait for the answer before moving to the next section - several sections of open questions at once is bewildering. Confirmations are different: batch every section Step 0 (or an existing `.crisp.md`) already pre-filled into one message, so the user can approve them together. Facts belong to the environment: anything the codebase can answer gets inferred in Step 0 and presented for confirmation. Decisions belong to the user: benchmarks, priorities, and known weaknesses are theirs to make - put each one to them and wait. Don't rush - good context makes every subsequent command significantly more accurate.
+
+**Skipped sections.** If the user says "skip" or "later" for a section, or no reply is possible (a headless or agent run), write that section with `<!-- TODO: <the question still open> -->` markers and carry on. A partial `.crisp.md` is more useful than none, and the TODO markers tell the next run exactly what to ask.
 
 ---
 
@@ -104,9 +116,9 @@ Example: "The Lab Notebook" (precise, structured, always slightly imperfect), "T
 
 ### Section 5: Benchmarks
 Ask:
-- "Which products do you most admire from a design perspective? These become your positive references. (Press Enter to accept the defaults for your product type)"
+- "Which products do you most admire from a design perspective? These become your positive references. (Reply 'default' to accept the defaults for your product type)"
 - "Which products do you NOT want to look or feel like? These become your anti-references."
-- "Of the CRISP dimensions - Contextual, Responsive, Intelligent, Seamless, Powerful - which matters most for your users right now? (Press Enter to accept the product-type default)"
+- "Of the CRISP dimensions - Contextual, Responsive, Intelligent, Seamless, Powerful - which matters most for your users right now? (Reply 'default' to accept the product-type default)"
 
 ---
 
@@ -120,7 +132,7 @@ Ask:
 
 ## Output Format
 
-Once the interview is complete, write a `.crisp.md` file to the project root with this structure:
+Once the interview is complete, write a `.crisp.md` file to the project root with this structure. On a re-run, merge into the existing file as described in "Re-runs" above; the empty History and Decisions sections below are for a new file only:
 
 ```markdown
 # .crisp.md - CRISP Design Context
@@ -172,4 +184,4 @@ Priority CRISP dimension: [C / R / I / S / P]
 
 When writing any date into `.crisp.md`, get today's date from the `date` command (`date +%Y-%m-%d`) - never from memory. For `[SKILL_VERSION]`, use this skill's own `version` field from its frontmatter (the `version: "X.Y.Z"` line at the top of this file) - this stamp is what `/crisp-doctor` later reads to tell whether a project's `.crisp.md` predates fields a newer version expects.
 
-Confirm to the user that `.crisp.md` has been written and that all CRISP commands will now use this context automatically.
+Confirm to the user that `.crisp.md` has been written (or merged, with History and Decisions preserved), list any sections left as TODO, and say that all CRISP commands will now use this context automatically.

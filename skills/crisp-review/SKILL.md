@@ -2,7 +2,7 @@
 name: crisp-review
 description: "30-second CRISP design scan - a grade A-F and the top 3 issues by user impact with specific fixes. Use during rapid iteration when a full audit would slow you down: 'quick look at this', 'sanity check this screen', 'grade this'."
 metadata:
-  version: "1.3.1"
+  version: "1.3.2"
 ---
 
 # /crisp-review - Quick CRISP Scan
@@ -40,7 +40,7 @@ Before evaluating CRISP dimensions, run one fast check:
 | SaaS cream + generic sans | Off-white background with no tint, Inter, Geist, Roboto or DM Sans on every level, zero distinctive colour decision |
 | Saturated aesthetic lane | Editorial-typographic (italic display serif + mono labels + ruled separators) used as a default not a deliberate choice |
 
-**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count. A purple gradient on a brand that is purple is not a tell.
+**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count. A purple gradient on a brand that is purple is not a tell. A pattern documented in the project's DESIGN.md or .crisp.md tokens is a decision, not a tell.
 <!-- /crisp:shared slop-tells -->
 
 If the target is a live codebase (markup/style files, not a screenshot or Figma link), run `npx @laith-wallace/crisp detect --json <target>` first - it's faster than reasoning about it and it's exact. Fold any findings straight into the Fail verdict above instead of re-deriving them by eye. Skip it for screenshot-only or Figma-link targets and judge by eye instead.
@@ -98,6 +98,7 @@ Use these as your diagnostic lens during the scan:
 
 Additional craft checks - flag any as issues or Quick Wins:
 
+- **Functional first** - the 2 things a visitor came for (e.g. hours and phone for a restaurant, balance for a banking app) are visible without scrolling; style cannot rescue a page that hides them, so a miss is a C issue rated at least P1
 - **No dead zones** - if any part of a control looks interactive, it must be interactive; no decoy hit areas
 - **All states present** - every component has empty, sparse, dense, and error states; missing states become developer inventions
 - **Stable skeletons** - loading skeletons must match the final layout exactly; a skeleton that shifts on load is worse than no skeleton
@@ -153,21 +154,49 @@ Keep it tight. No lengthy explanations.
 
 **Top 3 Issues**
 
-1. [C/R/I/S/P] **[Issue title]**
+1. [C/R/I/S/P] **[Issue title]** ([P0-P3])
+   Where: [file:line for code, or the element and screen region for a screenshot]
    What's wrong: [One sentence, specific]
    Fix: [One sentence, specific - not a direction, an action]
 
-2. [C/R/I/S/P] **[Issue title]**
+2. [C/R/I/S/P] **[Issue title]** ([P0-P3])
+   Where: [file:line]
    What's wrong: [One sentence]
    Fix: [One sentence]
 
-3. [C/R/I/S/P] **[Issue title]**
+3. [C/R/I/S/P] **[Issue title]** ([P0-P3])
+   Where: [file:line]
    What's wrong: [One sentence]
    Fix: [One sentence]
 
 **Quick Wins**
 - [High-impact, low-effort items that didn't make the top 3]
+
+**Unverified**
+- [Confidence 1-4 findings that would be P0 if true - omit if none]
+
+**Next**
+- [N] [cluster] issues -> /crisp-[command] [mode]
+
+**Suppressed by decisions:** [N]
 ```
+
+## Next Step Routing
+
+End with one or two commands per finding cluster, at most three lines, so the scan turns into an action. Name only commands whose cluster appears in the issues above, because a generic menu is ignored:
+
+| Finding cluster | Next |
+|---|---|
+| Tone too loud or busy (slop tells, decorative motion) | `/crisp-tune quieter` |
+| Tone too flat, or clutter | `/crisp-tune bolder` or `/crisp-tune simpler` |
+| Contrast, keyboard, or focus failures | `/crisp-a11y` |
+| Copy issues (empty states, errors, generic toasts) | `/crisp-copy` |
+| Motion and component craft | `/crisp-design-eng` |
+| Missing states or fragile layouts | `/crisp-stress` |
+| Several P0 and P1, to fix to a target grade | `/crisp-loop` |
+| Needs depth beyond 3 issues | `/crisp-audit` |
+
+Example: `2 copy issues ("No data available", "Success" toast) -> /crisp-copy`.
 
 ## Examples of Good vs. Weak Feedback
 
@@ -185,6 +214,10 @@ Keep it tight. No lengthy explanations.
 Direct. Specific. Actionable. No softening. If the design fails, say it fails and say exactly why. The goal is to make the next iteration better, not to protect feelings.
 
 ## Longitudinal Tracking
+
+<!-- crisp:shared history -->
+**Top-level runs only.** Write `## History` lines and `crisp critique write` snapshots only when the user invoked this skill directly. When another skill calls it (`/crisp-loop`, `/crisp-proof`, `/crisp-variants`, or a CRISP Live session), skip both writes and hand the result back to the caller, because the caller writes one line for the whole run and nested writes would multiply entries (a five-iteration loop would otherwise log six lines). `## Decisions` lines are not affected: they record what the user said, whoever ran the skill.
+<!-- /crisp:shared history -->
 
 After delivering the review output, append a one-line summary to the `## History` section in `.crisp.md` (if it exists). Get today's date from the `date` command (`date +%Y-%m-%d`) - never from memory:
 

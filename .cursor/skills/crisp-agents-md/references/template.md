@@ -7,7 +7,7 @@ Fill every `{{placeholder}}` from Step 0 facts or Step 2 answers. A placeholder 
 ```markdown
 # Agent workflow
 
-Every task in this repo moves through five beats. Each beat names the skill that runs it when one is installed, and the plain rule when none is. This file is read by every coding agent at session start; keep it under 200 lines and put long material in linked docs.
+Every task in this repo moves through six beats. Each beat names the skill that runs it when one is installed, and the plain rule when none is. This file is read by every coding agent at session start; keep it under 200 lines and put long material in linked docs.
 
 <!-- crisp-agents-md:begin workflow -->
 ## Workflow

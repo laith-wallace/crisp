@@ -3,7 +3,7 @@ name: crisp
 description: "Router for the CRISP skill pack - names every skill, its pipeline stage, and when to reach for it. Use when unsure which design or workflow skill fits: 'which crisp command should I use', 'what can CRISP do', 'where do I start with this design'."
 disable-model-invocation: true
 metadata:
-  version: "1.4.0"
+  version: "1.5.0"
 ---
 
 # /crisp - Skill Pack Router
@@ -19,8 +19,9 @@ One place to find the right CRISP skill. Read the user's situation, name the mat
 | Scope | `/crisp-brief` | A request is vague - converts it into a `.brief.md` with success criteria and scope boundaries |
 | Research | `/crisp-research` | Before designing - competitive patterns, anti-patterns, dimension risks, writes `.research.md` |
 | Research | `/crisp-study` | A URL, screenshot, or codebase has a look worth learning from - extracts its design DNA into a `DESIGN.md` with provenance |
+| Direction | `/crisp-worlds` | Nothing has a look yet - shows the category default plus 3 distinct visual worlds in a local picker; the chosen one becomes a `DESIGN.md` |
 | Design | `/feature-design` | Designing a new feature from a problem statement - reads `.brief.md` and `.research.md` |
-| Design | `/crisp-variants` | Choosing between directions - 3 to 5 live variants of one component behind a dev-only switcher, then deletes the losers |
+| Design | `/crisp-variants` | Choosing between options for one component in real code - 3 to 5 live variants of one component behind a dev-only switcher, then deletes the losers |
 | Build | `/crisp-structure` | Deciding where code goes - actions own why and when, services own how; auditing duplicated mechanics or leaky services |
 | Check | `/crisp-review` | 30-second scan mid-iteration - grade A-F plus top 3 issues |
 | Check | `/crisp-audit` | Full scored evaluation across all five dimensions with a prioritised action plan |
@@ -34,6 +35,7 @@ One place to find the right CRISP skill. Read the user's situation, name the mat
 
 | Skill | Reach for it when |
 |---|---|
+| `/crisp-live` | The user wants to click parts of their running local site and say what to change - dev-only toolbar, chips route to tune, copy, a11y and the rest |
 | `/crisp-tune` | A UI is right but the tone is wrong - `bolder`, `quieter`, or `simpler`, plus variance, motion, and density dials, all on-token |
 | `/crisp-design-eng` | An interaction feels janky or "off"; motion, micro-interaction, and polish decisions; Mechanical Pre-Flight Checks |
 | `/crisp-copy` | Any UI wording - labels, errors, empty states, CTAs - audit or generate |
@@ -41,6 +43,17 @@ One place to find the right CRISP skill. Read the user's situation, name the mat
 | `/crisp-ai` | The feature's primary interaction is AI - chat, streaming, generative UI, agents |
 | `/crisp-ux-laws` | Grounding a design argument in cognitive laws (Fitts, Hick, Miller, ...) |
 | `/crisp-unslop` | Prose a person will read - landing copy, posts, docs, release notes, PR bodies - sounds like AI or needs tightening; UI strings go to `/crisp-copy` |
+
+## Confusable pairs
+
+| They said | Pick | Not |
+|---|---|---|
+| "grade this", "quick look" | `/crisp-review` | `/crisp-audit` (that is the full /50 score) |
+| "make it bolder", "tone it down" | `/crisp-tune` | `/crisp-redesign` (that changes identity) |
+| "show me directions" before anything exists | `/crisp-worlds` | `/crisp-variants` (that varies one component in code) |
+| "let me click on it and tell you" | `/crisp-live` | `/crisp-variants` |
+| "prove it works" | `/crisp-evidence` | `/crisp-proof` (that is before/after visuals) |
+| "fix this error message" | `/crisp-copy` | `/crisp-unslop` (that is long-form prose) |
 
 ## Whole-surface work
 

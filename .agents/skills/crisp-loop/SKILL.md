@@ -2,7 +2,7 @@
 name: crisp-loop
 description: Bounded review-fix-review loop - runs /crisp-review, fixes every P0 and P1 it names, re-reviews, and repeats until the target grade (default B with zero P0) or the iteration cap (default 5), then reports the trend. Use for 'keep fixing until it's good', 'get this screen to an A', or to land a batch of design fixes with a measured result instead of a hope.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   author: Laith Wallace - FlowConverts
   adapted-from: greptileai/skills greploop (loop shape, MIT) - reviewer swapped for /crisp-review and the crisp detector
 ---
@@ -11,7 +11,7 @@ metadata:
 
 One review finds the problems. One fix pass introduces new ones or leaves half of them standing. This skill runs the cycle until the surface meets a grade you named, and refuses to run forever.
 
-Load `.crisp.md` if it exists. Its register decides how `/crisp-review` grades; its History section is where each iteration lands.
+Load `.crisp.md` if it exists. Its register decides how `/crisp-review` grades; its History section is where the loop's one summary line lands.
 
 ## Inputs
 
@@ -116,10 +116,14 @@ The `Remaining` list is every P0 and P1 still open, each with file:line. Empty i
 
 ## Longitudinal tracking
 
+<!-- crisp:shared history -->
+**Top-level runs only.** Write `## History` lines and `crisp critique write` snapshots only when the user invoked this skill directly. When another skill calls it (`/crisp-loop`, `/crisp-proof`, `/crisp-variants`, or a CRISP Live session), skip both writes and hand the result back to the caller, because the caller writes one line for the whole run and nested writes would multiply entries (a five-iteration loop would otherwise log six lines). `## Decisions` lines are not affected: they record what the user said, whoever ran the skill.
+<!-- /crisp:shared history -->
+
 Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y-%m-%d`, never memory:
 
 ```
 - [YYYY-MM-DD] | /crisp-loop | [start grade] → [end grade] in [N] iterations | [stop reason] | [surface]
 ```
 
-Each iteration's `/crisp-review` also writes its own History line, so the trend inside the loop is visible without this summary.
+Each iteration's `/crisp-review` is a nested call and writes no History line of its own; the per-iteration trend lives in the report table instead.

@@ -2,7 +2,7 @@
 name: crisp-design-eng
 description: "Design engineering craft layer - motion decisions, micro-interaction quality, component polish, the invisible details that make an interface feel right. Use when an interaction feels janky or 'off', when adding or reviewing motion, or when polishing before ship: 'make it feel better', 'the modal feels wrong', 'add motion'. Home of the Mechanical Pre-Flight Checks run by /crisp-redesign and /crisp-funnel."
 metadata:
-  version: "1.3.0"
+  version: "1.3.1"
 ---
 
 # CRISP Design Engineering - `/crisp-design-eng`
@@ -152,7 +152,7 @@ Default for anything else:
 | Modals, drawers | 200–500ms |
 | Marketing or explanatory motion | May be longer |
 
-**UI animations: stay under 300ms.** A 180ms dropdown feels more responsive than a 400ms one. The spinner that spins faster makes the page feel like it loads faster - even when the load time is identical. Perceived performance is real performance, from the user's point of view.
+**UI animations: stay under 300ms. The one exception is modals and drawers, which may run to 500ms because they move a whole surface the eye has to track.** A 180ms dropdown feels more responsive than a 400ms one. The spinner that spins faster makes the page feel like it loads faster - even when the load time is identical. Perceived performance is real performance, from the user's point of view.
 
 **CRISP dimension at risk:** R - Responsive. Duration is the most auditable indicator of whether a UI respects the user's time.
 
@@ -270,7 +270,7 @@ These are the canonical CRISP motion tokens. If the project ships its own `CRISP
 --duration-structural: 800ms;  /* structural draw-in animations only (e.g. a timeline path) - never interactive UI */
 ```
 
-`--duration-structural` is the one case where 800ms is correct - a structural draw-in is scenery, not interaction. Every UI interaction observes the 300ms ceiling.
+`--duration-structural` is the one case where 800ms is correct - a structural draw-in is scenery, not interaction. Every UI interaction observes the 300ms ceiling, apart from the modal and drawer exception above (500ms).
 
 **No decorative motion.** If removing the animation does not change what the user understands, remove it.
 
@@ -316,7 +316,7 @@ MOTION DECISIONS
 
 MECHANICAL PRE-FLIGHT
 
-[Pre-flight: N/10 pass - failures listed with file:line]
+[Pre-flight: N/11 pass - failures listed with file:line]
 
 ─────────────────────────────────────────────────────
 

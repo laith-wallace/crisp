@@ -2,7 +2,7 @@
 name: crisp-variants
 description: Build N (default 3, max 5) genuinely different design variants of one component or section in the real codebase, behind a dev-only variant switcher (?variant= or a small floating toggle), so the user compares them live; each variant has a one-line thesis and differs on at least 2 of layout, hierarchy, density, typography, and colour use; when one is picked, the others and the switcher are deleted with zero dead code left. Use when "show me options", "give me 3 versions", "explore variants", "A/B this hero", "I can't decide how this should look", or "prototype a few directions". Designing a new feature from a problem belongs to /feature-design; adjusting the tone of one existing design belongs to /crisp-tune; production A/B testing with real traffic is out of scope.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   author: Laith Wallace - FlowConverts
   adapted-from: workflow inspired by emilkowalski/skills prototype and impeccable live/generate (no vendored code)
 ---
@@ -62,15 +62,18 @@ A variant that only changes colour, or only reorders two items, is a tweak, not 
    ```
    A variant that fails the Slop Check or adds detector findings is fixed or replaced before the user sees it.
 7. **Prove the guard.** Run a production build and grep the output for the variant file names or the switcher marker (`data-crisp-variants`). Zero hits, or the guard is wrong.
-8. **Hand over** with the Build report below. Stop and wait for the pick.
+8. **Record and hand over.** Write `.crisp/variants.json` with the target, start commit, switcher file, and every variant file path, because the pick may come in a later session that has none of this context. Then give the Build report below. Stop and wait for the pick.
 
 ### Pick phase
 
+Read `.crisp/variants.json` first; if it is missing, rebuild the list from `git status` and the `data-crisp-variants` marker, and state that you did.
+
 9. **Keep the chosen variant.** If it is not `a`, move its implementation into the original file (same name, same export) so imports elsewhere are untouched.
-10. **Delete the rest.** Every losing variant file, the switcher, the guard, and any helper added in step 5.
+10. **Delete the rest.** Every losing variant file, the switcher, the guard, any helper added in step 5, and `.crisp/variants.json`.
 11. **Prove zero dead code.**
     ```bash
-    grep -rn "variant-[b-e]\|data-crisp-variants\|crisp-variant" <src dirs>   # must print nothing
+    grep -rn "data-crisp-variants\|crisp-variant" <src dirs>                     # must print nothing
+    grep -rnF "<each losing variant file's basename from .crisp/variants.json>" <src dirs>   # must print nothing
     git diff --stat <start commit>                                               # only the target's files
     ```
 12. **Re-run** the detector and the build on the kept file. Report the diff with the Pick report.
@@ -100,7 +103,16 @@ Run on every variant before handover.
 | SaaS cream + generic sans | Off-white background with no tint, Inter, Geist, Roboto or DM Sans on every level, zero distinctive colour decision |
 | Saturated aesthetic lane | Editorial-typographic (italic display serif + mono labels + ruled separators) used as a default not a deliberate choice |
 
-**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count. A purple gradient on a brand that is purple is not a tell.
+**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count. A purple gradient on a brand that is purple is not a tell. A pattern documented in the project's DESIGN.md or .crisp.md tokens is a decision, not a tell.
+
+**Model overlay: Claude.** Seed list, unverified: confirm with scripts/slop-harvest.mjs before trusting. These are tells commonly attributed to Claude-family output, not measured ones. Until a harvest run confirms a row, a match is a note in the report, not a Fail.
+
+| Tell | What it looks like | Nearest detector rule |
+|------|--------------------|-----------------------|
+| Warm cream + serif display | Beige or cream page, a serif display face with one italic word in the headline, a terracotta or clay accent | `cream-generic-sans` (partial) |
+| Em dash cadence | Em dashes joining clauses in headlines, subheads and button-adjacent copy | `em-dash-overuse` |
+| Aphoristic hero line | Short paired fragments ("Less noise. More signal.") as the hero headline | `aphoristic-cadence` |
+| Tidy three-up | Exactly three feature cards, each with an icon tile, a two-word heading and one sentence | `icon-tile-stack` |
 <!-- /crisp:shared slop-tells -->
 
 ## Binary rules
@@ -112,7 +124,7 @@ Run on every variant before handover.
 5. Zero off-token values in any variant.
 6. Every variant keeps the original's props interface, copy source, tracked labels, and anchor IDs. Copy may be rearranged, not rewritten, unless the brief asks for copy variants.
 7. The switcher is unreachable in production: the production build contains 0 references to variant files or the switcher marker.
-8. Zero edits outside the target's file, its new sibling variant files, and the one render site that hosts the switcher.
+8. Zero edits outside the target's file, its new sibling variant files, the one render site that hosts the switcher, and `.crisp/variants.json`.
 9. After the pick: `grep` for variant markers returns 0 lines, and `git diff --stat` against the start commit lists only the target's files.
 10. Build passes at handover and after the pick.
 
@@ -174,6 +186,10 @@ Pick report:
 - [ ] Zero em dashes in the report and in any variant copy
 
 ## Longitudinal tracking
+
+<!-- crisp:shared history -->
+**Top-level runs only.** Write `## History` lines and `crisp critique write` snapshots only when the user invoked this skill directly. When another skill calls it (`/crisp-loop`, `/crisp-proof`, `/crisp-variants`, or a CRISP Live session), skip both writes and hand the result back to the caller, because the caller writes one line for the whole run and nested writes would multiply entries (a five-iteration loop would otherwise log six lines). `## Decisions` lines are not affected: they record what the user said, whoever ran the skill.
+<!-- /crisp:shared history -->
 
 Append one line to `## History` in `.crisp.md` if it exists, after the pick. Date from `date +%Y-%m-%d`:
 

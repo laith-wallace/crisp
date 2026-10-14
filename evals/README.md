@@ -6,7 +6,7 @@ Every case is a directory holding a `prompt.md` (frontmatter = run limits, body 
 
 | Folder | Cases | What it measures |
 |---|---|---|
-| `triggering/<skill>/` | 29 | A natural request (no skill name in it) makes Claude invoke that skill. One free `tool_used: Skill` grader each |
+| `triggering/<skill>/` | 31 | A natural request (no skill name in it) makes Claude invoke that skill. One free `tool_used: Skill` grader each |
 | `negative/<name>/` | 5 | Ordinary coding requests where no CRISP skill may fire. `tool_used` with `min: 0`, `max: 0`, `arm: both` |
 | `graded/<name>/` | 7 | Output quality on the regression fixtures in `tests/fixtures/`, graded against `tests/expected/` |
 
@@ -55,11 +55,25 @@ To also check that `decisions-suppression` never writes to `## Decisions`, grant
 
 ## Cost
 
-Every agent run and every `llm` judge vote is a real model call on your account. The full suite is 41 cases x 3 runs x 2 arms = 246 agent runs, plus 3 judge votes per `llm` grader per run (27 `llm` graders across the 7 graded cases). Triggering and negative cases use only free graders, so they cost just their agent runs. Set `--max-cost-usd` as a ceiling, use `--ablation none` to halve the cost when you don't need the delta, and use `--runs 1` while iterating (then confirm at 3 runs). Results land in `evals/results/<timestamp>/` (git-ignored).
+Every agent run and every `llm` judge vote is a real model call on your account. The full suite is 43 cases x 3 runs x 2 arms = 258 agent runs, plus 3 judge votes per `llm` grader per run (27 `llm` graders across the 7 graded cases). Triggering and negative cases use only free graders, so they cost just their agent runs. Set `--max-cost-usd` as a ceiling, use `--ablation none` to halve the cost when you don't need the delta, and use `--runs 1` while iterating (then confirm at 3 runs). Results land in `evals/results/<timestamp>/` (git-ignored).
+
+## After a run
+
+Two scripts read a results folder. Neither depends on an exact result schema: `scripts/eval-results.mjs` documents what they assume and skips what it cannot read.
+
+```bash
+# Per-model detector hits in the no-plugin arm: how the slop-tells overlays get confirmed
+node scripts/slop-harvest.mjs evals/results/<timestamp>
+node scripts/slop-harvest.mjs --json evals/results/<timestamp> > harvest.json
+
+# Same-prompt gallery, without vs with CRISP (add evals/results/<timestamp>/grades.json for grades)
+node scripts/gallery.mjs evals/results/<timestamp> --out gallery
+```
 
 ## Known gaps
 
-- `crisp` (router) and `crisp-teach` set `disable-model-invocation: true`, so Claude cannot pick them on its own. Their triggering cases are tagged `model-invocation-disabled` and will score 0 until that flag changes. They stay in the suite as a record of the intended trigger phrasing.
+- `crisp` (router) sets `disable-model-invocation: true`, so Claude cannot pick it on its own. Its triggering case is tagged `model-invocation-disabled` and will score 0 until that flag changes. It stays in the suite as a record of the intended trigger phrasing.
+- `crisp-teach` no longer sets the flag, so its triggering case is a normal case and should pass.
 - `crisp-study`, `crisp-tune`, `crisp-stress`, and `crisp-variants` are tagged `new-skill` so they can be run on their own while their descriptions settle.
 - `crisp-study` and `crisp-variants` need network or write access to do their work. Their triggering grader only checks that the skill was chosen, so no grant is needed.
 

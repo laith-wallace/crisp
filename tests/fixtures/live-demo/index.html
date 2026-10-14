@@ -1,0 +1,70 @@
+<!doctype html>
+<!--
+  CRISP Live demo page. A deliberately AI-sloppy landing section for manual and
+  smoke testing of the overlay: hero pill badge, gradient text, off-brand
+  purple-blue gradient, glow halo, identical icon-tile card grid, template copy.
+
+  Try it:
+    npx crisp live start              (from the repo root, in one terminal)
+    npx serve tests/fixtures/live-demo   (or: python3 -m http.server -d tests/fixtures/live-demo 8080)
+  Open the page on localhost, click Pick, choose the headline, press Quieter, Send.
+  In another terminal: npx crisp live next --json
+
+  The hero has a dev-only ?variant= switcher (the crisp-variants convention) so
+  the overlay's variant strip has something real to flip between.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nimbus - AI workflow platform</title>
+  <style>
+    body { margin: 0; font-family: Inter, system-ui, sans-serif; background: #faf9f7; color: #1d1d27; }
+    .hero { position: relative; padding: 96px 24px 72px; text-align: center; overflow: hidden; }
+    .hero::before { content: ""; position: absolute; inset: -40% 20% auto; height: 480px; background: radial-gradient(circle, rgba(124, 58, 237, .35), transparent 60%); filter: blur(40px); z-index: -1; }
+    .pill { display: inline-block; padding: 6px 14px; border-radius: 999px; background: #ede9fe; color: #6d28d9; font-size: 13px; font-weight: 600; }
+    h1 { font-size: clamp(36px, 6vw, 64px); line-height: 1.05; margin: 20px auto 16px; max-width: 14ch; background: linear-gradient(90deg, #7c3aed, #2563eb); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .lede { max-width: 52ch; margin: 0 auto 32px; font-size: 18px; color: #4b4b5c; }
+    .cta { display: inline-block; padding: 14px 28px; border-radius: 12px; background: linear-gradient(90deg, #7c3aed, #2563eb); color: #fff; font-weight: 600; text-decoration: none; box-shadow: 0 10px 30px rgba(124, 58, 237, .4); transition: all .3s; }
+    .cta:hover { transform: scale(1.05); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; max-width: 960px; margin: 0 auto; padding: 24px 24px 96px; }
+    .card { padding: 24px; border-radius: 16px; background: rgba(255, 255, 255, .6); backdrop-filter: blur(12px); border: 1px solid #e7e5f0; }
+    .icon { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #7c3aed, #2563eb); margin-bottom: 16px; }
+    .card h3 { margin: 0 0 8px; font-size: 18px; }
+    .card p { margin: 0; color: #5b5b6b; }
+    /* Variant b: quieter, left-aligned, no gradients. Variant c: dense split. */
+    [data-crisp-variants="b"] .hero { text-align: left; max-width: 960px; margin: 0 auto; }
+    [data-crisp-variants="b"] .hero::before, [data-crisp-variants="b"] .pill { display: none; }
+    [data-crisp-variants="b"] h1 { background: none; color: #1d1d27; margin-left: 0; }
+    [data-crisp-variants="b"] .lede { margin-left: 0; }
+    [data-crisp-variants="b"] .cta { background: #1d1d27; box-shadow: none; }
+    [data-crisp-variants="c"] .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; text-align: left; max-width: 960px; margin: 0 auto; padding-top: 48px; }
+    [data-crisp-variants="c"] .hero::before { display: none; }
+    [data-crisp-variants="c"] h1 { background: none; color: #1d1d27; font-size: 40px; margin: 0; }
+  </style>
+</head>
+<body>
+  <main id="app">
+    <section class="hero" data-crisp-src="tests/fixtures/live-demo/index.html:48">
+      <span class="pill" data-crisp-src="tests/fixtures/live-demo/index.html:49">New: Nimbus AI 2.0</span>
+      <h1 data-crisp-src="tests/fixtures/live-demo/index.html:50">Supercharge your workflow with AI</h1>
+      <p class="lede" data-crisp-src="tests/fixtures/live-demo/index.html:51">A seamless, world-class platform that unlocks the full potential of your team. Not a tool. A revolution.</p>
+      <a class="cta" href="#signup" data-crisp-src="tests/fixtures/live-demo/index.html:52">Get started for free</a>
+    </section>
+    <section class="grid" aria-label="Features">
+      <article class="card"><div class="icon"></div><h3>Lightning fast</h3><p>Blazing performance that scales with you.</p></article>
+      <article class="card"><div class="icon"></div><h3>Secure by default</h3><p>Enterprise-grade security, out of the box.</p></article>
+      <article class="card"><div class="icon"></div><h3>Seamless integrations</h3><p>Connect every tool you already love.</p></article>
+    </section>
+  </main>
+  <script>
+    // Dev-only variant switcher (crisp-variants convention). Production renders the original.
+    (function () {
+      var id = new URLSearchParams(location.search).get('variant');
+      if (id && id !== 'a') document.getElementById('app').setAttribute('data-crisp-variants', id);
+    })();
+  </script>
+  <!-- CRISP Live overlay: dev only. Delete when the session ends. -->
+  <script src="http://127.0.0.1:4477/overlay.js" defer></script>
+</body>
+</html>

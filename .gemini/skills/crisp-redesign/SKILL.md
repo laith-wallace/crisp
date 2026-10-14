@@ -2,7 +2,7 @@
 name: crisp-redesign
 description: Redesign an existing UI or website without breaking what works - detects preserve vs overhaul mode, audits the current state first, applies modernisation levers in priority order, and protects SEO, analytics, and accessibility wins from regression. Use when the request is to redesign, modernise, refresh, or upgrade an existing surface.
 metadata:
-  version: "1.1.1"
+  version: "1.1.2"
 ---
 
 # /crisp-redesign - Redesign Without Regression
@@ -45,7 +45,7 @@ Mode: [Preserve / Overhaul]
 **Analytics surface** - tracked button labels, form field names, section IDs that downstream events depend on
 ```
 
-The three dials (rate each Low / Medium / High):
+The three dials (rate each 1-10 on the `/crisp-tune` scale, so both skills share one number: 1-3 low, 4-6 medium, 7-10 high):
 
 - **VARIANCE** - how far the surface departs from category convention: layout topology, type voice, colour ambition
 - **MOTION** - how much animation the surface carries: from none/hover-only through to scroll-triggered and decorative
@@ -79,7 +79,7 @@ Each lever is cheaper and safer than the next. Reaching for lever 6 when lever 1
 **Decision tree:**
 - IA, content, and SEO are sound → **targeted evolution** (levers 1-4). Roughly 70% of the value at 40% of the risk.
 - Visual debt is structural (broken IA, no design system, broken mobile) → **full redesign** with strict content preservation.
-- The brand itself is changing → treat as greenfield, hand off to `/feature-design`.
+- The brand itself is changing → **Overhaul** mode (Step 1): new visual language, with content, IA, and URLs preserved. Only a surface with nothing worth keeping is Greenfield and goes to `/feature-design`.
 
 ---
 
@@ -104,7 +104,7 @@ Before declaring the redesign done:
 1. Run the **Slop Check** below on the redesigned surface. Every tell must be gone, or recorded in `.crisp.md` `## Decisions`.
 2. Run the **Mechanical Pre-Flight Checks** from `/crisp-design-eng` (em-dash count, eyebrow count, zigzag cap, CTA contrast and wrap, palette and radius locks, body text size).
 3. Run the **Copy Self-Audit** from `/crisp-copy` on every string you touched.
-4. Re-run `/crisp-review` and compare the grade against the audit baseline. A redesign that does not improve the grade is not done.
+4. Re-run `/crisp-review` and compare the grade against the audit baseline. The redesign is done when the grade does not drop and the brief's goals are met, because a surface already at A cannot improve its grade.
 5. Confirm every item in the SEO baseline and analytics surface from Step 2 is intact.
 
 ### Slop Check
@@ -130,7 +130,16 @@ Before declaring the redesign done:
 | SaaS cream + generic sans | Off-white background with no tint, Inter, Geist, Roboto or DM Sans on every level, zero distinctive colour decision |
 | Saturated aesthetic lane | Editorial-typographic (italic display serif + mono labels + ruled separators) used as a default not a deliberate choice |
 
-**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count. A purple gradient on a brand that is purple is not a tell.
+**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count. A purple gradient on a brand that is purple is not a tell. A pattern documented in the project's DESIGN.md or .crisp.md tokens is a decision, not a tell.
+
+**Model overlay: Gemini.** Seed list, unverified: confirm with scripts/slop-harvest.mjs before trusting. These are tells commonly attributed to Gemini-family output, not measured ones. Until a harvest run confirms a row, a match is a note in the report, not a Fail.
+
+| Tell | What it looks like | Nearest detector rule |
+|------|--------------------|-----------------------|
+| Sparkle for AI | A sparkle icon or emoji next to anything AI-powered, often in a gradient | `emoji-heading-icon` (partial) |
+| Blue-violet gradient wash | Blue to violet gradient across hero backgrounds or headline text | `purple-blue-gradient`, `gradient-text` |
+| Alternating tinted bands | Every section on a different pastel background with no reason in the content | none yet |
+| Generic sans on every level | Roboto or the platform sans for display, body and labels alike | `generic-font-stack-only` |
 <!-- /crisp:shared slop-tells -->
 
 ---

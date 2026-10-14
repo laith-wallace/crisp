@@ -2,7 +2,7 @@
 name: crisp-evidence
 description: Runtime proof that a change works - the agent drives the app live while a recorder captures the session with timestamped setup, test_start, and assertion annotations (passed, failed, untested), then writes report.md and manifest.json for the PR. Headless environments swap the recorder for numbered screenshots; non-UI changes ship measured numbers or output pairs. Use when a change needs verifiable evidence instead of a prose claim, when reproducing a bug before fixing it, or before any PR that says 'tested'. Before/after design deltas belong to /crisp-proof.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   author: Laith Wallace - FlowConverts
   adapted-from: michaelshimeles/skills evidence-driven-testing (annotation protocol and guardrails; recorder rewritten as bash)
 ---
@@ -54,7 +54,7 @@ bash $EVIDENCE stop .artifacts/evidence/<task>
 - Maximise the browser or app window. Close popups, notifications, and extra panels. Never record a half-covered window.
 - Navigate to the starting state before recording, unless setup is itself under test.
 - Confirm the server under test is **your** process: `lsof -i :<port>` (or `ss -ltnp "sport = :<port>"`), then `ps -p <pid> -o args=`.
-- Fixing a bug? Reproduce it now, with the recorder running, and mark the failing assertion `failed`. Stop, keep that session as `<task>-before`, and start a fresh session after the fix.
+- Fixing a bug? Reproduce it now, with the recorder running, and mark the failing assertion `failed`. Stop, keep that session as `<task>-before`, and start a fresh session after the fix. `stop` exits 3 on this session because an assertion failed; that is the expected result here, not an error, since the failure is what this session proves.
 
 ### 2. Record and annotate as you test
 
@@ -97,7 +97,7 @@ Replace the `TODO` line in the Caveats section of `report.md`. A report with the
 - Always state the exact commit, branch, or deployment tested against - the recorder stamps it, do not override it.
 - Evidence complements the repo's checks (typecheck, build, tests). It never replaces them. Run them and cite the command and result in the report.
 
-## No computer-use tools, GUI exists
+## GUI exists: choosing how to drive it
 
 Drive the app with the harness's browser tools (Claude in Chrome, computer use) or an external actuator such as `cua-driver` (github.com/trycua/cua). It is still you testing live; only the input mechanism differs. Keep the bundled recorder for the video and annotations. If neither works, `cua-driver recording start <dir>` / `stop` or the OS recorder (`screencapture -v out.mov` on macOS) capture the video with no annotation overlay - keep the protocol as `assertions.md` exactly as in the headless path.
 
@@ -106,6 +106,7 @@ Drive the app with the harness's browser tools (Claude in Chrome, computer use) 
 Same assertion discipline, scripted capture:
 
 - Everything goes to `.artifacts/evidence/<task>/`. Keep the capture script beside the captures so the run is repeatable.
+- Run `bash $EVIDENCE start <dir> --source none` **before** the capture script, `annotate` as each step runs, and `stop` after it, so annotation timestamps line up with the captures. You still get `report.md` and `manifest.json` with the commit stamped, and the video line says headless.
 - Screenshots: one-off Playwright, no project dependency:
 
   ```bash
@@ -127,8 +128,6 @@ Same assertion discipline, scripted capture:
   ```
 
 - The annotation protocol becomes files: number captures in test order with the assertion in the name (`02-it-saves-on-blur-passed.png`) and keep `assertions.md` listing each `test_start` / `assertion` with its result and reason.
-- Run `bash $EVIDENCE start <dir> --source none` and the `annotate` / `stop` commands anyway: you still get `report.md` and `manifest.json` with the commit stamped, and the video line says headless.
-
 ## Non-UI changes still need evidence
 
 | Change | Evidence |
