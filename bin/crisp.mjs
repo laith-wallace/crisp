@@ -50,6 +50,11 @@ if (subcommand === 'design-md') {
   await exitAfterFlush(await runDesignMd(subArgs));
 }
 
+if (subcommand === 'live') {
+  const { runLive } = await import(join(PKG_ROOT, 'scripts', 'live.mjs'));
+  await exitAfterFlush(await runLive(subArgs));
+}
+
 if (subcommand === 'help' || process.argv.includes('--help') || process.argv.includes('-h')) {
   console.log(`@laith-wallace/crisp
 
@@ -61,6 +66,7 @@ if (subcommand === 'help' || process.argv.includes('--help') || process.argv.inc
   crisp design-md diff <old> <new>        token-level diff of two DESIGN.md files
   crisp critique slug|write|trend     per-surface review history in .crisp/critique/
   crisp doctor [--fix]                check .crisp.md and .crisp/config.json for drift
+  crisp live start|next|respond|status|stop   dev-only in-page toolbar that sends edits to your agent
   crisp --version`);
   process.exit(0);
 }
