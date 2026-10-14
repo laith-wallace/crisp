@@ -18,7 +18,7 @@ The detector honours your `.crisp/config.json` ignores and `crisp-disable-line` 
 
 ## Use it
 
-Copy [`../../workflows/crisp-design-review.example.yml`](../../workflows/crisp-design-review.example.yml) into your repo as `.github/workflows/crisp-design-review.yml` and delete the `github.repository != 'laith-wallace/crisp'` guards. The minimum is:
+Copy [`example-workflow.yml`](example-workflow.yml) into your repo as `.github/workflows/crisp-design-review.yml` and delete the `github.repository != 'laith-wallace/crisp'` guards. The minimum is:
 
 ```yaml
 on: pull_request

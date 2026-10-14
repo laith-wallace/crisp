@@ -8,7 +8,7 @@ import { buildComment, crispCommand, isUiFile, MARKER } from '../../.github/acti
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const ACTION = join(ROOT, '.github', 'actions', 'crisp-design-review', 'action.yml');
-const EXAMPLE = join(ROOT, '.github', 'workflows', 'crisp-design-review.example.yml');
+const EXAMPLE = join(ROOT, '.github', 'actions', 'crisp-design-review', 'example-workflow.yml');
 
 /**
  * A deliberately small YAML reader: block maps, block lists, plain and quoted
