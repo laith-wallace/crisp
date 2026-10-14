@@ -130,7 +130,16 @@ Before declaring the redesign done:
 | SaaS cream + generic sans | Off-white background with no tint, Inter, Geist, Roboto or DM Sans on every level, zero distinctive colour decision |
 | Saturated aesthetic lane | Editorial-typographic (italic display serif + mono labels + ruled separators) used as a default not a deliberate choice |
 
-**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count. A purple gradient on a brand that is purple is not a tell.
+**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count. A purple gradient on a brand that is purple is not a tell. A pattern documented in the project's DESIGN.md or .crisp.md tokens is a decision, not a tell.
+
+**Model overlay: Cursor.** Seed list, unverified: confirm with scripts/slop-harvest.mjs before trusting. Cursor runs several model families, so these are tells commonly attributed to its default component stack, not to one model. Until a harvest run confirms a row, a match is a note in the report, not a Fail.
+
+| Tell | What it looks like | Nearest detector rule |
+|------|--------------------|-----------------------|
+| Untouched component-kit defaults | Zinc or slate neutrals, default radius, every surface wrapped in a bordered card | `nested-card-selector` (partial) |
+| Card inside card | A `Card` component holding further bordered or shadowed panels | `nested-card-selector` |
+| Icon-only buttons with no label | Icon buttons from the kit with no `aria-label` or visible text | `icon-button-no-label` |
+| Blanket transitions | `transition-all` or `transition: all` on most interactive elements | `transition-all` |
 <!-- /crisp:shared slop-tells -->
 
 ---

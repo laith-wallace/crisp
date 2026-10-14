@@ -1,0 +1,107 @@
+# Example consumer workflow for the CRISP design review action.
+#
+# Copy this file to .github/workflows/crisp-design-review.yml in your own repo,
+# then delete the two `github.repository != 'laith-wallace/crisp'` guards below.
+# The guards are there because GitHub loads every .yml in this folder, and this
+# example must never review the CRISP repo's own pull requests.
+#
+# Job 1 (design-detector) is deterministic: no model call, only GITHUB_TOKEN.
+# Job 2 (ai-review) is optional and off by default. It runs Claude Code with
+# /crisp-review on the changed UI files. Turn it on by adding a repository
+# secret ANTHROPIC_API_KEY and a repository variable CRISP_AI_REVIEW=true.
+
+name: CRISP design review
+
+on:
+  pull_request:
+    paths:
+      - '**/*.html'
+      - '**/*.htm'
+      - '**/*.css'
+      - '**/*.scss'
+      - '**/*.jsx'
+      - '**/*.tsx'
+      - '**/*.vue'
+      - '**/*.svelte'
+      - '**/*.astro'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: crisp-design-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  design-detector:
+    if: github.repository != 'laith-wallace/crisp'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Optional: install your dev dependencies so a pinned @laith-wallace/crisp
+      # in package.json is used. Without it the action runs its bundled copy.
+      # - run: npm ci
+      - uses: laith-wallace/crisp/.github/actions/crisp-design-review@main # pin to a release tag
+        with:
+          fail-on: none # or P0 to block merges on P0 findings
+
+  ai-review:
+    if: github.repository != 'laith-wallace/crisp' && vars.CRISP_AI_REVIEW == 'true'
+    runs-on: ubuntu-latest
+    env:
+      HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+    steps:
+      - name: Check for the API key
+        if: env.HAS_KEY != 'true'
+        run: echo "::notice::ANTHROPIC_API_KEY is not set (or this is a fork PR). Skipping the AI review."
+      - uses: actions/checkout@v4
+        if: env.HAS_KEY == 'true'
+      - uses: actions/setup-node@v4
+        if: env.HAS_KEY == 'true'
+        with:
+          node-version: 22
+      - name: List changed UI files
+        if: env.HAS_KEY == 'true'
+        id: files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          files=$(gh pr diff "$PR" --name-only | grep -E '\.(html?|s?css|jsx|tsx|vue|svelte|astro)$' | while read -r f; do [ -f "$f" ] && echo "$f"; done | head -20 | tr '\n' ' ')
+          echo "list=$files" >> "$GITHUB_OUTPUT"
+      - name: Install Claude Code and the CRISP skills
+        if: env.HAS_KEY == 'true' && steps.files.outputs.list != ''
+        run: |
+          npm install --no-save @anthropic-ai/claude-code @laith-wallace/crisp
+          mkdir -p .claude/skills
+          cp -R node_modules/@laith-wallace/crisp/.claude/skills/. .claude/skills/
+      - name: Run /crisp-review
+        if: env.HAS_KEY == 'true' && steps.files.outputs.list != ''
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FILES: ${{ steps.files.outputs.list }}
+        run: |
+          {
+            echo "### CRISP AI review"
+            echo
+            npx --no-install claude -p "/crisp-review $FILES" --allowedTools "Read,Glob,Grep,Skill" --max-turns 30
+          } > "$RUNNER_TEMP/crisp-ai-review.md"
+      - name: Post or update the AI review comment
+        if: env.HAS_KEY == 'true' && steps.files.outputs.list != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          marker='<!-- crisp-ai-review -->'
+          body=$(printf '%s\n%s' "$marker" "$(cat "$RUNNER_TEMP/crisp-ai-review.md")")
+          id=$(gh api --paginate "repos/$REPO/issues/$PR/comments" --jq ".[] | select(.body | startswith(\"$marker\")) | .id" | head -1)
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$REPO/issues/comments/$id" -f body="$body" > /dev/null
+          else
+            gh api -X POST "repos/$REPO/issues/$PR/comments" -f body="$body" > /dev/null
+          fi

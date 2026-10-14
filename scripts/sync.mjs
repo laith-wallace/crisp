@@ -11,20 +11,23 @@
  *
  * Steps:
  *   1. Shared blocks: rewrite <!-- crisp:shared name --> regions in place.
+ *      A block may have per-platform overlays (skills/_shared/[block].[platform].md).
+ *      The canonical skill keeps the common block; each platform copy gets its
+ *      overlay appended inside the region, and --check compares against that.
  *   2. Lint: name matches folder, description says what and when, version
  *      lives under metadata, no flat skill files left in skills/.
  *   3. Version: copy package.json's version into .claude-plugin/*.json.
- *   4. Copy: wipe and rebuild each platform folder below.
+ *   4. Copy: wipe and rebuild each platform folder below, inlining overlays.
  *
  * Run manually:    npm run sync
  * Run on publish:  prepublishOnly hook calls this automatically.
  * Check only:      npm run check  (exits 1 on any drift, writes nothing)
  *
- * Platform targets (all full folders):
- *   Claude Code    .claude/skills/[name]/
- *   Codex, Antigravity, Copilot (agents standard)  .agents/skills/[name]/
- *   Cursor         .cursor/skills/[name]/
- *   Gemini CLI     .gemini/skills/[name]/
+ * Platform targets (all full folders; overlay key in brackets):
+ *   Claude Code    .claude/skills/[name]/   (claude)
+ *   Codex, Antigravity, Copilot (agents standard)  .agents/skills/[name]/   (codex)
+ *   Cursor         .cursor/skills/[name]/   (cursor)
+ *   Gemini CLI     .gemini/skills/[name]/   (gemini)
  */
 
 import { readdirSync, readFileSync, mkdirSync, writeFileSync, copyFileSync, statSync, existsSync, rmSync } from 'node:fs';
@@ -38,12 +41,14 @@ const SHARED_DIR = join(SKILLS_DIR, '_shared');
 const CHECK_ONLY = process.argv.includes('--check');
 
 const DOC_FILES = new Set(['BENCHMARKS.md', 'CHANGELOG.md', 'CONTRIBUTING.md']);
-const PLATFORM_DIRS = [
-  join(ROOT, '.claude', 'skills'),
-  join(ROOT, '.agents', 'skills'),
-  join(ROOT, '.cursor', 'skills'),
-  join(ROOT, '.gemini', 'skills'),
+const PLATFORMS = [
+  { dir: join(ROOT, '.claude', 'skills'), overlay: 'claude' },
+  { dir: join(ROOT, '.agents', 'skills'), overlay: 'codex' },
+  { dir: join(ROOT, '.cursor', 'skills'), overlay: 'cursor' },
+  { dir: join(ROOT, '.gemini', 'skills'), overlay: 'gemini' },
 ];
+const PLATFORM_DIRS = PLATFORMS.map(p => p.dir);
+const OVERLAY_KEYS = new Set(PLATFORMS.map(p => p.overlay));
 // Output shapes from before 1.11 (flat files). Removed on sync so stale copies never linger.
 const LEGACY_OUTPUTS = [join(ROOT, '.cursor', 'rules')];
 
@@ -66,11 +71,24 @@ for (const f of readdirSync(SKILLS_DIR)) {
 // A skill marks the region with <!-- crisp:shared name --> ... <!-- /crisp:shared name -->
 // and this step rewrites the region in place, before any platform copy.
 
-const sharedBlocks = existsSync(SHARED_DIR)
-  ? Object.fromEntries(readdirSync(SHARED_DIR)
-      .filter(f => extname(f) === '.md' && f !== 'README.md')
-      .map(f => [basename(f, '.md'), readFileSync(join(SHARED_DIR, f), 'utf8').trim()]))
-  : {};
+// [block].md is a shared block; [block].[platform].md is that block's overlay for one platform.
+const sharedFiles = existsSync(SHARED_DIR)
+  ? readdirSync(SHARED_DIR).filter(f => extname(f) === '.md' && f !== 'README.md')
+  : [];
+const sharedBlocks = Object.fromEntries(sharedFiles
+  .filter(f => !basename(f, '.md').includes('.'))
+  .map(f => [basename(f, '.md'), readFileSync(join(SHARED_DIR, f), 'utf8').trim()]));
+const overlays = {}; // block -> platform -> text
+for (const f of sharedFiles) {
+  const parts = basename(f, '.md').split('.');
+  if (parts.length === 1) continue;
+  const [block, platform] = parts;
+  if (parts.length !== 2 || !(block in sharedBlocks) || !OVERLAY_KEYS.has(platform)) {
+    problems.push(`skills/_shared/${f}: overlays are named [block].[platform].md, with an existing block and a platform of ${[...OVERLAY_KEYS].join(', ')}`);
+    continue;
+  }
+  (overlays[block] ??= {})[platform] = readFileSync(join(SHARED_DIR, f), 'utf8').trim();
+}
 
 // Markers count only on a line of their own, so prose that mentions the syntax inline is left alone.
 const SHARED_RE = /^<!-- crisp:shared ([a-z0-9-]+) -->\n[\s\S]*?^<!-- \/crisp:shared \1 -->$/gm;
@@ -85,6 +103,25 @@ function renderShared(text, file) {
     if (!(name in sharedBlocks)) throw new Error(`${file}: unknown shared block "${name}" (no skills/_shared/${name}.md)`);
     return `<!-- crisp:shared ${name} -->\n${sharedBlocks[name]}\n<!-- /crisp:shared ${name} -->`;
   });
+}
+
+// Append each block's platform overlay inside its region. Only the platform copy changes.
+function applyOverlays(text, platform) {
+  return text.replace(SHARED_RE, (region, name) => {
+    const overlay = overlays[name]?.[platform];
+    if (!overlay) return region;
+    const close = `<!-- /crisp:shared ${name} -->`;
+    return `${region.slice(0, -close.length).replace(/\n$/, '')}\n\n${overlay}\n${close}`;
+  });
+}
+
+// The bytes a platform copy of one skill file should hold.
+function platformBytes(src, platform) {
+  const raw = readFileSync(src);
+  if (extname(src) !== '.md') return raw;
+  const text = raw.toString('utf8');
+  const out = applyOverlays(text, platform);
+  return out === text ? raw : Buffer.from(out, 'utf8');
 }
 
 function treeFiles(root, dir = root) {
@@ -166,7 +203,7 @@ for (const file of ['plugin.json', 'marketplace.json']) {
 
 function platformDrift() {
   const drift = [];
-  for (const out of PLATFORM_DIRS) {
+  for (const { dir: out, overlay } of PLATFORMS) {
     const label = relative(ROOT, out);
     const expected = new Set();
     for (const skill of skills) {
@@ -174,7 +211,7 @@ function platformDrift() {
         const key = join(skill.name, rel);
         expected.add(key);
         const dest = join(out, key);
-        if (!existsSync(dest) || !readFileSync(dest).equals(readFileSync(join(skill.path, rel)))) drift.push(`${label}/${key}`);
+        if (!existsSync(dest) || !readFileSync(dest).equals(platformBytes(join(skill.path, rel), overlay))) drift.push(`${label}/${key}`);
       }
     }
     if (existsSync(out)) {
@@ -200,7 +237,8 @@ if (CHECK_ONLY) {
     console.error(`\nDrift in ${drift.length} file(s):\n${drift.slice(0, 40).map(f => `  ✗ ${f}`).join('\n')}${drift.length > 40 ? `\n  ...and ${drift.length - 40} more` : ''}\n\nEdit skills/ or skills/_shared/, then run npm run sync.\n`);
     process.exit(1);
   }
-  console.log(`\nCheck passed: ${skills.length} skills, ${Object.keys(sharedBlocks).length} shared blocks, version ${pkg.version}, no drift.\n`);
+  const overlayCount = Object.values(overlays).reduce((n, o) => n + Object.keys(o).length, 0);
+  console.log(`\nCheck passed: ${skills.length} skills, ${Object.keys(sharedBlocks).length} shared blocks, ${overlayCount} overlays, version ${pkg.version}, no drift.\n`);
   process.exit(0);
 }
 
@@ -212,10 +250,14 @@ for (const dir of [...PLATFORM_DIRS, ...LEGACY_OUTPUTS]) rmSync(dir, { recursive
 let copied = 0;
 for (const skill of skills) {
   for (const rel of treeFiles(skill.path)) {
-    for (const out of PLATFORM_DIRS) {
+    for (const { dir: out, overlay } of PLATFORMS) {
       const dest = join(out, skill.name, rel);
       mkdirSync(dirname(dest), { recursive: true });
-      copyFileSync(join(skill.path, rel), dest);
+      const src = join(skill.path, rel);
+      const bytes = platformBytes(src, overlay);
+      // copyFileSync keeps the mode (executable scripts); only overlaid files are rewritten.
+      if (bytes.equals(readFileSync(src))) copyFileSync(src, dest);
+      else writeFileSync(dest, bytes);
       copied++;
     }
   }

@@ -18,4 +18,12 @@ Edit the block here, never inside a skill. `npm run sync` rewrites every marked 
 | `evidence-gate.md` | /crisp-audit, /crisp-review, /crisp-a11y, /crisp-ai |
 | `decisions.md` | /crisp-audit, /crisp-review, /crisp-a11y, /crisp-ai, /crisp-improve-ui |
 
+## Platform overlays
+
+A block can carry a per-platform overlay named `[block].[platform].md`, where platform is `claude` (.claude), `codex` (.agents), `cursor` (.cursor) or `gemini` (.gemini). Sync appends the overlay inside the block's region in that platform's copy only, so `skills/` keeps the common list and each harness gets its own extra rows. `npm run check` compares platform copies against the overlaid text, so a stale overlay is drift.
+
+| Overlay | Status |
+|---|---|
+| `slop-tells.claude.md`, `slop-tells.codex.md`, `slop-tells.cursor.md`, `slop-tells.gemini.md` | Seed lists, unverified. Confirm rows with `node scripts/slop-harvest.mjs evals/results/<timestamp>` before treating them as Fail conditions |
+
 This folder has no `SKILL.md`, so sync never ships it as a skill.
