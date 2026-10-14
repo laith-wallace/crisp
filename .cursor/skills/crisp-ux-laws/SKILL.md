@@ -2,7 +2,7 @@
 name: crisp-ux-laws
 description: Cognitive and perceptual laws applied to interface decisions - Fitts, Hick, Miller, Doherty Threshold, Von Restorff, Proximity, Common Region - mapped to CRISP dimensions and actionable rules. Use during design reviews or when evaluating interaction complexity.
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
 ---
 
 # CRISP UX Laws - `/crisp-ux-laws`
@@ -110,7 +110,7 @@ Miller's Law violations make the interface dump data at the user. Chunking is in
 - Skeleton screens for operations > 400ms - not to meet the threshold, but to make the wait feel designed
 
 **CRISP dimension:** **R - Responsive**
-The Doherty Threshold is the quantitative foundation of the R dimension. Every CRISP R violation is a Doherty violation at its root. The question is always: is the UI responding at a pace that keeps the user in flow, or is it making them wait?
+The Doherty Threshold is the quantitative foundation of the R dimension's timing checks. Not every R violation is a Doherty violation (a missing error state is R but not about speed). The question is always: is the UI responding at a pace that keeps the user in flow, or is it making them wait?
 
 **Audit question:** Which user actions take > 400ms to produce visible feedback? Of those, which could be made instant with optimistic UI or local computation?
 
@@ -128,7 +128,7 @@ The Doherty Threshold is the quantitative foundation of the R dimension. Every C
 
 **What applies it well:**
 - One and only one primary action at the highest visual weight per view
-- Error states distinguished by hue, not just by text - colour is preattentive, text is not
+- Error states distinguished by hue plus an icon or text - colour is preattentive, and the icon or text keeps the meaning for people who cannot see the hue (WCAG 1.4.1)
 - The anomalous data point in a chart highlighted rather than requiring the user to find it
 - Onboarding callouts that use visual isolation (colour, border, position) to separate from existing UI
 - Empty state illustrations that are visually distinct from populated states - so users recognise them immediately
@@ -194,7 +194,9 @@ Common Region violations fragment spatial understanding. The user builds a menta
 
 ## Using These Laws in Audits
 
-When a CRISP audit identifies an **R** violation: check Doherty Threshold first - is the system responding in < 400ms? If not, check Fitts' Law - is the user's target hard to reach?
+When a CRISP audit identifies an **R** violation: check Doherty Threshold - is the system responding in < 400ms?
+
+When a CRISP audit identifies an **S** violation: check Fitts' Law - is the user's target hard to reach?
 
 When a CRISP audit identifies a **C** violation: check Von Restorff (is there clear emphasis hierarchy?), Proximity (are related things spatially near?), and Common Region (are groupings visually contained?).
 

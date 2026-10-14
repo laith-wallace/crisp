@@ -1,13 +1,13 @@
 ---
 name: crisp-a11y
-description: WCAG 2.2 AA accessibility evaluation of product UI, including all five new 2.2 criteria - P0-P3 severity, code-level remediation, and a portable a11y-checklist.md. Use for accessibility or WCAG compliance reviews, or whenever the user mentions screen readers, keyboard navigation, or contrast.
+description: WCAG 2.2 AA accessibility evaluation of product UI, including the six A/AA criteria new in 2.2 - P0-P3 severity, code-level remediation, and a portable a11y-checklist.md. Use for accessibility or WCAG compliance reviews, or whenever the user mentions screen readers, keyboard navigation, or contrast.
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
 ---
 
 # /crisp-a11y - Accessibility Deep Audit
 
-`CRISP + a11y` extension. This goes four times deeper than the accessibility section in `/handoff` - covering the WCAG 2.2 AA success criteria that govern product UI (including all five criteria new in 2.2) with exact, code-level fixes, not generic direction. Criteria that apply only to media, timing, or full-document structure are out of scope here; flag them for manual review when the surface involves video, audio, or time limits.
+`CRISP + a11y` extension. This goes four times deeper than the accessibility section in `/handoff` - covering the WCAG 2.2 AA success criteria that govern product UI (including the six A/AA criteria new in 2.2) with exact, code-level fixes, not generic direction. Criteria that apply only to media, timing, or full-document structure are out of scope here; flag them for manual review when the surface involves video, audio, or time limits.
 
 Load `.crisp.md` if it exists - design system tokens inform contrast analysis. Note any existing `Extensions: CRISP + a11y` flag.
 
@@ -84,7 +84,13 @@ For every **Fail**, provide:
 - **Prefer [APCA](https://apcacontrast.com/) over WCAG 2 ratios** - APCA is more perceptually accurate and better reflects how humans actually read text in real interfaces. Use WCAG 2 ratios as the compliance floor when standards require it, but APCA as the design truth.
 
 **1.4.4 Resize Text**
-- Page remains functional and readable at 200% browser zoom without horizontal scrolling
+- Text resizes to 200% without loss of content or function (no clipped, overlapping, or truncated text)
+
+**1.4.10 Reflow**
+- Content reflows at 320 CSS px wide (400% zoom on a 1280px window) without horizontal scrolling; data tables, maps, and toolbars are exempt
+
+**1.4.12 Text Spacing**
+- No content is lost when line height is 1.5, paragraph spacing 2x, letter spacing 0.12em, and word spacing 0.16em (fixed-height text containers are the usual failure)
 
 **1.4.11 Non-text Contrast**
 - UI components (input borders, button outlines, focus indicators): 3:1 minimum against background
@@ -106,8 +112,11 @@ For every **Fail**, provide:
 **2.1.2 No Keyboard Trap**
 - User can always navigate away from any component using Tab or Shift+Tab (or Esc for modals)
 
+**2.4.1 Bypass Blocks**
+- A skip link or landmark structure lets keyboard users jump past repeated navigation to the main content
+
 **2.4.3 Focus Order**
-- Focus moves in a logical reading order (left to right, top to bottom)
+- Focus moves in the logical reading order for the locale (left to right in LTR, right to left in RTL, then top to bottom)
 - After closing a modal, focus returns to the element that triggered it
 
 **2.4.4 Link Purpose**
@@ -138,6 +147,9 @@ For every **Fail**, provide:
 ---
 
 ### Understandable
+
+**3.1.1 Language of Page**
+- The `<html>` element has a valid `lang` attribute, so screen readers pick the right pronunciation
 
 **3.3.1 Error Identification**
 - Errors are identified in text (not only by colour or icon)

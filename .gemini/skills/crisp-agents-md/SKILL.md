@@ -2,7 +2,7 @@
 name: crisp-agents-md
 description: Generate or refresh a repo's AGENTS.md - the workflow file every coding agent reads before it touches the code. Discovers the installed skills and the repo's real facts (scripts, stack, CI, env var names), maps them onto the CRISP workflow chain (Isolate, Scope, Build, Prove, Ship, Write), and writes managed sections it can regenerate later without touching hand-written rules. Use for 'write an AGENTS.md', 'agent workflow file', 'set this repo up for agents', or when skills changed and the table is stale.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   author: Laith Wallace - FlowConverts
   inspired-by: michaelshimeles/skills AGENTS.md (workflow-beats structure)
 ---

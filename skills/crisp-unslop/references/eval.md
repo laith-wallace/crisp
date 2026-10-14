@@ -2,7 +2,7 @@
 
 Run after every Edit. Answer each check pass or fail. Any fail → fix the draft and re-run. Two loops maximum; a third failure goes in the report under **Not fixed** with the reason.
 
-For Detect, run only the Final read section, items 4 and 5.
+For Detect, run only the Final read section, items 24 and 25.
 
 ## Voice and meaning
 

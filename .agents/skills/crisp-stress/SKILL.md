@@ -2,7 +2,7 @@
 name: crisp-stress
 description: Worst-case data stress test of a UI - runs a fixed 16-case matrix (empty, one item, 1000 items, 200-character names, unbroken strings, RTL, emoji, missing images, slow network, error, offline, 200% zoom, 320px width, +40% translations, 10-digit numbers, null fields) with a binary pass condition per case, P0-P3 severity, and a pass/fail table plus fix list. Read-only by default; --fix repairs P0 and P1 only. Use when "stress test this", "break this UI", "what happens with long names", "test edge cases", "will this survive real data", or before ship. Grading the design overall belongs to /crisp-review; accessibility depth belongs to /crisp-a11y; capturing before/after proof belongs to /crisp-proof.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   author: Laith Wallace - FlowConverts
   adapted-from: workflow inspired by emilkowalski/skills break-ui (no vendored code)
 ---
@@ -134,7 +134,7 @@ Default mapping for this matrix, overridden only with a stated reason:
 
 **Fix list** (impact order)
 1. [P0] S1 - add empty state with "Create your first deal" action - src/routes/deals/+page.svelte:20
-2. [P1] S13 - shorten CTA or allow `white-space: nowrap` with smaller padding token - src/components/Hero.tsx:48
+2. [P1] S13 - shorten the CTA label, or drop to the smaller padding token at 320px so it fits on one line - src/components/Hero.tsx:48
 3. [P2] S4 - add `title={name}` to truncated cell - src/components/Row.tsx:31
 
 **Fixed this run** (only with --fix)

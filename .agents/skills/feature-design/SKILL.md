@@ -2,7 +2,7 @@
 name: feature-design
 description: "Design a new product feature using CRISP principles - takes a problem statement and produces user flows, component decisions, compliance checks, and decision rationale. Reads .brief.md and .research.md when present. Use when designing a new feature from a problem statement: 'design this feature', 'give me the user flow', 'spec the screens for X'. Developer specs belong to /handoff."
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
 ---
 
 # /feature-design - CRISP Feature Design
@@ -62,7 +62,7 @@ Design the feature so that each dimension is explicitly addressed:
 **Responsive** - Every action should feel immediate:
 - Optimistic UI for predictable state changes
 - Skeleton loading, not blank spaces
-- No spinners for actions the user initiated
+- No spinner-only replacements for actions the user initiated: a spinner may sit beside the label (see `/handoff`'s form submission rule), never replace it
 
 **Intelligent** - The feature should leverage what we know:
 - Pre-populate from history or context

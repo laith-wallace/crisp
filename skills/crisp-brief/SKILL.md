@@ -2,7 +2,7 @@
 name: crisp-brief
 description: "Turn a vague design request into a structured, unambiguous design brief - writes .brief.md with problem statement, target user, observable success criteria, scope, constraints, and CRISP priority. Use when a request is vague or before designing anything new: 'write a brief', 'scope this feature', 'what exactly are we building'."
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
 ---
 
 # /crisp-brief - Design Brief Generator
@@ -75,7 +75,11 @@ Use the register and product type from `.crisp.md` to weight dimension priority 
 
 ## Output Format
 
-Write `.brief.md` to the project root:
+Write `.brief.md` to the project root. If one already exists, ask "Replace the existing brief for [its title], or keep both?" and on "keep both" (or no reply) write `.brief-<slug>.md` instead, because silently overwriting a brief loses decisions someone already made.
+
+Two rules for filling the template, kept outside it so they are never copied into the file:
+- **Problem** is the underlying need, not the request. Bad: "We need a dashboard redesign". Good: "Account managers can't identify at-risk accounts without switching between three tools".
+- **Success criteria** are outcomes, not deliverables. Bad: "Build a dashboard". Good: "Account manager identifies at-risk accounts in under 30 seconds from the pipeline view."
 
 ```markdown
 # Brief: [Descriptive name - not "Dashboard improvement", but "Revenue trend visibility for account managers"]
@@ -88,9 +92,6 @@ Requested by: [If known]
 ## Problem
 [The user problem in one sentence - not the feature request, the underlying need]
 
-Example of bad: "We need a dashboard redesign"
-Example of good: "Account managers can't identify at-risk accounts without switching between three tools"
-
 ## User
 Who: [Role + context - e.g. "Account manager, checks pipeline daily, moderate technical sophistication"]
 Current behaviour: [What they do today to solve this problem]
@@ -102,9 +103,6 @@ Observable outcomes that define success - not features delivered:
 - [ ] [User can do X without Y friction]
 - [ ] [User no longer needs to Z]
 - [ ] [Metric X improves / drops to zero]
-
-Avoid: "Build a dashboard" - that's a deliverable, not a success criterion.
-Use: "Account manager identifies at-risk accounts in under 30 seconds from the pipeline view."
 
 ## Scope
 **In scope:**

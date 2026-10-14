@@ -2,7 +2,7 @@
 name: crisp-copy
 description: Write and evaluate UI microcopy - labels, empty states, errors, tooltips, CTAs, onboarding hints - in audit or generate mode. Use when the user asks for button labels, error wording, or empty state text, even if they never say 'microcopy'.
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
 ---
 
 # /crisp-copy - UX Microcopy Specialist
@@ -64,7 +64,7 @@ Errors must **guide the exit**, not just name the problem. If the error is fixab
 | Weak | Strong |
 |------|--------|
 | "Invalid API key" | "Your API key is incorrect or expired. Generate a new key in your account settings." |
-| "Your deployment failed" | "Something went wrong - try again or contact support." |
+| "Your deployment failed" | "Deploy failed: build exceeded 10 min. View logs" |
 | "Payment error" | "Your card was declined. Try a different card or contact your bank." |
 
 Frame errors in a **problem-solving tone**, not a failure tone. Even when something goes wrong, the copy should feel like a hand pointing toward the solution - not a finger pointing at the user.
@@ -143,7 +143,7 @@ Top issue: [Single most impactful fix]
 
 ## Mode B - Generate New Copy
 
-Ask the user: **"What component or context are you writing copy for?"**
+If the request already names the component or context, start writing. Ask **"What component or context are you writing copy for?"** only when it is unnamed, because the infer-first rule in Mode Detection applies here too.
 
 Common component types and their templates:
 

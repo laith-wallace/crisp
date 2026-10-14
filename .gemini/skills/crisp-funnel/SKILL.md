@@ -2,7 +2,7 @@
 name: crisp-funnel
 description: Build, critique, and optimise funnels and landing pages using the ATM (Attention, Trust, Money) methodology and the ten-section Funnel Kit. Use for any landing page, sales page, opt-in, lead-gen offer, or ad-to-page flow, or when the user mentions conversion rate, CAC vs CPL, stages of awareness, or a page that is not converting or looks generic - even if they never say 'funnel'. Builds to the Awwwards bar with a client-specific art direction.
 metadata:
-  version: "2.2.0"
+  version: "2.2.1"
   author: Laith Wallace - FlowConverts
 ---
 
@@ -115,7 +115,9 @@ For the look, benchmark against current Awwwards Site of the Day and Honourable 
 
 ### Quality gate
 
-Before delivery, run the **Mechanical Pre-Flight Checks** from `/crisp-design-eng` on any assembled build - all eleven checks are countable and all must pass.
+Before delivery, run `/crisp-review` on the assembled build first; it is required on every assembled funnel, and its grade and top issues set what the later checks must confirm fixed.
+
+Then run the **Mechanical Pre-Flight Checks** from `/crisp-design-eng` on any assembled build - all eleven checks are countable and all must pass.
 
 Then run the **art direction pre-flight (D1-D6)** in `references/art-direction.md` and the **Award Pre-Flight (A1-A10)** in `/crisp-design-eng` `references/award-level-landing.md`. Report both as one line each, with every failure and its fix.
 

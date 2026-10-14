@@ -2,7 +2,7 @@
 name: crisp-audit
 description: "Full CRISP evaluation of a UI design - scores all five dimensions with P0-P3 severity, benchmarks against world-class products, and delivers a prioritised action plan. Use for a thorough design review: 'audit this', 'score this design', 'how good is this UI, really'."
 metadata:
-  version: "1.3.1"
+  version: "1.3.2"
 ---
 
 # /crisp-audit - Full CRISP Evaluation
@@ -84,18 +84,30 @@ If Fail - note it at the top of the audit output, before the grade.
 
 ## Step 1: 30-Second Scan
 
-Before structured analysis, capture first impressions:
+Before structured analysis, capture first impressions. No grade yet, because the grade follows from the severity counts in Step 3 and a gut grade anchors them:
 - **Strengths**: What works immediately
 - **Red Flags**: The most critical issues visible at a glance
-- **Overall Grade**: A–F with one-line justification
 
-## Step 2: CRISP Dimension Scoring
+## Step 2: Severity Rating
+
+Rate each violation using this scale:
+
+<!-- crisp:shared severity -->
+| Priority | Definition | Example |
+|----------|-----------|---------|
+| P0 | Blocks the user entirely | Empty state with no recovery path |
+| P1 | Major friction - user can work around it but shouldn't have to | Spinner on every filter change |
+| P2 | Noticeable degradation in experience | Generic empty state copy |
+| P3 | Minor polish issue | Missing hover state on secondary action |
+<!-- /crisp:shared severity -->
+
+## Step 3: CRISP Dimension Scoring
 
 Rate each dimension 1–10 and identify specific violations. Use the failure indicators below as your diagnostic criteria.
 
-**Scoring rule (mechanical - do not score by feel):** identify the dimension's violations first, rate their severity (Step 3), then compute the score: start at 10, subtract 3 per P0, 2 per P1, and 1 per P2 (P3s subtract nothing), floor at 1. Scores derived this way are reproducible - which is what makes the History tracking in `.crisp.md` meaningful across runs.
+**Scoring rule (mechanical - do not score by feel):** identify the dimension's violations first, rate their severity (Step 2), then compute the score: start at 10, subtract 3 per P0, 2 per P1, and 1 per P2 (P3s subtract nothing), floor at 1. Scores derived this way are reproducible - which is what makes the History tracking in `.crisp.md` meaningful across runs.
 
-**Grade mapping (shared with `/crisp-review` so History entries are comparable):**
+**Grade mapping (/50, audit only):**
 
 | Total /50 | Grade |
 |---|---|
@@ -189,19 +201,6 @@ Fail indicators:
 Violation examples:
 - 23 settings on the main view → Fails P. Surface 3–5, collapse the rest.
 - Delete with no undo or confirm → Fails P. Soft delete with 5-second undo.
-
-## Step 3: Severity Rating
-
-Rate each violation using this scale:
-
-<!-- crisp:shared severity -->
-| Priority | Definition | Example |
-|----------|-----------|---------|
-| P0 | Blocks the user entirely | Empty state with no recovery path |
-| P1 | Major friction - user can work around it but shouldn't have to | Spinner on every filter change |
-| P2 | Noticeable degradation in experience | Generic empty state copy |
-| P3 | Minor polish issue | Missing hover state on secondary action |
-<!-- /crisp:shared severity -->
 
 ## Step 3b: Emotional Journey Check
 
@@ -337,7 +336,35 @@ Compared against [Stripe / Linear / Notion / project benchmark]:
 - [How to elevate to world-class - 2–3 points]
 - [User research questions to validate]
 - [Success metrics to track]
+
+### Unverified
+- [Confidence 1-4 findings that would be P0 if true, each with the one thing to check - omit the section if none]
+
+### Next
+- [N] [cluster] issues ([short examples]) -> /crisp-[command] [mode]
+- [N] [cluster] issues ([short examples]) -> /crisp-[command]
+
+**Suppressed by decisions:** [N]
 ```
+
+## Next Step Routing
+
+The `Next` block turns the audit into an action. Group the reported findings into clusters, then name one or two commands per cluster from this table, most severe cluster first, at most four lines. Name only commands whose cluster actually appears in the findings, because a generic menu is ignored. With zero P0-P2 findings, write `Next: /crisp-proof to record the baseline`.
+
+| Finding cluster | Next |
+|---|---|
+| Tone too loud or busy (slop tells, decorative motion, accent overload) | `/crisp-tune quieter` |
+| Tone too flat (no hierarchy, no primary emphasis) | `/crisp-tune bolder` |
+| Clutter (too many equal-weight elements, duplicate messages) | `/crisp-tune simpler` |
+| Contrast, keyboard, focus, or screen-reader failures | `/crisp-a11y` |
+| Copy issues (empty states, errors, generic toasts, vague CTAs) | `/crisp-copy` |
+| Motion, transitions, press feedback, component craft | `/crisp-design-eng` |
+| Missing states or fragile layouts under real data | `/crisp-stress` |
+| Drift from the design system (off-token spacing, colour, type) | `/crisp-improve-ui` |
+| Broken IA or structure, or the brand is changing | `/crisp-redesign` |
+| Several P0 and P1 across dimensions, to fix to a target grade | `/crisp-loop` |
+
+Example: `3 tone issues (gradient text, glow halo, pulsing dots) -> /crisp-tune quieter`.
 
 ## Analysis Style
 
@@ -349,6 +376,10 @@ Compared against [Stripe / Linear / Notion / project benchmark]:
 - If `.crisp.md` lists `Extensions: CRISP + AI`, note AI-specific dimension violations using the `/crisp-ai` lens.
 
 ## Longitudinal Tracking
+
+<!-- crisp:shared history -->
+**Top-level runs only.** Write `## History` lines and `crisp critique write` snapshots only when the user invoked this skill directly. When another skill calls it (`/crisp-loop`, `/crisp-proof`, `/crisp-variants`, or a CRISP Live session), skip both writes and hand the result back to the caller, because the caller writes one line for the whole run and nested writes would multiply entries (a five-iteration loop would otherwise log six lines). `## Decisions` lines are not affected: they record what the user said, whoever ran the skill.
+<!-- /crisp:shared history -->
 
 After delivering the audit output, append a one-line summary to the `## History` section in `.crisp.md`. Get today's date from the `date` command (`date +%Y-%m-%d`) - never from memory:
 
@@ -367,7 +398,7 @@ If `.crisp.md` has prior History entries, call out any dimension regressions: "Y
 
 The `.crisp.md` line above is a project-wide timeline; it gets unwieldy once a project has been audited dozens of times across many surfaces. Also persist a structured, per-target snapshot so a later run can read this target's own trend without parsing prose out of a shared file. Skip this sub-step (but still do the `.crisp.md` line above) if the target is vague or root-level - `slug` returning empty means don't persist.
 
-1. Write the full report body (everything from `Method:` through Strategic Recommendations, before any "Ask the User" follow-up) to a temp file.
+1. Write the full report body (everything from `Method:` through the `Next` block, before any "Ask the User" follow-up) to a temp file.
 2. Get today's date from `date +%Y-%m-%d` - never from memory - and run:
    ```bash
    CRISP_CRITIQUE_META='{"command":"/crisp-audit","date":"<today>","total_score":<n>,"max_score":<n>,"p0_count":<n>,"p1_count":<n>}' \
