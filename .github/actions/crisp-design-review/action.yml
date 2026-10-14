@@ -1,0 +1,69 @@
+name: CRISP design review
+description: Runs the CRISP design detector on a pull request's changed UI files and keeps one sticky comment with the findings.
+author: Laith Wallace
+branding:
+  icon: eye
+  color: gray-dark
+
+inputs:
+  github-token:
+    description: Token for reading the PR's files and writing the comment. The default GITHUB_TOKEN is enough with pull-requests write.
+    required: false
+    default: ${{ github.token }}
+  crisp-command:
+    description: Command that runs the CLI, for example "npx --no-install crisp". Leave empty to pick one automatically (this repo, then a local install, then the copy bundled with the action).
+    required: false
+    default: ''
+  fail-on:
+    description: Fail the step when a finding at this severity or worse exists. One of none, P0, P1, P2, P3.
+    required: false
+    default: none
+  max-rows:
+    description: Most findings to list in the comment. The rest are counted, not listed.
+    required: false
+    default: '50'
+
+outputs:
+  changed-count:
+    description: Number of changed UI files scanned.
+    value: ${{ steps.changed.outputs.count }}
+  findings:
+    description: Number of detector findings.
+    value: ${{ steps.detect.outputs.findings }}
+
+runs:
+  using: composite
+  steps:
+    - name: List changed UI files
+      id: changed
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: |
+        if [ -z "$PR_NUMBER" ]; then
+          echo "::notice::crisp-design-review only runs on pull_request events. Skipping."
+          echo "count=0" >> "$GITHUB_OUTPUT"
+          : > "$RUNNER_TEMP/crisp-changed.txt"
+          exit 0
+        fi
+        node "$GITHUB_ACTION_PATH/review.mjs" changed "$RUNNER_TEMP/crisp-changed.txt"
+
+    - name: Run the CRISP detector
+      id: detect
+      shell: bash
+      env:
+        CRISP_COMMAND: ${{ inputs.crisp-command }}
+        ACTION_PATH: ${{ github.action_path }}
+      run: node "$GITHUB_ACTION_PATH/review.mjs" detect "$RUNNER_TEMP/crisp-changed.txt" "$RUNNER_TEMP/crisp-detect.json"
+
+    - name: Post or update the review comment
+      if: github.event.pull_request.number
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        MAX_ROWS: ${{ inputs.max-rows }}
+        FAIL_ON: ${{ inputs.fail-on }}
+      run: node "$GITHUB_ACTION_PATH/review.mjs" comment "$RUNNER_TEMP/crisp-detect.json" "$RUNNER_TEMP/crisp-changed.txt"

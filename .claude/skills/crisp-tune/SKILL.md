@@ -133,7 +133,16 @@ Run on the baseline and on the result.
 | SaaS cream + generic sans | Off-white background with no tint, Inter, Geist, Roboto or DM Sans on every level, zero distinctive colour decision |
 | Saturated aesthetic lane | Editorial-typographic (italic display serif + mono labels + ruled separators) used as a default not a deliberate choice |
 
-**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count. A purple gradient on a brand that is purple is not a tell.
+**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count. A purple gradient on a brand that is purple is not a tell. A pattern documented in the project's DESIGN.md or .crisp.md tokens is a decision, not a tell.
+
+**Model overlay: Claude.** Seed list, unverified: confirm with scripts/slop-harvest.mjs before trusting. These are tells commonly attributed to Claude-family output, not measured ones. Until a harvest run confirms a row, a match is a note in the report, not a Fail.
+
+| Tell | What it looks like | Nearest detector rule |
+|------|--------------------|-----------------------|
+| Warm cream + serif display | Beige or cream page, a serif display face with one italic word in the headline, a terracotta or clay accent | `cream-generic-sans` (partial) |
+| Em dash cadence | Em dashes joining clauses in headlines, subheads and button-adjacent copy | `em-dash-overuse` |
+| Aphoristic hero line | Short paired fragments ("Less noise. More signal.") as the hero headline | `aphoristic-cadence` |
+| Tidy three-up | Exactly three feature cards, each with an icon tile, a two-word heading and one sentence | `icon-tile-stack` |
 <!-- /crisp:shared slop-tells -->
 
 ## Binary rules

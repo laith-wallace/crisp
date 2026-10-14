@@ -103,7 +103,16 @@ Run on every variant before handover.
 | SaaS cream + generic sans | Off-white background with no tint, Inter, Geist, Roboto or DM Sans on every level, zero distinctive colour decision |
 | Saturated aesthetic lane | Editorial-typographic (italic display serif + mono labels + ruled separators) used as a default not a deliberate choice |
 
-**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count. A purple gradient on a brand that is purple is not a tell.
+**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count. A purple gradient on a brand that is purple is not a tell. A pattern documented in the project's DESIGN.md or .crisp.md tokens is a decision, not a tell.
+
+**Model overlay: Codex and GPT (agents standard).** Seed list, unverified: confirm with scripts/slop-harvest.mjs before trusting. These are tells commonly attributed to GPT-family output, not measured ones. Until a harvest run confirms a row, a match is a note in the report, not a Fail.
+
+| Tell | What it looks like | Nearest detector rule |
+|------|--------------------|-----------------------|
+| Emoji feature cards | An emoji standing in for an icon at the start of every card or list heading | `emoji-heading-icon` |
+| Centred card stack | Centred hero, then centred rows of `rounded-2xl shadow-lg` cards with equal weight | `thin-border-wide-shadow` (partial) |
+| Blue-to-purple utility gradient | `from-blue-500 to-purple-600` or similar on the hero or primary button | `purple-blue-gradient` |
+| Placeholder content left in | Lorem ipsum, "Your Company", `href="#"` links that go nowhere | `lorem-ipsum`, `dead-href` |
 <!-- /crisp:shared slop-tells -->
 
 ## Binary rules

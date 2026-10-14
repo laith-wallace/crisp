@@ -40,7 +40,16 @@ Before evaluating CRISP dimensions, run one fast check:
 | SaaS cream + generic sans | Off-white background with no tint, Inter, Geist, Roboto or DM Sans on every level, zero distinctive colour decision |
 | Saturated aesthetic lane | Editorial-typographic (italic display serif + mono labels + ruled separators) used as a default not a deliberate choice |
 
-**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count. A purple gradient on a brand that is purple is not a tell.
+**Binary rule: one or more tells present = Fail. Zero tells = Pass.** It is a disqualifier, not a dimension. A tell recorded in `.crisp.md` `## Decisions` as accepted for this surface does not count. A purple gradient on a brand that is purple is not a tell. A pattern documented in the project's DESIGN.md or .crisp.md tokens is a decision, not a tell.
+
+**Model overlay: Gemini.** Seed list, unverified: confirm with scripts/slop-harvest.mjs before trusting. These are tells commonly attributed to Gemini-family output, not measured ones. Until a harvest run confirms a row, a match is a note in the report, not a Fail.
+
+| Tell | What it looks like | Nearest detector rule |
+|------|--------------------|-----------------------|
+| Sparkle for AI | A sparkle icon or emoji next to anything AI-powered, often in a gradient | `emoji-heading-icon` (partial) |
+| Blue-violet gradient wash | Blue to violet gradient across hero backgrounds or headline text | `purple-blue-gradient`, `gradient-text` |
+| Alternating tinted bands | Every section on a different pastel background with no reason in the content | none yet |
+| Generic sans on every level | Roboto or the platform sans for display, body and labels alike | `generic-font-stack-only` |
 <!-- /crisp:shared slop-tells -->
 
 If the target is a live codebase (markup/style files, not a screenshot or Figma link), run `npx @laith-wallace/crisp detect --json <target>` first - it's faster than reasoning about it and it's exact. Fold any findings straight into the Fail verdict above instead of re-deriving them by eye. Skip it for screenshot-only or Figma-link targets and judge by eye instead.

@@ -5,3 +5,6 @@ node_modules/
 *.zip
 
 .env*.local
+
+# scripts/gallery.mjs output
+gallery/
