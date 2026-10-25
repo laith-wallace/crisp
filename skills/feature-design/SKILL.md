@@ -125,7 +125,7 @@ Write the spec to `.feature-design.md` in the project root, then give a short su
 ## Feature Design: [Feature Name]
 Date: [Today's date - from the `date` command, never from memory]
 Status: Draft
-Check: [Filled after the Cold-Read Stress Test]
+Check: [Cold read, Self-check, or Skipped at user request]
 Brief: [Brief file path and title, or "None"]
 
 ### Problem

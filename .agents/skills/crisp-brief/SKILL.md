@@ -111,7 +111,7 @@ Two rules for filling the template, kept outside it so they are never copied int
 # Brief: [Descriptive name - not "Dashboard improvement", but "Revenue trend visibility for account managers"]
 Date: [Today's date - from the `date` command, never from memory]
 Status: Draft
-Check: [Filled after the Cold-Read Stress Test]
+Check: [Cold read, Self-check, or Skipped at user request]
 Requested by: [If known]
 
 ---
