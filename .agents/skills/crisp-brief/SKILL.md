@@ -2,7 +2,7 @@
 name: crisp-brief
 description: "Turn a vague design request into a structured, unambiguous design brief - writes .brief.md with problem statement, target user, observable success criteria, scope, constraints, and CRISP priority. Use when a request is vague or before designing anything new: 'write a brief', 'scope this feature', 'what exactly are we building'."
 metadata:
-  version: "1.3.0"
+  version: "1.4.0"
 ---
 
 # /crisp-brief - Design Brief Generator
@@ -26,6 +26,8 @@ Interview rules, in force for every question below:
 2. If a *fact* can be found in the environment (framework, existing components, analytics events, current copy), look it up instead of asking. The *decisions* - success criteria, scope, priorities - are the user's: put each one to them and wait.
 3. Skip any question the request already answers.
 4. Do not write the brief until the Readiness Gate below is passed.
+
+**Before the first question, look for earlier work.** Search the repo for existing plans, briefs, or specs for this feature: `.brief*.md`, `.feature-design*.md`, and folders such as `specs/`, `plans/`, `docs/`, and `design-plans/`. If you find one, read it and open with what is wrong with it - the missing user, the unmeasurable criterion, the scope gap - and ask whether to build on it or start fresh. Teams often re-brief a feature someone already scoped, and the old plan's gaps are the fastest route to the right questions.
 
 **If `.crisp.md` exists** (product context is known):
 Ask only:
@@ -166,7 +168,7 @@ Decisions needed before designing:
 
 The brief exists to be read by someone who was not in the conversation - `/feature-design`, another agent, a teammate. You cannot judge that yourself: you remember every answer, so every gap looks filled. Hand the written brief to a reader with no memory of the interview.
 
-**How:** spawn one isolated sub-agent (Claude Code: the Agent tool; other harnesses: their sub-agent tool). Give it only the paths to `.brief.md` and `.crisp.md` (if present) and the prompt below. Pass nothing from the interview - no summary, no hints, no "the user meant". Run it inline only when no sub-agent tool exists, and then tell the user it was a self-check, not a cold read.
+**How:** spawn one isolated sub-agent (Claude Code: the Agent tool; other harnesses: their sub-agent tool). Give it only the paths to `.brief.md` and `.crisp.md` (if present) and the prompt below. It may search and read the codebase, read-only, so the contrarian lens can check for components that already do the job. Pass nothing from the interview - no summary, no hints, no "the user meant". Run it inline only when no sub-agent tool exists, and then tell the user it was a self-check, not a cold read.
 
 Skip this step only if the user asks to skip it.
 
@@ -174,13 +176,13 @@ Prompt to pass verbatim:
 
 ```
 You are a product designer who has just joined this project. You know nothing beyond the files below.
-Read .brief.md (and .crisp.md if it exists). Do not edit any file.
+Read .brief.md (and .crisp.md if it exists). You may search and read the codebase to check the brief's claims and look for existing components or patterns. Do not edit any file.
 
 Report findings in five lenses. For each finding give severity (P0 blocks design from starting, P1 would likely send design the wrong way, P2 worth tightening), the brief section, and the question you would need answered.
 
 1. Cold start: could you start designing tomorrow from this alone? What would you have to ask first?
 2. Testability: for each success criterion, could someone who was not in the room mark it pass or fail? Which ones cannot be checked?
-3. Contrarian: what is the strongest case against building this? Does an existing component, pattern, or product already solve most of it?
+3. Contrarian: what is the strongest case against building this? Does an existing component, pattern, or product already solve most of it? Name the file if you found one in the codebase.
 4. Missing states and edges: which users, states (empty, error, first-run, no permission, slow data), or scope boundaries does the brief not mention but design will hit?
 5. Contradictions: where do two sections disagree, or does scope conflict with constraints or anti-goals?
 
