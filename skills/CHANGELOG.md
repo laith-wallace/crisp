@@ -13,6 +13,12 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ## [Unreleased]
 
+### /crisp-brief 1.3.0 (cold-read stress test)
+- **P1** New Cold-Read Stress Test: after writing, one isolated sub-agent reads only `.brief.md` and `.crisp.md`, with nothing from the interview, and reports findings in five lenses (cold start, testability, contrarian, missing states, contradictions) at P0-P2. Findings are fixed, put to the user, or logged as `(cold read)` Open Questions. Adapted from the Goldfish review in the Elephant-Goldfish Model.
+- **P1** New Readiness Gate: the brief is restated as a 2-3 sentence hypothesis and confirmed before it is written.
+- **P2** Intake asks how people handle the problem today and where that breaks down. Template gains "Where that breaks" and "Reuse checked".
+- **P2** New Stance section: critique first, no praise, the strongest case against building it. Two new sharpening patterns: an existing component already covers it, and success criteria only the requester could judge.
+
 ### /crisp-funnel 2.2.0 (client look, award bar)
 - **P1** Builds kept coming out in CRISP near-black and lime. Build mode told the agent to keep the kit tokens and "not restyle", and the kit ships in the CRISP brand skin. The kit is now structure only: every client build swaps the colour, font and radius tokens.
 - **P1** New `references/art-direction.md`: scene sentence, concept and signature moment; nine named aesthetic lanes; palette taken from the client; banned defaults (black and acid green, black and one neon, purple-blue gradient, cream and generic sans); a cross-project log at `~/.crisp/art-direction-log.md` so each build differs from the last 5 on 2 of 4 axes; pre-flight D1-D6.
