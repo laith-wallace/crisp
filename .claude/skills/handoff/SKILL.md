@@ -2,7 +2,7 @@
 name: handoff
 description: Convert a CRISP-reviewed design into a developer-ready specification - component states, implementation notes, token references, edge cases, and an accessibility checklist. Use after /crisp-audit or /crisp-review, or for 'dev handoff', 'spec this for engineering'.
 metadata:
-  version: "1.1.3"
+  version: "1.1.4"
 ---
 
 # /handoff - Developer Handoff Spec
@@ -11,7 +11,7 @@ Convert a design into a complete, implementation-ready specification. The goal i
 
 If `.crisp.md` exists, load it. Your spec should reference the documented design system tokens and constraints.
 
-If `.feature-design.md` exists, read it as the design to hand off: its flow, states, and component decisions are the source, and its `(cold read)` Open Questions must be resolved or carried into the spec, never dropped. Copy its Invariants into Edge Cases as rules engineering must enforce, and its Critical Journeys into the spec as acceptance checks, each with its pass condition.
+If a feature-design spec exists, read it as the design to hand off. Use the file the user names; otherwise, if exactly one `.feature-design*.md` file exists, use it; if several exist, ask which feature to hand off and never guess. Its flow, states, and component decisions are the source, and its `(cold read)` Open Questions must be resolved or carried into the spec, never dropped. Copy its Invariants into Edge Cases as rules engineering must enforce, and its Critical Journeys into the spec as acceptance checks, each with its pass condition.
 
 ## What to Produce
 

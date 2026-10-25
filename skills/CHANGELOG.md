@@ -13,6 +13,12 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ## [Unreleased]
 
+### /crisp-brief 1.4.1, /feature-design 1.3.1, /handoff 1.1.4 (cold-read fixes)
+- **P1** "Keep both" wrote `.brief-<slug>.md` or `.feature-design-<slug>.md`, but the cold read and `/handoff` still read the default filename, so the new file was never reviewed or handed off. The cold-read prompts now take the path actually written, `/feature-design` asks which brief when several exist, and `/handoff` asks which spec when several `.feature-design*.md` files exist.
+- **P2** The `/feature-design` cold read now includes `.research.md`, so it judges the design against the same evidence.
+- **P2** `/crisp-brief` reports the check that actually ran (cold read, self-check, or skipped) instead of always saying "stress-tested".
+- **P2** Headless runs: the Readiness Gate writes a draft marked "confirmation pending" when no reply is possible, instead of writing nothing.
+
 ### /crisp-brief 1.4.0, /feature-design 1.3.0, /handoff 1.1.3 (codebase-aware cold reads, invariants)
 - **P1** Cold readers in `/crisp-brief` and `/feature-design` may now search and read the codebase, read-only. The contrarian lens names the file when an existing component already does the job, which it could only guess at before.
 - **P1** `/feature-design` adds Invariants (rules that must hold on every path, written so a test can check them) and Critical Journeys (2-5 end-to-end paths with pass conditions). It searches the code for reuse and business rules before designing. The cold read gains a seventh lens that checks flow steps and current code against the invariants.
