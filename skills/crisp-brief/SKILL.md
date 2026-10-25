@@ -2,7 +2,7 @@
 name: crisp-brief
 description: "Turn a vague design request into a structured, unambiguous design brief - writes .brief.md with problem statement, target user, observable success criteria, scope, constraints, and CRISP priority. Use when a request is vague or before designing anything new: 'write a brief', 'scope this feature', 'what exactly are we building'."
 metadata:
-  version: "1.4.1"
+  version: "1.4.2"
 ---
 
 # /crisp-brief - Design Brief Generator
@@ -26,6 +26,7 @@ Interview rules, in force for every question below:
 2. If a *fact* can be found in the environment (framework, existing components, analytics events, current copy), look it up instead of asking. The *decisions* - success criteria, scope, priorities - are the user's: put each one to them and wait.
 3. Skip any question the request already answers.
 4. Do not write the brief until the Readiness Gate below is passed.
+5. Headless exception: if no reply is possible (a scheduled, CI, or other unattended run), do not wait. Answer each question from the request and the environment, list every answer you inferred as an assumption under Open Questions, and go straight to writing with `Status: Draft - confirmation pending`.
 
 **Before the first question, look for earlier work.** Search the repo for existing plans, briefs, or specs for this feature: `.brief*.md`, `.feature-design*.md`, and folders such as `specs/`, `plans/`, `docs/`, and `design-plans/`. If you find one, read it and open with what is wrong with it - the missing user, the unmeasurable criterion, the scope gap - and ask whether to build on it or start fresh. Teams often re-brief a feature someone already scoped, and the old plan's gaps are the fastest route to the right questions.
 
@@ -69,7 +70,7 @@ Do not write the brief until flagged items are resolved or the user explicitly a
 
 Before writing, restate the brief as a working hypothesis in 2-3 sentences: who, what breaks for them today, and what will be observably different. Then ask one question: "Write the brief from this, or adjust it first?"
 
-Write only on a yes. On an adjustment, fold it in and restate. If no reply is possible (a headless or scheduled run), write the brief anyway with `Status: Draft - confirmation pending`, and put the hypothesis and the gate question first under Open Questions. This is the moment a misunderstanding costs one sentence instead of a whole design.
+Write only on a yes. On an adjustment, fold it in and restate. If no reply is possible (a headless or scheduled run), write the brief anyway with `Status: Draft - confirmation pending` (see interview rule 5), and put the hypothesis and the gate question first under Open Questions. This is the moment a misunderstanding costs one sentence instead of a whole design.
 
 ---
 
@@ -110,6 +111,7 @@ Two rules for filling the template, kept outside it so they are never copied int
 # Brief: [Descriptive name - not "Dashboard improvement", but "Revenue trend visibility for account managers"]
 Date: [Today's date - from the `date` command, never from memory]
 Status: Draft
+Check: [Filled after the Cold-Read Stress Test]
 Requested by: [If known]
 
 ---
@@ -193,7 +195,7 @@ No praise. No rewrites. Findings only, most severe first. If a lens has nothing,
 - A gap you can close from facts already in the environment: fix the brief directly.
 - A gap that needs a decision: put it to the user, one question at a time, P0 first. Update the brief with the answer.
 - A finding the user chooses not to resolve: add it to Open Questions, tagged `(cold read)`.
-- Then set `Status: Stress-tested` (or `Draft - self-checked` if the check ran inline).
+- Then fill the `Check:` line with what actually ran: `Cold read`, `Self-check`, or `Skipped at user request`. Set `Status: Stress-tested` only after a cold read. A `Draft - confirmation pending` status stays as it is until the user confirms the brief; the check never clears it.
 
 Report to the user in chat: how many findings by severity, which you fixed, and which became Open Questions. Do not paste the raw sub-agent output.
 

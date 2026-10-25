@@ -13,6 +13,11 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ## [Unreleased]
 
+### /crisp-brief 1.4.2, /feature-design 1.3.2 (status and headless fixes)
+- **P2** A new `Check:` line records what ran (cold read, self-check, or skipped). `Status: Stress-tested` is set only after a cold read, and `Draft - confirmation pending` survives the check.
+- **P2** `/crisp-brief` headless runs no longer wait on interview answers: inferred answers go under Open Questions as assumptions.
+- **P2** `/feature-design` uses the chosen brief in Step 0 and Step 1, and the cold-read prompt drops the brief sentence when there is no brief.
+
 ### /crisp-brief 1.4.1, /feature-design 1.3.1, /handoff 1.1.4 (cold-read fixes)
 - **P1** "Keep both" wrote `.brief-<slug>.md` or `.feature-design-<slug>.md`, but the cold read and `/handoff` still read the default filename, so the new file was never reviewed or handed off. The cold-read prompts now take the path actually written, `/feature-design` asks which brief when several exist, and `/handoff` asks which spec when several `.feature-design*.md` files exist.
 - **P2** The `/feature-design` cold read now includes `.research.md`, so it judges the design against the same evidence.

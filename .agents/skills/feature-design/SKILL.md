@@ -2,7 +2,7 @@
 name: feature-design
 description: "Design a new product feature using CRISP principles - takes a problem statement and produces user flows, component decisions, compliance checks, and decision rationale. Reads .brief.md and .research.md when present. Use when designing a new feature from a problem statement: 'design this feature', 'give me the user flow', 'spec the screens for X'. Developer specs belong to /handoff."
 metadata:
-  version: "1.3.1"
+  version: "1.3.2"
 ---
 
 # /feature-design - CRISP Feature Design
@@ -19,7 +19,7 @@ Before writing flows or specs, establish visual direction. This step prevents te
 
 **Trigger this step when:**
 - The feature is greenfield (no existing visual reference in the product)
-- The `.brief.md` CRISP priority is **C (Contextual)** or **I (Intelligent)** - these dimensions are most visually dependent
+- The brief's CRISP priority is **C (Contextual)** or **I (Intelligent)** - these dimensions are most visually dependent
 - The user explicitly requests a direction exploration
 
 **How to run it:**
@@ -40,7 +40,7 @@ Example directions for a data table feature:
 
 ## Step 1: Problem Framing
 
-Before designing anything, clarify the problem. Skip any question `.brief.md` already answers. If the user hasn't provided these, ask:
+Before designing anything, clarify the problem. Skip any question the brief already answers. If the user hasn't provided these, ask:
 
 1. **Who is experiencing this problem?** (Role, sophistication level, context)
 2. **What are they trying to do?** (The job, not the feature)
@@ -125,6 +125,7 @@ Write the spec to `.feature-design.md` in the project root, then give a short su
 ## Feature Design: [Feature Name]
 Date: [Today's date - from the `date` command, never from memory]
 Status: Draft
+Check: [Filled after the Cold-Read Stress Test]
 Brief: [Brief file path and title, or "None"]
 
 ### Problem
@@ -188,7 +189,7 @@ Edge cases: [Empty / error / loading]
 
 The spec is read next by people who were not in this session: an engineer, `/handoff`, a reviewer. You cannot judge it yourself, because you remember every reason behind every step. Hand the written spec to a reader with no memory of the session.
 
-**How:** spawn one isolated sub-agent (Claude Code: the Agent tool; other harnesses: their sub-agent tool). Give it only the paths to the spec file, plus the brief, `.research.md`, and `.crisp.md` if they exist, and the prompt below with `[SPEC FILE]` and `[BRIEF FILE]` replaced by those paths (`[BRIEF FILE]` becomes "none" when there is no brief). It may search and read the codebase, read-only, so it can check reuse claims and whether the code already breaks an invariant. Pass nothing from the session: no summary, no hints, no "what I meant". Run it inline only when no sub-agent tool exists, and then tell the user it was a self-check, not a cold read.
+**How:** spawn one isolated sub-agent (Claude Code: the Agent tool; other harnesses: their sub-agent tool). Give it only the paths to the spec file, plus the brief, `.research.md`, and `.crisp.md` if they exist, and the prompt below with `[SPEC FILE]` and `[BRIEF FILE]` replaced by those paths. With no brief, delete the "If a brief was supplied" sentence from the prompt. It may search and read the codebase, read-only, so it can check reuse claims and whether the code already breaks an invariant. Pass nothing from the session: no summary, no hints, no "what I meant". Run it inline only when no sub-agent tool exists, and then tell the user it was a self-check, not a cold read.
 
 Skip this step only if the user asks to skip it.
 
@@ -196,7 +197,7 @@ Prompt to pass verbatim:
 
 ```
 You are a senior product designer and a front-end engineer who have just joined this project. You know nothing beyond the files below.
-Read [SPEC FILE], plus [BRIEF FILE], .research.md, and .crisp.md if they exist. You may search and read the codebase to check the spec's claims. Do not edit any file.
+Read [SPEC FILE]. If a brief was supplied, also read [BRIEF FILE]. Read .research.md and .crisp.md if they exist. You may search and read the codebase to check the spec's claims. Do not edit any file.
 
 Report findings in seven lenses. For each finding give severity (P0 blocks building, P1 would likely get built wrong, P2 worth tightening), the spec section or flow step, and the question you would need answered.
 
@@ -215,6 +216,6 @@ No praise. No rewrites. Findings only, most severe first. If a lens has nothing,
 - A gap you can close from facts already in the environment or the brief: fix the spec directly.
 - A gap that needs a decision: put it to the user, one question at a time, P0 first. Update the spec with the answer.
 - A finding the user chooses not to resolve: add it to Open Questions, tagged `(cold read)`.
-- Then set `Status: Stress-tested` (or `Draft - self-checked` if the check ran inline).
+- Then fill the `Check:` line with what actually ran: `Cold read`, `Self-check`, or `Skipped at user request`. Set `Status: Stress-tested` only after a cold read. A `Draft - confirmation pending` status stays as it is until the user confirms the spec; the check never clears it.
 
 Report to the user in chat: which file was written, what check it got (cold read, self-check, or skipped at their request), how many findings by severity, which you fixed, and which became Open Questions. Do not paste the raw sub-agent output. Then suggest `/handoff` with that spec file.
