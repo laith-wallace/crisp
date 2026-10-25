@@ -2,7 +2,7 @@
 name: crisp-brief
 description: "Turn a vague design request into a structured, unambiguous design brief - writes .brief.md with problem statement, target user, observable success criteria, scope, constraints, and CRISP priority. Use when a request is vague or before designing anything new: 'write a brief', 'scope this feature', 'what exactly are we building'."
 metadata:
-  version: "1.2.1"
+  version: "1.3.0"
 ---
 
 # /crisp-brief - Design Brief Generator
@@ -11,25 +11,38 @@ Vague requests are a permanent design failure mode. "Can we improve the dashboar
 
 Load `.crisp.md` if it exists before beginning. Project context (users, design system, constraints) informs the output.
 
+## Stance
+
+A brief that agrees with everything protects nothing. While interviewing and sharpening:
+- Lead with what is missing, vague, or risky in the request before naming what is solid.
+- No praise for the request or the answers. "Great idea" tells the user nothing; a named gap does.
+- Do not restate the user's framing as fact. If they say "users hate the dashboard", ask what shows that.
+- For every proposed solution, name the strongest case against building it at all.
+
 ## Intake Protocol
 
 Interview rules, in force for every question below:
 1. Ask one question at a time. Wait for the answer before asking the next.
 2. If a *fact* can be found in the environment (framework, existing components, analytics events, current copy), look it up instead of asking. The *decisions* - success criteria, scope, priorities - are the user's: put each one to them and wait.
-3. Do not write the brief until shared understanding is confirmed - see Problem Sharpening below.
+3. Skip any question the request already answers.
+4. Do not write the brief until the Readiness Gate below is passed.
 
 **If `.crisp.md` exists** (product context is known):
 Ask only:
 1. "Describe the request in one sentence - what did someone ask you to design or improve?"
-2. "What observable outcome would tell you this worked?"
+2. "How do people handle this today, and where does that break down?"
+3. "What observable outcome would tell you this worked?"
 
 **If `.crisp.md` does not exist** (no project context):
-Ask all five questions:
+Ask all six questions:
 1. "Describe the request in one sentence - what did someone ask you to design or improve?"
 2. "Who specifically will use this? (role, how often, technical level)"
-3. "What observable outcome would tell you this worked?"
-4. "What is explicitly NOT in scope?"
-5. "What constraints exist? (time, design system, team dependencies)"
+3. "How do people handle this today, and where does that break down?"
+4. "What observable outcome would tell you this worked?"
+5. "What is explicitly NOT in scope?"
+6. "What constraints exist? (time, design system, team dependencies)"
+
+The "today" question matters most. A request with no current workaround is often a solution looking for a problem; a request with a painful workaround tells you exactly what to beat.
 
 ---
 
@@ -43,8 +56,18 @@ Before writing the brief, flag any of these patterns and prompt for clarificatio
 | Success criteria are feature-based, not outcome-based | "This describes a feature, not an outcome" | "What would a user be able to do or feel if this worked?" |
 | Scope is open-ended | "This has no boundaries" | "What is explicitly NOT included in this work?" |
 | User is not specified | "Who specifically uses this?" | "Describe the person who will interact with this design" |
+| An existing component, pattern, or product already covers most of it | "This may not need new design" | "What does [existing thing] fail to do for this user?" |
+| A success criterion only the requester could judge ("feels cleaner", "more intuitive") | "Nobody else can check this" | "What would a stranger watch the user do to know it worked?" |
 
 Do not write the brief until flagged items are resolved or the user explicitly accepts the ambiguity.
+
+---
+
+## Readiness Gate
+
+Before writing, restate the brief as a working hypothesis in 2-3 sentences: who, what breaks for them today, and what will be observably different. Then ask one question: "Write the brief from this, or adjust it first?"
+
+Write only on a yes. On an adjustment, fold it in and restate. This is the moment a misunderstanding costs one sentence instead of a whole design.
 
 ---
 
@@ -95,6 +118,7 @@ Requested by: [If known]
 ## User
 Who: [Role + context - e.g. "Account manager, checks pipeline daily, moderate technical sophistication"]
 Current behaviour: [What they do today to solve this problem]
+Where that breaks: [The specific point the current approach fails - the thing the design must beat]
 Frequency: [How often they encounter this]
 
 ## Success Criteria
@@ -116,6 +140,7 @@ Observable outcomes that define success - not features delivered:
 - Timeline: [If provided]
 - Dependencies: [What this work depends on or blocks]
 - Known off-limits: [From .crisp.md Known Issues, or stated by user]
+- Reuse checked: [Existing component, pattern, or product considered, and what it lacks - or "None found"]
 
 ## Anti-Goals
 What this design should NOT be or do - explicit exclusions prevent the wrong reference product being used:
@@ -132,10 +157,46 @@ Decisions needed before designing:
 - [ ] [Product decision - e.g. "Should this show team data or individual data?"]
 - [ ] [Technical question - e.g. "Is real-time data available for this view?"]
 - [ ] [User research needed - e.g. "Do account managers prefer tabular or visual data?"]
+- [ ] [Unresolved cold-read finding - e.g. "(cold read) No behaviour defined when an account has no revenue history"]
 ```
+
+---
+
+## Cold-Read Stress Test
+
+The brief exists to be read by someone who was not in the conversation - `/feature-design`, another agent, a teammate. You cannot judge that yourself: you remember every answer, so every gap looks filled. Hand the written brief to a reader with no memory of the interview.
+
+**How:** spawn one isolated sub-agent (Claude Code: the Agent tool; other harnesses: their sub-agent tool). Give it only the paths to `.brief.md` and `.crisp.md` (if present) and the prompt below. Pass nothing from the interview - no summary, no hints, no "the user meant". Run it inline only when no sub-agent tool exists, and then tell the user it was a self-check, not a cold read.
+
+Skip this step only if the user asks to skip it.
+
+Prompt to pass verbatim:
+
+```
+You are a product designer who has just joined this project. You know nothing beyond the files below.
+Read .brief.md (and .crisp.md if it exists). Do not edit any file.
+
+Report findings in five lenses. For each finding give severity (P0 blocks design from starting, P1 would likely send design the wrong way, P2 worth tightening), the brief section, and the question you would need answered.
+
+1. Cold start: could you start designing tomorrow from this alone? What would you have to ask first?
+2. Testability: for each success criterion, could someone who was not in the room mark it pass or fail? Which ones cannot be checked?
+3. Contrarian: what is the strongest case against building this? Does an existing component, pattern, or product already solve most of it?
+4. Missing states and edges: which users, states (empty, error, first-run, no permission, slow data), or scope boundaries does the brief not mention but design will hit?
+5. Contradictions: where do two sections disagree, or does scope conflict with constraints or anti-goals?
+
+No praise. No rewrites. Findings only, most severe first. If a lens has nothing, say "none" for it.
+```
+
+**Folding findings back in:**
+- A gap you can close from facts already in the environment: fix the brief directly.
+- A gap that needs a decision: put it to the user, one question at a time, P0 first. Update the brief with the answer.
+- A finding the user chooses not to resolve: add it to Open Questions, tagged `(cold read)`.
+- Then set `Status: Stress-tested` (or `Draft - self-checked` if the check ran inline).
+
+Report to the user in chat: how many findings by severity, which you fixed, and which became Open Questions. Do not paste the raw sub-agent output.
 
 ---
 
 ## After Writing
 
-Confirm to the user that `.brief.md` has been written. Suggest running `/feature-design` next, using the brief as input - it will read `.brief.md` and `.crisp.md` together to design the solution.
+Confirm to the user that `.brief.md` has been written and stress-tested. Suggest running `/feature-design` next, using the brief as input - it will read `.brief.md` and `.crisp.md` together to design the solution.
