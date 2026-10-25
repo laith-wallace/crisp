@@ -2,7 +2,7 @@
 name: feature-design
 description: "Design a new product feature using CRISP principles - takes a problem statement and produces user flows, component decisions, compliance checks, and decision rationale. Reads .brief.md and .research.md when present. Use when designing a new feature from a problem statement: 'design this feature', 'give me the user flow', 'spec the screens for X'. Developer specs belong to /handoff."
 metadata:
-  version: "1.1.1"
+  version: "1.2.0"
 ---
 
 # /feature-design - CRISP Feature Design
@@ -109,8 +109,13 @@ List the research questions this design surfaces - things that should be validat
 
 ## Output Format
 
+Write the spec to `.feature-design.md` in the project root, then give a short summary in chat. A file is what `/handoff` and the Cold-Read Stress Test below can read. If one already exists, ask "Replace the existing spec for [its feature name], or keep both?" and on "keep both" (or no reply) write `.feature-design-<slug>.md` instead.
+
 ```
 ## Feature Design: [Feature Name]
+Date: [Today's date - from the `date` command, never from memory]
+Status: Draft
+Brief: [.brief.md title, or "None"]
 
 ### Problem
 Who: [User]
@@ -157,3 +162,39 @@ Edge cases: [Empty / error / loading]
 - Favour familiar patterns over novel ones unless novelty is the point.
 - Every design decision should be justifiable against CRISP.
 - If a step in the flow fails a CRISP dimension, flag it and propose a fix before moving on.
+
+---
+
+## Cold-Read Stress Test
+
+The spec is read next by people who were not in this session: an engineer, `/handoff`, a reviewer. You cannot judge it yourself, because you remember every reason behind every step. Hand the written spec to a reader with no memory of the session.
+
+**How:** spawn one isolated sub-agent (Claude Code: the Agent tool; other harnesses: their sub-agent tool). Give it only the paths to `.feature-design.md`, plus `.brief.md` and `.crisp.md` if they exist, and the prompt below. Pass nothing from the session: no summary, no hints, no "what I meant". Run it inline only when no sub-agent tool exists, and then tell the user it was a self-check, not a cold read.
+
+Skip this step only if the user asks to skip it.
+
+Prompt to pass verbatim:
+
+```
+You are a senior product designer and a front-end engineer who have just joined this project. You know nothing beyond the files below.
+Read .feature-design.md, and .brief.md and .crisp.md if they exist. Do not edit any file.
+
+Report findings in six lenses. For each finding give severity (P0 blocks building, P1 would likely get built wrong, P2 worth tightening), the spec section or flow step, and the question you would need answered.
+
+1. Build start: could you build this flow from the spec alone? What would you have to ask first?
+2. Brief trace: does every success criterion in .brief.md map to a flow step that delivers it? Does anything in the spec fall outside the brief's scope or break an anti-goal? If there is no brief, say so and judge against the spec's own Problem section.
+3. Missing states: which steps lack empty, error, or loading behaviour? Which states does design hit but the spec never mentions (no permission, first run, long content, slow or partial data, undo)?
+4. Weak decisions: which decisions name no alternative, rest on "best practice" alone, or cite a benchmark that does not fit this user?
+5. Contrarian: what is the simplest flow that would still meet the success criteria? Which steps or components could go?
+6. Contradictions: where do the flow, the component table, and the CRISP compliance summary disagree?
+
+No praise. No rewrites. Findings only, most severe first. If a lens has nothing, say "none" for it.
+```
+
+**Folding findings back in:**
+- A gap you can close from facts already in the environment or the brief: fix the spec directly.
+- A gap that needs a decision: put it to the user, one question at a time, P0 first. Update the spec with the answer.
+- A finding the user chooses not to resolve: add it to Open Questions, tagged `(cold read)`.
+- Then set `Status: Stress-tested` (or `Draft - self-checked` if the check ran inline).
+
+Report to the user in chat: how many findings by severity, which you fixed, and which became Open Questions. Do not paste the raw sub-agent output. Then suggest `/handoff`, which reads `.feature-design.md`.
