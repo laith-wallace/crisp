@@ -55,7 +55,7 @@ as the agent works and reports only the problems that edit added.
 | Command                   | What it does                                                                                                                                                                                                                                                                                        |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/crisp-production-ready` | Complete production-readiness audit: repeated passes through 24 lenses (security, auth, claims-vs-code, data shapes, perf, a11y, config, concurrency and more) until two consecutive passes find nothing new. Outputs a flat findings list plus `production-playbook.html` - a visual, checkable, step-by-step fix plan with a binary READY / FIX FIRST / NOT READY verdict. |
-| `/crisp-loop`             | Bounded review-fix-review loop. Detector + `/crisp-review`, fix only the cited P0/P1s, re-review, stop on TARGET MET (default B, zero P0), CAP REACHED (default 5), STALLED, or SCOPE BLOCKED. Reports the grade trend per iteration. Never lowers the target or widens scope. |
+| `/crisp-loop`             | Bounded review-fix-review loop. Detector + `/crisp-review`, fix only the cited P0/P1s, re-review, triage each finding as must-fix or overthinking, two passes by default (the second only after a P0 or new files), stop on TARGET MET (default B, zero P0), ONE PASS ENOUGH, CAP REACHED, STALLED, or SCOPE BLOCKED. Optional cross-lab reviewer. Reports the grade trend per iteration. Never lowers the target or widens scope. |
 | `/crisp-proof`            | Visual proof a change did what it claims: before/after screenshot pairs across states and breakpoints, `/crisp-review` grades on both sides, detector on After, and a binary IMPROVED / NO CHANGE / REGRESSED verdict in a PR-ready markdown table. Never switches branches to fake a Before. |
 
 ### Repo setup
@@ -177,7 +177,7 @@ are grounded in your specific context, not generic advice.
 /crisp-copy        ->  microcopy audit and generation (optional pass)
 /crisp-a11y        ->  accessibility audit (optional pass)
 /handoff           ->  developer-ready spec from the reviewed design
-/crisp-loop        ->  review-fix-review until the target grade (optional, bounded)
+/crisp-loop        ->  two-pass review-fix with triage (optional, capped)
 /crisp-proof       ->  before/after screenshot proof for the PR
 /crisp-unslop      ->  PR title and body, release notes, any prose a person reads
 ```
@@ -189,7 +189,7 @@ are grounded in your specific context, not generic advice.
 /crisp-structure   ->  actions decide, services do - where each piece of code goes
 /crisp-evidence    ->  recorded, annotated proof the change works (before + after)
 /crisp-proof       ->  before/after screenshot table with a grade delta
-/crisp-loop        ->  review-fix-review until the target grade
+/crisp-loop        ->  two-pass review-fix with triage, depth set by risk class
 /crisp-unslop      ->  the PR title and body
 /crisp-agents-md   ->  writes this workflow into the repo's AGENTS.md
 ```

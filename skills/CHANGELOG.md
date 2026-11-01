@@ -13,6 +13,13 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ## [Unreleased]
 
+### /crisp-agents-md 1.1.0, /crisp-loop 1.1.0 (risk gate, capped cross-lab review, tests rule)
+- **P1** `/crisp-agents-md` classes every task Small, Normal, or Risky before Build. New Step 1a maps Risky triggers from repo facts (secret-shaped env names, auth, billing, migration, and permission paths) into a new `risk` managed block. Risky tasks run a four-question decision round before any edit. Refresh inserts the block into 1.0 files.
+- **P1** Ship review is capped at two passes by a model from a different lab than the builder. Each finding is rated for frequency and severity and triaged as must-fix or overthinking. Pass two runs only after a P0 or when fixes touched new files. Leftover P0s go in the PR body as blockers. Depth follows the risk class.
+- **P1** `/crisp-loop` default cap drops from 5 to 2, with a triage step before fixing, a new `ONE PASS ENOUGH` stop reason, and an optional `--reviewer` for a cross-lab review.
+- **P2** Generated Hard invariants carry a tests rule: add a test only when the same class of error has happened before, or the task is Risky. Not managed, so teams can override it.
+- **P2** Verify gains three checks: `risk` block present, no "until the target grade", tests line present.
+
 ### /crisp-brief 1.4.0, /feature-design 1.3.0, /handoff 1.1.3 (codebase-aware cold reads, invariants)
 - **P1** Cold readers in `/crisp-brief` and `/feature-design` may now search and read the codebase, read-only. The contrarian lens names the file when an existing component already does the job, which it could only guess at before.
 - **P1** `/feature-design` adds Invariants (rules that must hold on every path, written so a test can check them) and Critical Journeys (2-5 end-to-end paths with pass conditions). It searches the code for reuse and business rules before designing. The cold read gains a seventh lens that checks flow steps and current code against the invariants.

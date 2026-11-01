@@ -2,7 +2,7 @@
 name: crisp-agents-md
 description: Generate or refresh a repo's AGENTS.md - the workflow file every coding agent reads before it touches the code. Discovers the installed skills and the repo's real facts (scripts, stack, CI, env var names), maps them onto the CRISP workflow chain (Isolate, Scope, Build, Prove, Ship, Write), and writes managed sections it can regenerate later without touching hand-written rules. Use for 'write an AGENTS.md', 'agent workflow file', 'set this repo up for agents', or when skills changed and the table is stale.
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
   author: Laith Wallace - FlowConverts
   inspired-by: michaelshimeles/skills AGENTS.md (workflow-beats structure)
 ---
@@ -64,7 +64,7 @@ Every task in the generated file moves through the same beats. This is the house
 | **Scope** | `/crisp-brief` | Only when the request is vague - writes `.brief.md` with success criteria and scope. A clear bug fix skips this beat | "Restate the task as one sentence plus an observable done-condition before editing" |
 | **Build** | `/crisp-structure` | Actions own the why and when, a service layer owns the how. Decides where new code goes and flags copy-pasted mechanics | "Smallest change that passes the checks. Match the surrounding code. No duplicated mechanics." |
 | **Prove** | `/crisp-evidence` | Runtime proof: recorded session with passed / failed / untested assertions, `report.md` and `manifest.json` for the PR. Capture the before while the bug still reproduces | "Run the checks. Capture before and after evidence while the bug still reproduces." |
-| **Ship** | `/crisp-proof`, then `/crisp-loop` | Before and after pairs with grades on both sides in the PR body, then review-fix-review until the target grade with zero P0 | "Plain-language PR body: what changed, how it was tested, risks. Present the PR URL." |
+| **Ship** | `/crisp-proof`, then `/crisp-loop` | Before and after pairs with grades on both sides in the PR body, then a review capped at two passes by a model from a different lab than the builder. Each finding is rated for frequency and severity and triaged as must-fix or overthinking. Pass two runs only when pass one found a P0 or the fixes touched new files. Any P0 left goes in the PR body as a blocker. Depth follows the risk class | No second lab: "Review your own diff once as a sceptical reviewer, triage findings as must-fix or overthinking, stop after one pass." No skills: "Plain-language PR body: what changed, how it was tested, risks. Present the PR URL." |
 | **Write** | `/crisp-unslop` | Runs over every human-facing text before it ships: commit messages, PR title and body, doc edits, the closing reply | "No em dashes, no filler openers, no recap endings, active voice." |
 
 UI extras, added to the beat when the repo has a UI and the skill is installed: `/feature-design` on Build for new UI features, `/crisp-copy` on Build for any user-facing string, `/crisp-a11y` on Prove where inputs or forms changed, `/crisp-production-ready` on Ship for launch-tagged work.
@@ -72,6 +72,35 @@ UI extras, added to the beat when the repo has a UI and the skill is installed: 
 Non-UI repos (CLI, API, library) keep all six beats and drop only the UI extras. Say which applies in the intro line of the Workflow section.
 
 Recorder note for Prove: `/crisp-evidence` records video only when `ffmpeg` is on the machine. Check with `command -v ffmpeg`. When absent, the file says so and names the screenshot fallback, so the agent does not stall on a missing tool.
+
+Tests rule for Build: the template's Hard invariants carry one fixed line, "Add a test only when the same class of error has happened before, or the task is Risky. Never add tests to make a check pass." It is written once in Create and Adopt mode and is not a managed block, so a team with strict coverage rules can edit it and Refresh will not undo that.
+
+## Step 1a - Map risk triggers (facts, never questions)
+
+Every task gets a risk class before Build: Small, Normal, or Risky. The class sets the depth of Scope, Prove, and Ship. Isolate and Write never change.
+
+| Class | Trigger | Scope | Prove | Ship review |
+|---|---|---|---|---|
+| Small | Copy, styling, one-file fix, no logic change | Skip | Checks only | None, checks only |
+| Normal | Everything else | `/crisp-brief` only if vague | Full `/crisp-evidence` | One cross-lab pass |
+| Risky | Touches auth, payments, user data, migrations, permissions, or public APIs | Decision round, always | Full `/crisp-evidence` plus before and after on live-like data | One pass per available lab, deduplicated |
+
+Small and Normal are generic. Risky is repo-specific, so build its trigger list from the files, not from questions:
+
+```bash
+# Secret-shaped env names from Step 0 (names only, never values)
+grep -hoE '^[A-Z][A-Z0-9_]+_(KEY|SECRET|TOKEN)=' .env.example .env.sample .env.template 2>/dev/null | tr -d = | sort -u
+# Risk-shaped paths, outside dependencies and build output
+find . -type d \( -name node_modules -o -name .git -o -name dist -o -name build -o -name .next \) -prune -o -type d -print 2>/dev/null \
+  | grep -iE '/(auth|login|session|billing|payments?|checkout|stripe|subscriptions?|migrations?|permissions?|rbac|roles|admin|webhooks?|api)$' | sort
+ls prisma/schema.prisma drizzle.config.* convex/schema.* supabase/migrations 2>/dev/null   # schema and migration roots
+```
+
+Each hit becomes one bullet in the `risk` block: the path or env name, then the area it maps to (`src/billing/` - payments). Dedupe parents and children: list `src/auth/`, not also `src/auth/session/`. Zero hits is valid; the block then carries `<!-- TODO: no risk triggers found ... -->`.
+
+The decision round for Risky tasks is four questions, one per area: product intent, design of the change, rollout, edge cases. With `/crisp-brief` installed, answers go in `.brief.md`. Without it, the fallback is "Risky task: write the four answers in the PR description before editing."
+
+For the Ship review, note which frontier labs the agent can reach for a cross-lab reviewer (other CLIs on PATH such as `codex` or `gemini`, or a configured review Action). Write them into the Ship beat. None found: write the single-pass self-review fallback from the Step 1 table.
 
 ## Step 2 - Ask only for decisions
 
@@ -92,7 +121,7 @@ Use `references/template.md`. It has fixed sections and managed blocks. Managed 
 <!-- crisp-agents-md:end skills -->
 ```
 
-Managed blocks: `workflow`, `commands`, `environment`, `skills`. Everything else is written once in Create mode and belongs to the user afterwards.
+Managed blocks: `risk`, `workflow`, `commands`, `environment`, `skills`. Everything else is written once in Create mode and belongs to the user afterwards.
 
 Binary rules. Each is checked in Step 5:
 
@@ -124,6 +153,9 @@ grep -oE '`/[a-z0-9-]+`' AGENTS.md | tr -d '`/' | sort -u | while read s; do
 wc -l < AGENTS.md                                                         # under 200
 grep -c "TODO:" AGENTS.md                                                 # matches the count in your summary
 grep -qE '^@AGENTS\.md$' CLAUDE.md && echo "CLAUDE.md wired"
+grep -c 'crisp-agents-md:begin risk' AGENTS.md                            # must be 1
+grep -ci 'until the target grade' AGENTS.md                               # must be 0
+grep -c 'Add a test only when the same class of error has happened before' AGENTS.md   # must be 1 (Create/Adopt; in Refresh, report if the user removed it)
 ```
 
 Any failure: fix and re-run. Do not deliver with a phantom skill or an em dash.
@@ -131,8 +163,8 @@ Any failure: fix and re-run. Do not deliver with a phantom skill or an em dash.
 ## Refresh mode
 
 1. Re-run Step 0.
-2. Rebuild only the four managed blocks.
-3. Diff the old and new block contents. Report added skills, removed skills, changed commands.
+2. Re-run Step 1a and rebuild only the five managed blocks. A file from 1.0 has no `risk` block: insert it directly above the `workflow` block and report it as added.
+3. Diff the old and new block contents. Report added skills, removed skills, changed commands, added or removed risk triggers.
 4. Text outside the markers is never touched, even when it is wrong. Report what looks wrong instead: "Hard invariants mentions `npm test` but the script is now `pnpm test`."
 
 ## Output
@@ -143,6 +175,7 @@ Any failure: fix and re-run. Do not deliver with a phantom skill or an em dash.
 **Stack:** [package manager] · [framework or "none detected"] · [test runner] · CI: [yes / no]
 **Skills wired:** [N] of 6 beats have an installed skill; [list the beats on fallback text] · ffmpeg: [present / absent, screenshot fallback]
 **Written:** AGENTS.md ([N] lines) · CLAUDE.md [created / include appended / already wired]
+**Risk:** [N] Risky triggers mapped · review labs: [list, or "none, self-review fallback"]
 
 **TODOs left in the file** (omit if none)
 - Environment: no .env.example found
@@ -151,6 +184,7 @@ Any failure: fix and re-run. Do not deliver with a phantom skill or an em dash.
 **Managed block changes** (Refresh only)
 - skills: +crisp-unslop, -greploop
 - commands: `npm run build` → `pnpm build`
+- risk: +`src/billing/` (payments)
 ```
 
 Zero TODOs and zero changes are valid results. Say so in one line.

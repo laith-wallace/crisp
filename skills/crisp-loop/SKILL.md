@@ -1,15 +1,15 @@
 ---
 name: crisp-loop
-description: Bounded review-fix-review loop - runs /crisp-review, fixes every P0 and P1 it names, re-reviews, and repeats until the target grade (default B with zero P0) or the iteration cap (default 5), then reports the trend. Use for 'keep fixing until it's good', 'get this screen to an A', or to land a batch of design fixes with a measured result instead of a hope.
+description: Bounded review-fix-review loop - runs /crisp-review, triages every finding as must-fix or overthinking, fixes the must-fix P0s and P1s, and runs a second pass only when the first found a P0 or the fixes touched new files. Two passes by default, then it stops and reports the trend, with any P0 left named as a blocker. Use for 'keep fixing until it's good', 'get this screen to an A', or to land a batch of design fixes with a measured result instead of a hope.
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
   author: Laith Wallace - FlowConverts
   adapted-from: greptileai/skills greploop (loop shape, MIT) - reviewer swapped for /crisp-review and the crisp detector
 ---
 
 # /crisp-loop - Review, Fix, Repeat, Stop
 
-One review finds the problems. One fix pass introduces new ones or leaves half of them standing. This skill runs the cycle until the surface meets a grade you named, and refuses to run forever.
+One review finds the problems. One fix pass introduces new ones or leaves half of them standing. This skill runs the cycle a fixed, small number of times and stops. A reviewer told to find problems will always report some, so looping toward a grade rewards invented findings. Two passes with a triage step land the real fixes and leave the rest for a person.
 
 Load `.crisp.md` if it exists. Its register decides how `/crisp-review` grades; its History section is where the loop's one summary line lands.
 
@@ -19,7 +19,8 @@ Load `.crisp.md` if it exists. Its register decides how `/crisp-review` grades; 
 |---|---|---|
 | Target | required | A file, directory, route, or URL naming one surface |
 | `--target-grade` | `B` | `A` or `B`. Both require zero P0; `A` also requires zero P1 |
-| `--max-iterations` | `5` | Hard cap on review-fix cycles |
+| `--max-iterations` | `2` | Hard cap on review-fix cycles. Raise it only when the user asks, never above `5` |
+| `--reviewer` | `self` | Who runs the review: `self`, or a frontier model from a different lab than the builder (`codex`, `gemini`, or another CLI on PATH). Cross-lab is the default inside an AGENTS.md Ship beat when one is available |
 | `--scope` | inferred | Files allowed to change. Inferred as the files that render the target; state the list before iteration 1 |
 | `--commit` | off | When on, one commit per iteration. Off leaves changes in the working tree |
 
@@ -54,15 +55,18 @@ Stop the loop when any one is true, and say which:
 | Condition | Stop reason |
 |---|---|
 | Grade ≥ target and P0 = 0 (and P1 = 0 when target is A) | `TARGET MET` |
-| Iteration = `--max-iterations` | `CAP REACHED` |
+| Iteration 1 is done, it found zero P0, and its fixes touched no file outside the files it reviewed | `ONE PASS ENOUGH` - a second pass would only find what the first called overthinking |
+| Iteration = `--max-iterations` | `CAP REACHED` - any P0 left is listed as a blocker for a person |
 | The top 3 issues are identical to the previous iteration's top 3 | `STALLED` - the fixes are not landing; report and hand back |
 | A fix would require editing outside scope | `SCOPE BLOCKED` - name the file and the issue, hand back |
 
 `STALLED` is not a failure of the skill. It is the loop telling you the problem is not where you are allowed to edit, or the review is inconsistent. Either way a person decides next.
 
-### C. Fix
+### C. Triage, then fix
 
-Fix only the P0 and P1 issues named in this iteration's review, in impact order. P2 and P3 wait for the target to be met; then, if iterations remain, take P2s.
+Rate every finding 1 to 10 on two axes: how often it would happen to a real user, and how bad it would be when it did. Then ask one question of each: "Is this a real must-fix issue or overthinking?" Write the verdict next to it. Overthinking is dropped, not deferred, and the report lists it so a person can disagree.
+
+Fix only the must-fix P0 and P1 issues, highest frequency times severity first. P2 and P3 are not fixed inside the loop.
 
 Per fix, binary:
 - Cite the file:line the review cited. No location, no fix - ask the review to be specific instead.
@@ -84,6 +88,7 @@ Without it, leave the working tree changed and say so.
 ## Never
 
 - Never lower the target mid-loop to finish. If the target is unreachable within the cap, `CAP REACHED` is the honest answer.
+- Never run extra passes to chase the grade. The cap is the exit; leftover P0s go to a person.
 - Never edit `.crisp.md` to change the register so the grade improves.
 - Never widen scope to reach a fix. Report `SCOPE BLOCKED`.
 - Never count a review that did not cite file:line for its P0s and P1s. Re-run it.
@@ -95,16 +100,18 @@ Print after the loop exits, whatever the reason:
 ```
 ## crisp-loop: [target]
 
-**Stop reason:** TARGET MET   (or CAP REACHED / STALLED / SCOPE BLOCKED - with one line of why)
+**Stop reason:** TARGET MET   (or ONE PASS ENOUGH / CAP REACHED / STALLED / SCOPE BLOCKED - with one line of why)
 **Grade:** C → B   **P0:** 2 → 0   **P1:** 4 → 1
-**Iterations:** 3 of 5
+**Iterations:** 2 of 2   **Reviewer:** codex (cross-lab)
 **Start commit:** abc1234   **Scope:** src/routes/deals/+page.svelte, src/lib/DealTable.svelte
 
 | Iter | Grade | P0 | P1 | Detector | Fixed |
 |---|---|---|---|---|---|
-| 1 | C | 2 | 4 | 3 | [R] optimistic filter, [C] empty state CTA |
-| 2 | C | 0 | 3 | 0 | [P] promote 3 hero metrics, [C] h2 hierarchy |
-| 3 | B | 0 | 1 | 0 | - target met |
+| 1 | C | 2 | 4 | 3 | [R] optimistic filter, [C] empty state CTA, [P] promote 3 hero metrics |
+| 2 | B | 0 | 1 | 0 | - target met |
+
+**Triaged as overthinking** (not fixed; disagree and rerun if any is real)
+- [S] P1 - card shadow depth inconsistent (freq 2, severity 2)
 
 **Remaining**
 - [C] P1 - breadcrumb missing on deal detail (src/routes/deals/[id]/+page.svelte:12) - out of scope
@@ -112,7 +119,7 @@ Print after the loop exits, whatever the reason:
 **Next:** /crisp-proof abc1234 → HEAD for the before/after pair
 ```
 
-The `Remaining` list is every P0 and P1 still open, each with file:line. Empty is a valid list.
+The `Remaining` list is every must-fix P0 and P1 still open, each with file:line. A P0 in it is a blocker: when the loop runs inside a PR workflow, it goes in the PR body for a person to decide. Empty is a valid list.
 
 ## Longitudinal tracking
 
