@@ -2,7 +2,7 @@
 name: crisp-improve-ui
 description: Evidence-locked improvement audit of an existing UI surface - read-only on product source, keeps only findings that pass a three-proof gate, writes self-contained implementation plans to design-plans/. Use for 'improve this UI', 'tighten this up without redesigning', 'find design drift', or 'why does this page feel inconsistent'. Identity is preserved - for overhauls use /crisp-redesign.
 metadata:
-  version: "1.1.2"
+  version: "1.2.0"
   author: Laith Wallace - FlowConverts
 ---
 
@@ -79,6 +79,8 @@ A candidate becomes a finding only when all three proofs exist:
 3. **Correction** - state the one change the evidence requires. If it uses an existing token, variant, primitive, or exemplar, name it exactly. If the evidence supports multiple corrections, the intent is ambiguous, or the correction requires inventing product intent - reject the candidate.
 
 Source code can prove: token, typography, colour, spacing, layout, copy, component-variant, responsive-presentation, and explicit design-contract violations. Source code cannot prove: hierarchy, prominence, density, clarity, discoverability, or perceived coherence - those need rendered or user evidence.
+
+Rendered layout faults can be proven without judgement: `npx @laith-wallace/crisp render-check "<url>" --width 1280,375 --json` measures cut, overlapping or spilling text, overflow, cramped insets, and wrapped labels in the drawn page. A render-check finding is a **Runtime** proof for a layout finding; it still needs a **Contract** and a **Correction** to become one.
 
 Route out-of-scope candidates instead of dropping them silently, one line each:
 

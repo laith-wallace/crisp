@@ -29,6 +29,11 @@ if (subcommand === 'detect') {
   await exitAfterFlush(runDetect(subArgs));
 }
 
+if (subcommand === 'render-check') {
+  const { runRenderCheck } = await import(join(PKG_ROOT, 'scripts', 'render-check.mjs'));
+  await exitAfterFlush(await runRenderCheck(subArgs));
+}
+
 if (subcommand === 'ignores') {
   const { runIgnores } = await import(join(PKG_ROOT, 'scripts', 'ignores-cli.mjs'));
   process.exit(await runIgnores(subArgs));
@@ -65,7 +70,8 @@ if (subcommand === 'help' || process.argv.includes('--help') || process.argv.inc
 
   crisp                               interactive installer (skills + optional hooks)
   crisp detect [--json] <path...>     run the design detector (exit 0 clean, 2 findings, 1 error)
-  crisp hook [--stop]                 Claude Code hook entry (reads the hook payload on stdin)
+  crisp render-check <url> [--width 1280,375] [--json]   measure the rendered page (exit 0 clean, 2 findings, 3 inconclusive)
+  crisp hook [--stop]                Claude Code hook entry (reads the hook payload on stdin)
   crisp ignores list|add-file|add-value   manage .crisp/config.json detector ignores
   crisp design-md lint [file] [--json]    lint a DESIGN.md (tokens, references, contrast)
   crisp design-md diff <old> <new>        token-level diff of two DESIGN.md files

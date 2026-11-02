@@ -2,7 +2,7 @@
 
 Load this file when building or reviewing a marketing or landing page that should be good enough to submit to the Awwwards directory (or any design award). The rules here are binding for that work.
 
-The Mechanical Pre-Flight Checks in `SKILL.md` are the floor. This file is the bar above it: a page can pass all eleven checks and still look like a template.
+The Mechanical Pre-Flight Checks in `SKILL.md` are the floor. This file is the bar above it: a page can pass all twelve checks and still look like a template.
 
 ---
 

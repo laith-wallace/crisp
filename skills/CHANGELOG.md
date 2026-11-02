@@ -20,6 +20,32 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 - **P2** Page furniture added to `landing-page-and-copy.md`: meta and share tags, canonical, keyword slug, a real product visual, and a legal footer (UK company details).
 - **P2** Build target: Next.js, Tailwind and shadcn/ui when the page goes into a codebase. Critique mode flags a generic look as P1.
 
+## [1.13.0] - 2026-11-02
+
+Lessons from benjitaylor/skills stageshow (MIT): judge the drawn frame, not the code; a reviewer who did not build the change; say what you did not check.
+
+### New: `crisp render-check`
+- **P1** `crisp render-check <url>` opens the page in a real browser at each width (default 1280 and 375), measures every text line, box and control, and reports 9 rules: `page-overflow-x`, `overlapping-text`, `text-cut`, `text-spills` (P1), `tight-inset`, `wrapped-label`, `small-target` (P2), `uneven-inset`, `small-text` (P3). Exit 0 clean, 2 findings, 3 inconclusive, 1 error.
+- **P1** Uses Playwright from the project; no new dependency. `--print-script` prints a browser snippet for agent browser tools, `--from <file>` analyzes what it returned. `--shots <dir>` saves a screenshot per width.
+- **P2** False alarms cut before release on getcrisp.design: closed `<details>` content, display letters whose font box grazes the line below, inline code padding, inline links wrapping in prose, and the WCAG 2.5.8 spacing exception for small targets.
+- **P2** 14 unit tests run the rules on real snapshots of `tests/fixtures/render-check/{bad,clean}.html`, so no browser is needed in CI.
+
+### New shared blocks
+- **P1** `blind-review`: the reviewer gets captures, the URL, a one-line brief and the closest reference, never the builder's plan or reasons; every finding names a capture; a predicted pass is not a pass. Used by /crisp-loop and /crisp-proof.
+- **P1** `never-intentional`: the four P1 render-check rules are bugs, never style; clearing one by hiding the element is a new bug; only the user can accept one, in `## Decisions`.
+- **P2** `handover`: every report ends with `Captured`, `Not checked`, `Assumptions`, `Unresolved`. An inconclusive capture goes under Not checked. Used by /crisp-loop, /crisp-proof, /crisp-evidence (and inline in /crisp-redesign).
+- **P2** `fix-order`: inside one severity, fix layout, then hierarchy, then states and motion, then polish; rank by how much of the screen a fault spoils, not how easy it is to fix. Used by /crisp-audit, /crisp-loop, /crisp-review.
+
+### Skill changes
+- **P1** /crisp-loop 1.1.0: runs render-check each iteration; one blind review must find no new P0 or P1 before `TARGET MET`; a `STALLED` loop runs one blind review before handing back.
+- **P1** /crisp-proof 1.1.0: render-check on Before and After, a new P1 render finding on After means `REGRESSED`; the After review runs blind (Step 4b); rule 7 forbids clearing a rendered finding by hiding it.
+- **P1** /crisp-design-eng 1.4.0: Mechanical Pre-Flight Check 12, rendered layout (`Pre-flight: 12/12 pass`); new "poster frame" and "endpoints prove nothing" rules; new `references/teaching-pairs.md` with 15 motion, 15 still and 6 style bad/good pairs.
+- **P2** /crisp-review 1.4.0: render-check on live URLs, Blind Mode for callers, ranking inside a severity, and a "Faults that come back" list of 8.
+- **P2** /crisp-audit 1.4.0: neither assessment sees the builder's reasons; render-check in Assessment B; Benchmark Comparison starts with the closest `ref:` capture and names the one biggest difference.
+- **P2** /crisp-teach 1.6.0: asks for one reference screen per surface type and writes `ref:` lines under `## Benchmarks`.
+- **P2** /crisp-redesign 1.2.0: captures the `ref:` screen before work, re-reviews in Blind Mode, ends with handover lines.
+- **P3** /crisp-improve-ui 1.2.0: a render-check finding counts as Runtime proof for a layout finding. /crisp-evidence 1.1.0: handover lines.
+
 ## [1.11.1] - 2026-10-08
 
 ### Install fix

@@ -117,7 +117,7 @@ For the look, benchmark against current Awwwards Site of the Day and Honourable 
 
 Before delivery, run `/crisp-review` on the assembled build first; it is required on every assembled funnel, and its grade and top issues set what the later checks must confirm fixed.
 
-Then run the **Mechanical Pre-Flight Checks** from `/crisp-design-eng` on any assembled build - all eleven checks are countable and all must pass.
+Then run the **Mechanical Pre-Flight Checks** from `/crisp-design-eng` on any assembled build - all twelve checks are countable and all must pass.
 
 Then run the **art direction pre-flight (D1-D6)** in `references/art-direction.md` and the **Award Pre-Flight (A1-A10)** in `/crisp-design-eng` `references/award-level-landing.md`. Report both as one line each, with every failure and its fix.
 

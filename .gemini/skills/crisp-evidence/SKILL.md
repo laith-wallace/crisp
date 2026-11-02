@@ -2,7 +2,7 @@
 name: crisp-evidence
 description: Runtime proof that a change works - the agent drives the app live while a recorder captures the session with timestamped setup, test_start, and assertion annotations (passed, failed, untested), then writes report.md and manifest.json for the PR. Headless environments swap the recorder for numbered screenshots; non-UI changes ship measured numbers or output pairs. Use when a change needs verifiable evidence instead of a prose claim, when reproducing a bug before fixing it, or before any PR that says 'tested'. Before/after design deltas belong to /crisp-proof.
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
   author: Laith Wallace - FlowConverts
   adapted-from: michaelshimeles/skills evidence-driven-testing (annotation protocol and guardrails; recorder rewritten as bash)
 ---
@@ -154,6 +154,21 @@ Print `report.md`, then:
 Untested:
 - It should show the declined-card error - no test payment token available
 ```
+
+<!-- crisp:shared handover -->
+## Handover Lines
+
+End every report with these four lines. Each is a list or `none`; never omit a line.
+
+```
+Captured: [widths, themes, states and interactions you actually saw]
+Not checked: [what you did not see, and why - "none" only when the Captured line covers every row of the evidence matrix]
+Assumptions: [what you took as true without checking]
+Unresolved: [findings still open, each with file:line or capture file]
+```
+
+An empty, failed, or `inconclusive` capture goes under `Not checked`, never under `Captured`. Ten green checks on a capture you did not look at are still not checked.
+<!-- /crisp:shared handover -->
 
 ## Longitudinal tracking
 

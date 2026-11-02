@@ -2,7 +2,7 @@
 name: crisp-review
 description: "30-second CRISP design scan - a grade A-F and the top 3 issues by user impact with specific fixes. Use during rapid iteration when a full audit would slow you down: 'quick look at this', 'sanity check this screen', 'grade this'."
 metadata:
-  version: "1.3.2"
+  version: "1.4.0"
 ---
 
 # /crisp-review - Quick CRISP Scan
@@ -54,6 +54,8 @@ Before evaluating CRISP dimensions, run one fast check:
 
 If the target is a live codebase (markup/style files, not a screenshot or Figma link), run `npx @laith-wallace/crisp detect --json <target>` first - it's faster than reasoning about it and it's exact. Fold any findings straight into the Fail verdict above instead of re-deriving them by eye. Skip it for screenshot-only or Figma-link targets and judge by eye instead.
 
+If the target is a URL that renders (a dev server, a preview deployment), also run `npx @laith-wallace/crisp render-check "<url>" --width 1280,375 --json`. It measures the drawn page: overflow, cut or overlapping text, text crammed against its box, wrapped labels, small targets. Fold its findings into the issues with their rule id; a P1 render finding competes for the top 3 like any other. It needs Playwright in the project; without it, skip the run and say so in one line.
+
 Tells come from the detector or from your own read. If Fail - flag it at the top of your output before the grade, naming the detector's rule id when it came from the scan.
 
 This takes 5 seconds. Do it before anything else.
@@ -94,6 +96,23 @@ This rule is shared by `/crisp-review` and `/crisp-audit`, so History entries fr
 | P2 | Noticeable degradation in experience | Generic empty state copy |
 | P3 | Minor polish issue | Missing hover state on secondary action |
 <!-- /crisp:shared severity -->
+
+<!-- crisp:shared fix-order -->
+## Fix Order
+
+Severity (P0-P3) says what matters. This order says what to fix first inside one severity, because a later fix is wasted when an earlier layer moves:
+
+1. **Layout and framing** - overflow, cut or overlapping text, a crop that hides the point, empty bands
+2. **Hierarchy and density** - what the eye lands on first, competing weights, filler where the subject belongs
+3. **States and motion** - missing states, jumps, exits that skip
+4. **Polish** - spacing, alignment, icon and type details
+
+Rank a finding by how much of the screen it spoils, never by how easy it is to fix. Fix the largest visible fault, re-capture, then look again from the top: one fix often moves the next fault.
+<!-- /crisp:shared fix-order -->
+
+## Blind Mode
+
+When `/crisp-loop`, `/crisp-proof`, or a user asks for a blind review, you get captures and a one-line brief, not the builder's plan. Judge only what the captures show. Every issue's `Where:` names a capture file. Add a `Not checked:` line after **Unverified** listing every width, state, or interaction you had no capture for. Never fill a gap by predicting what the missing capture would show.
 
 ## CRISP Quick-Check
 
@@ -217,6 +236,19 @@ Example: `2 copy issues ("No data available", "Success" toast) -> /crisp-copy`.
 
 **Weak:** "The dashboard shows too much."
 **Good:** "[P] 11 metrics visible at once, all with equal visual weight. Promote 3 most-used to hero cards. Collapse the rest into a secondary grid."
+
+## Faults That Come Back
+
+These recur review after review. Check each one before you hand over the grade:
+
+1. **Filler where the eye lands.** Placeholder text, gray bars, "Lorem", or "John Doe" in the focal spot. Real words go on the subject; filler stays at the edges.
+2. **An empty band.** A void under a list or a panel, or rows spread apart to fill the height. Add content or shrink the container; never spread the rows.
+3. **A wrapped label or unit.** A button label on two lines, or a stat whose unit drops to its own line (`render-check` id `wrapped-label`).
+4. **Text against its edge.** Words under 8px from their card's edge, or a control padded more on one side than the other (`tight-inset`, `uneven-inset`).
+5. **Mixed icon styles.** Filled and outline glyphs side by side in one nav, list, or toolbar.
+6. **A mark on the words.** A status dot, badge, or unread marker touching the text it belongs to; give it 6px clear.
+7. **An invented logo.** A letter in a coloured square beside a real company's name. Use the real mark or a plain name.
+8. **Sample data that does not fit.** Truncated chips, wrapped names, ragged labels caused by the example content you chose. Pick values whose length suits the layout.
 
 ## Tone
 

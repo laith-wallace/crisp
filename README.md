@@ -127,6 +127,29 @@ npx @laith-wallace/crisp detect --json src/   # for CI
 
 **Silencing a finding on purpose.** Add `crisp-disable-line <rule-id>: reason` (or `crisp-disable-next-line`, or `crisp-disable` for the file) in any comment, or use `crisp ignores add-value <rule-id> "<value>" --reason "..."` for a repo-wide exception.
 
+## Render check
+
+The detector reads code. `crisp render-check` reads what the browser drew. It opens the page at each width, measures every text line, box, and control, and reports faults that only exist at render time:
+
+| Rule | Severity | What it catches |
+| --- | --- | --- |
+| `page-overflow-x` | P1 | The page is wider than the viewport |
+| `overlapping-text` | P1 | Text drawn on top of other text |
+| `text-cut` | P1 | Text sliced by a container or the viewport (ellipsis is fine) |
+| `text-spills` | P1 | Text running out of its box |
+| `tight-inset` | P2 | Words under 8px from their card's edge (6px for chips and buttons) |
+| `wrapped-label` | P2 | A short button label or a stat that breaks onto two lines |
+| `small-target` | P2 | A control under 24 x 24px with no spacing exception (WCAG 2.5.8) |
+| `uneven-inset` | P3 | A control's content sitting off-centre |
+| `small-text` | P3 | Text under 12px |
+
+```bash
+npx @laith-wallace/crisp render-check http://localhost:3000 --width 1280,375   # exit 0 clean, 2 findings, 3 inconclusive
+npx @laith-wallace/crisp render-check <url> --shots .artifacts/render --json    # screenshots per width, JSON for CI
+```
+
+It needs Playwright in your project (`npm i -D playwright`). No Playwright? `crisp render-check --print-script` prints a snippet any agent browser tool can run; save the JSON it returns and analyze it with `crisp render-check --from <file>.json`. The four P1 rules are never intentional: `/crisp-proof` and `/crisp-loop` treat clearing one by hiding the element as a new bug. `clean` means the layout measured clean, not that the design is good.
+
 ## DESIGN.md
 
 CRISP reads and writes [DESIGN.md](https://github.com/google-labs-code/design.md), Google's open format for design tokens plus rationale. `.crisp.md` holds product context (users, register, decisions); `DESIGN.md` holds the tokens. `/crisp-study` writes one from a reference, `/crisp-tune` stays inside it, and the detector flags off-token colours.
@@ -143,6 +166,7 @@ npx @laith-wallace/crisp design-md diff --git HEAD # what changed since the last
 | --- | --- |
 | `crisp` | Interactive installer (skills plus optional hooks) |
 | `crisp detect [--json] <path...>` | Run the design detector |
+| `crisp render-check <url> [--width ...]` | Measure the rendered page at each width (`--print-script`, `--from` for agent browsers) |
 | `crisp hook [--stop]` | Hook entry point (reads the hook payload on stdin) |
 | `crisp ignores list\|add-file\|add-value` | Manage detector ignores in `.crisp/config.json` |
 | `crisp design-md lint\|diff` | Lint or diff a `DESIGN.md` |

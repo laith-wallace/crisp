@@ -1,0 +1,648 @@
+[
+ {
+  "url": "fixture://clean.html",
+  "viewport": {
+   "w": 1280,
+   "h": 800
+  },
+  "scrollWidth": 1280,
+  "select": null,
+  "truncated": false,
+  "texts": [
+   {
+    "path": "main > h1",
+    "text": "Deals",
+    "rect": {
+     "x": 24,
+     "y": 48.4,
+     "w": 83.9,
+     "h": 38
+    },
+    "lines": [
+     {
+      "x": 24,
+      "y": 48.4,
+      "w": 83.9,
+      "h": 38
+     }
+    ],
+    "lineCount": 1,
+    "fontSize": 32,
+    "inline": false,
+    "box": null,
+    "clip": null,
+    "control": null,
+    "ellipsis": false
+   },
+   {
+    "path": "main > div.card > h2",
+    "text": "No deals yet",
+    "rect": {
+     "x": 40,
+     "y": 149.6,
+     "w": 137.2,
+     "h": 28
+    },
+    "lines": [
+     {
+      "x": 40,
+      "y": 149.6,
+      "w": 137.2,
+      "h": 28
+     }
+    ],
+    "lineCount": 1,
+    "fontSize": 24,
+    "inline": false,
+    "box": 0,
+    "clip": null,
+    "control": null,
+    "ellipsis": false
+   },
+   {
+    "path": "main > div.card > p",
+    "text": "Add your first deal to see it here.",
+    "rect": {
+     "x": 40,
+     "y": 203.1,
+     "w": 235.3,
+     "h": 18
+    },
+    "lines": [
+     {
+      "x": 40,
+      "y": 203.1,
+      "w": 235.3,
+      "h": 18
+     }
+    ],
+    "lineCount": 1,
+    "fontSize": 16,
+    "inline": false,
+    "box": 0,
+    "clip": null,
+    "control": null,
+    "ellipsis": false
+   },
+   {
+    "path": "main > div.card > button.btn",
+    "text": "Add a deal",
+    "rect": {
+     "x": 56,
+     "y": 249.5,
+     "w": 67,
+     "h": 16
+    },
+    "lines": [
+     {
+      "x": 56,
+      "y": 249.5,
+      "w": 67,
+      "h": 16
+     }
+    ],
+    "lineCount": 1,
+    "fontSize": 14,
+    "inline": false,
+    "box": 1,
+    "clip": null,
+    "control": 1,
+    "ellipsis": false
+   },
+   {
+    "path": "main > p.clip:nth-of-type(1)",
+    "text": "A long label that ends with an ellipsis on purpose",
+    "rect": {
+     "x": 24,
+     "y": 317.5,
+     "w": 353,
+     "h": 18
+    },
+    "lines": [
+     {
+      "x": 24,
+      "y": 317.5,
+      "w": 353,
+      "h": 18
+     },
+     {
+      "x": 24,
+      "y": 317.5,
+      "w": 139.4,
+      "h": 18
+     }
+    ],
+    "lineCount": 1,
+    "fontSize": 16,
+    "inline": false,
+    "box": null,
+    "clip": 2,
+    "control": null,
+    "ellipsis": true
+   },
+   {
+    "path": "main > p:nth-of-type(2)",
+    "text": "Read the",
+    "rect": {
+     "x": 24,
+     "y": 355.9,
+     "w": 68.6,
+     "h": 18
+    },
+    "lines": [
+     {
+      "x": 24,
+      "y": 355.9,
+      "w": 68.6,
+      "h": 18
+     }
+    ],
+    "lineCount": 1,
+    "fontSize": 16,
+    "inline": false,
+    "box": null,
+    "clip": null,
+    "control": null,
+    "ellipsis": false
+   },
+   {
+    "path": "main > p:nth-of-type(2) > a",
+    "text": "full guide",
+    "rect": {
+     "x": 92.6,
+     "y": 355.9,
+     "w": 66.6,
+     "h": 18
+    },
+    "lines": [
+     {
+      "x": 92.6,
+      "y": 355.9,
+      "w": 66.6,
+      "h": 18
+     }
+    ],
+    "lineCount": 1,
+    "fontSize": 16,
+    "inline": true,
+    "box": null,
+    "clip": null,
+    "control": 3,
+    "ellipsis": false
+   },
+   {
+    "path": "main > p:nth-of-type(2)",
+    "text": "before you start.",
+    "rect": {
+     "x": 159.2,
+     "y": 355.9,
+     "w": 123.7,
+     "h": 18
+    },
+    "lines": [
+     {
+      "x": 159.2,
+      "y": 355.9,
+      "w": 123.7,
+      "h": 18
+     }
+    ],
+    "lineCount": 1,
+    "fontSize": 16,
+    "inline": false,
+    "box": null,
+    "clip": null,
+    "control": null,
+    "ellipsis": false
+   }
+  ],
+  "boxes": [
+   {
+    "path": "main > div.card",
+    "tag": "div",
+    "rect": {
+     "x": 24,
+     "y": 111.7,
+     "w": 512,
+     "h": 179.8
+    },
+    "control": false,
+    "inline": false,
+    "clipX": false,
+    "clipY": false,
+    "ellipsis": false
+   },
+   {
+    "path": "main > div.card > button.btn",
+    "tag": "button",
+    "rect": {
+     "x": 40,
+     "y": 239.5,
+     "w": 99,
+     "h": 36
+    },
+    "control": true,
+    "inline": false,
+    "clipX": false,
+    "clipY": false,
+    "ellipsis": false
+   },
+   {
+    "path": "main > p.clip:nth-of-type(1)",
+    "tag": "p",
+    "rect": {
+     "x": 24,
+     "y": 315.5,
+     "w": 160,
+     "h": 22.4
+    },
+    "control": false,
+    "inline": false,
+    "clipX": true,
+    "clipY": true,
+    "ellipsis": true
+   },
+   {
+    "path": "main > p:nth-of-type(2) > a",
+    "tag": "a",
+    "rect": {
+     "x": 92.6,
+     "y": 355.9,
+     "w": 66.6,
+     "h": 18
+    },
+    "control": true,
+    "inline": true,
+    "clipX": false,
+    "clipY": false,
+    "ellipsis": false
+   }
+  ],
+  "controls": [
+   {
+    "path": "main > div.card > button.btn",
+    "tag": "button",
+    "rect": {
+     "x": 40,
+     "y": 239.5,
+     "w": 99,
+     "h": 36
+    },
+    "inlineInText": false,
+    "drawsBox": true,
+    "justify": "normal",
+    "textAlign": "center",
+    "content": {
+     "x": 56,
+     "y": 249.5,
+     "w": 67,
+     "h": 16
+    }
+   },
+   {
+    "path": "main > p:nth-of-type(2) > a",
+    "tag": "a",
+    "rect": {
+     "x": 92.6,
+     "y": 355.9,
+     "w": 66.6,
+     "h": 18
+    },
+    "inlineInText": true,
+    "drawsBox": false,
+    "justify": "normal",
+    "textAlign": "start",
+    "content": {
+     "x": 92.6,
+     "y": 355.9,
+     "w": 66.6,
+     "h": 18
+    }
+   }
+  ],
+  "overflowers": []
+ },
+ {
+  "url": "fixture://clean.html",
+  "viewport": {
+   "w": 375,
+   "h": 800
+  },
+  "scrollWidth": 375,
+  "select": null,
+  "truncated": false,
+  "texts": [
+   {
+    "path": "main > h1",
+    "text": "Deals",
+    "rect": {
+     "x": 24,
+     "y": 48.4,
+     "w": 83.9,
+     "h": 38
+    },
+    "lines": [
+     {
+      "x": 24,
+      "y": 48.4,
+      "w": 83.9,
+      "h": 38
+     }
+    ],
+    "lineCount": 1,
+    "fontSize": 32,
+    "inline": false,
+    "box": null,
+    "clip": null,
+    "control": null,
+    "ellipsis": false
+   },
+   {
+    "path": "main > div.card > h2",
+    "text": "No deals yet",
+    "rect": {
+     "x": 40,
+     "y": 149.6,
+     "w": 137.2,
+     "h": 28
+    },
+    "lines": [
+     {
+      "x": 40,
+      "y": 149.6,
+      "w": 137.2,
+      "h": 28
+     }
+    ],
+    "lineCount": 1,
+    "fontSize": 24,
+    "inline": false,
+    "box": 0,
+    "clip": null,
+    "control": null,
+    "ellipsis": false
+   },
+   {
+    "path": "main > div.card > p",
+    "text": "Add your first deal to see it here.",
+    "rect": {
+     "x": 40,
+     "y": 203.1,
+     "w": 235.3,
+     "h": 18
+    },
+    "lines": [
+     {
+      "x": 40,
+      "y": 203.1,
+      "w": 235.3,
+      "h": 18
+     }
+    ],
+    "lineCount": 1,
+    "fontSize": 16,
+    "inline": false,
+    "box": 0,
+    "clip": null,
+    "control": null,
+    "ellipsis": false
+   },
+   {
+    "path": "main > div.card > button.btn",
+    "text": "Add a deal",
+    "rect": {
+     "x": 56,
+     "y": 249.5,
+     "w": 67,
+     "h": 16
+    },
+    "lines": [
+     {
+      "x": 56,
+      "y": 249.5,
+      "w": 67,
+      "h": 16
+     }
+    ],
+    "lineCount": 1,
+    "fontSize": 14,
+    "inline": false,
+    "box": 1,
+    "clip": null,
+    "control": 1,
+    "ellipsis": false
+   },
+   {
+    "path": "main > p.clip:nth-of-type(1)",
+    "text": "A long label that ends with an ellipsis on purpose",
+    "rect": {
+     "x": 24,
+     "y": 317.5,
+     "w": 353,
+     "h": 18
+    },
+    "lines": [
+     {
+      "x": 24,
+      "y": 317.5,
+      "w": 353,
+      "h": 18
+     },
+     {
+      "x": 24,
+      "y": 317.5,
+      "w": 139.4,
+      "h": 18
+     }
+    ],
+    "lineCount": 1,
+    "fontSize": 16,
+    "inline": false,
+    "box": null,
+    "clip": 2,
+    "control": null,
+    "ellipsis": true
+   },
+   {
+    "path": "main > p:nth-of-type(2)",
+    "text": "Read the",
+    "rect": {
+     "x": 24,
+     "y": 355.9,
+     "w": 68.6,
+     "h": 18
+    },
+    "lines": [
+     {
+      "x": 24,
+      "y": 355.9,
+      "w": 68.6,
+      "h": 18
+     }
+    ],
+    "lineCount": 1,
+    "fontSize": 16,
+    "inline": false,
+    "box": null,
+    "clip": null,
+    "control": null,
+    "ellipsis": false
+   },
+   {
+    "path": "main > p:nth-of-type(2) > a",
+    "text": "full guide",
+    "rect": {
+     "x": 92.6,
+     "y": 355.9,
+     "w": 66.6,
+     "h": 18
+    },
+    "lines": [
+     {
+      "x": 92.6,
+      "y": 355.9,
+      "w": 66.6,
+      "h": 18
+     }
+    ],
+    "lineCount": 1,
+    "fontSize": 16,
+    "inline": true,
+    "box": null,
+    "clip": null,
+    "control": 3,
+    "ellipsis": false
+   },
+   {
+    "path": "main > p:nth-of-type(2)",
+    "text": "before you start.",
+    "rect": {
+     "x": 159.2,
+     "y": 355.9,
+     "w": 123.7,
+     "h": 18
+    },
+    "lines": [
+     {
+      "x": 159.2,
+      "y": 355.9,
+      "w": 123.7,
+      "h": 18
+     }
+    ],
+    "lineCount": 1,
+    "fontSize": 16,
+    "inline": false,
+    "box": null,
+    "clip": null,
+    "control": null,
+    "ellipsis": false
+   }
+  ],
+  "boxes": [
+   {
+    "path": "main > div.card",
+    "tag": "div",
+    "rect": {
+     "x": 24,
+     "y": 111.7,
+     "w": 327,
+     "h": 179.8
+    },
+    "control": false,
+    "inline": false,
+    "clipX": false,
+    "clipY": false,
+    "ellipsis": false
+   },
+   {
+    "path": "main > div.card > button.btn",
+    "tag": "button",
+    "rect": {
+     "x": 40,
+     "y": 239.5,
+     "w": 99,
+     "h": 36
+    },
+    "control": true,
+    "inline": false,
+    "clipX": false,
+    "clipY": false,
+    "ellipsis": false
+   },
+   {
+    "path": "main > p.clip:nth-of-type(1)",
+    "tag": "p",
+    "rect": {
+     "x": 24,
+     "y": 315.5,
+     "w": 160,
+     "h": 22.4
+    },
+    "control": false,
+    "inline": false,
+    "clipX": true,
+    "clipY": true,
+    "ellipsis": true
+   },
+   {
+    "path": "main > p:nth-of-type(2) > a",
+    "tag": "a",
+    "rect": {
+     "x": 92.6,
+     "y": 355.9,
+     "w": 66.6,
+     "h": 18
+    },
+    "control": true,
+    "inline": true,
+    "clipX": false,
+    "clipY": false,
+    "ellipsis": false
+   }
+  ],
+  "controls": [
+   {
+    "path": "main > div.card > button.btn",
+    "tag": "button",
+    "rect": {
+     "x": 40,
+     "y": 239.5,
+     "w": 99,
+     "h": 36
+    },
+    "inlineInText": false,
+    "drawsBox": true,
+    "justify": "normal",
+    "textAlign": "center",
+    "content": {
+     "x": 56,
+     "y": 249.5,
+     "w": 67,
+     "h": 16
+    }
+   },
+   {
+    "path": "main > p:nth-of-type(2) > a",
+    "tag": "a",
+    "rect": {
+     "x": 92.6,
+     "y": 355.9,
+     "w": 66.6,
+     "h": 18
+    },
+    "inlineInText": true,
+    "drawsBox": false,
+    "justify": "normal",
+    "textAlign": "start",
+    "content": {
+     "x": 92.6,
+     "y": 355.9,
+     "w": 66.6,
+     "h": 18
+    }
+   }
+  ],
+  "overflowers": []
+ }
+]

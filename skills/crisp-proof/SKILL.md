@@ -2,9 +2,9 @@
 name: crisp-proof
 description: Visual proof that a design change did what it claims - before/after screenshot pairs across states and breakpoints, a PR-ready markdown table, and /crisp-review grades on both sides so the improvement is a measured delta, not a sentence. Use when a PR needs screenshots, 'show me before and after', 'prove the redesign is better', or after /crisp-redesign, /crisp-improve-ui, or /crisp-loop lands changes.
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
   author: Laith Wallace - FlowConverts
-  adapted-from: vercel-labs/before-and-after skill (workflow only, no vendored code), michaelshimeles/skills evidence-driven-testing
+  adapted-from: vercel-labs/before-and-after skill (workflow only, no vendored code), michaelshimeles/skills evidence-driven-testing, benjitaylor/skills stageshow (MIT - blind review, rendered-frame checks, handover lines)
 ---
 
 # /crisp-proof - Show It, Don't Say It
@@ -15,7 +15,7 @@ Load `.crisp.md` if it exists - its breakpoints, theme modes, and register decid
 
 ## Hard rules
 
-Six rules. Breaking any one invalidates the proof:
+Seven rules. Breaking any one invalidates the proof:
 
 1. **Never switch branches, stash, reset, or check out** to manufacture a "before". The current working tree is **After**. Before comes from a URL the user names (production, a preview deployment, another local port) or an existing image. When Before is a commit (for example the start commit `/crisp-loop` hands off), serve it from a separate checkout: `git worktree add .artifacts/proof/before-tree <commit>`, start its dev server on a second port, capture, then `git worktree remove .artifacts/proof/before-tree`. This leaves the current tree untouched, which is why it is allowed.
 2. **Never assume what Before is.** If neither a Before URL nor a commit is given, ask exactly one question: "What URL, image, or commit is the Before state - production, a preview deployment, another port, or a commit to serve from a temporary worktree?" Then proceed.
@@ -23,6 +23,7 @@ Six rules. Breaking any one invalidates the proof:
 4. **Never capture secrets.** If the surface shows tokens, customer data, or payment details, mark that pair `untested` with the reason.
 5. **Never use full-page capture** unless the user asks for it. Default is the viewport, or the selector the user names.
 6. **Never present a regression as a win.** If After grades lower than Before, or the P0 count went up, the report's first line is `REGRESSED`.
+7. **Never clear a rendered finding by hiding it.** See Never Intentional below.
 
 ## Step 1 - Establish the two sides
 
@@ -120,11 +121,51 @@ Then run the **Mechanical Pre-Flight Checks** from `/crisp-design-eng` on After 
 npx @laith-wallace/crisp detect --json <changed-files>
 ```
 
+Then measure both rendered sides at the matrix widths. The detector reads code; this reads what the browser drew:
+
+```bash
+npx @laith-wallace/crisp render-check "<before-url>" --width 1280,375 --json > .artifacts/proof/<slug>/render-before.json
+npx @laith-wallace/crisp render-check "<after-url>"  --width 1280,375 --json > .artifacts/proof/<slug>/render-after.json
+```
+
+It needs Playwright in the project (`npm i -D playwright`). With Path C, run `npx @laith-wallace/crisp render-check --print-script`, evaluate the output in the harness browser at each width, save the returned JSON, and analyze it with `render-check --from <file>`. Exit 3 (`inconclusive`) means nothing was measured: list it under `Not checked`, never as clean.
+
+<!-- crisp:shared never-intentional -->
+## Never Intentional
+
+These `crisp render-check` findings are bugs, never style choices: `page-overflow-x`, `overlapping-text`, `text-cut`, `text-spills`. Each one is drawn on a real screen at a real width.
+
+- **Fix the cause, then re-capture.** A finding that is still there after a fix is still open.
+- **Clearing a finding by hiding it is a new bug.** `display: none`, `overflow: hidden` added to mask a spill, removing the text, shrinking the type under 12px, or a narrower `--select` all count as hiding.
+- **The only other exit is the user.** A finding the user rules on in words goes to `.crisp.md` `## Decisions`. Never write that line on your own initiative.
+- **Clean is not good.** `clean` means the layout measured clean. It says nothing about hierarchy, copy, or whether the design works.
+<!-- /crisp:shared never-intentional -->
+
 Delta rules:
+- Any P1 render-check finding on After that Before did not have → **REGRESSED**, whatever the grade
 - Grade up and P0 down or equal → **IMPROVED**
 - Grade equal, P0 and P1 down → **IMPROVED**
 - Grade equal, counts equal → **NO CHANGE** - say so; the PR body should not claim improvement
 - Grade down, or P0 up → **REGRESSED** (rule 6)
+
+## Step 4b - Blind review of After
+
+The `/crisp-review` of After in Step 4 runs blind: a fresh sub-agent gets the captures, not the change list.
+
+<!-- crisp:shared blind-review -->
+## Blind Review
+
+The person who built a change is the worst judge of it, because they know what it was meant to look like. A blind reviewer judges the picture.
+
+1. **Give the reviewer five things only:** the captures, the live URL when one exists, the one-line brief, the closest reference capture (`.crisp.md` `## Benchmarks` `ref:` line, or the Before), and the `/crisp-review` checklist. Never the builder's plan, reasons, fix list, or report.
+2. **Use a fresh sub-agent** via the Agent tool when one exists. Without one, say `Blind review: degraded (same context)` in the report. A silent degraded run is not a blind review.
+3. **The bar for a finding is a capture.** Every finding names the capture file that shows it. A predicted failure is not a finding, and a predicted pass is not a pass: when a needed capture does not exist (a state, a width, a hover, a mid-transition frame), the reviewer captures it or lists it under `Not checked`.
+4. **The reviewer's first question:** put the target beside the reference and say the one biggest difference.
+5. **Re-judge what the builder called intentional.** A finding the builder waved off is open until the reviewer looks at the capture and agrees.
+6. **The reviewer does not fix.** It returns a ranked list, or `nothing` plus the list of captures it looked at.
+<!-- /crisp:shared blind-review -->
+
+Fold its ranked list into the After grade. A finding it raises that you disagree with stays in the report with your one-line reason; it is not dropped.
 
 ## Step 5 - Write the proof
 
@@ -150,6 +191,8 @@ Write `.artifacts/proof/<slug>/proof.md` and print it. Template:
 - After: B - [C] heading hierarchy skips h2 (P1)
 
 **Detector on After:** 0 findings  (or: 1 finding - `gradient-text` in hero.css:14, suppressed with reason "brand lockup")
+**Render-check:** Before 3 (2 P1) → After 0 at 1280, 375  (or: inconclusive at 375 - page needed sign-in)
+**Blind review:** fresh sub-agent, 1 finding - [P] CTA loses to the illustration at 375 (03-default-375-after.png)
 
 **Assertions**
 - Precondition: signed in, seed data loaded - passed
@@ -159,6 +202,21 @@ Write `.artifacts/proof/<slug>/proof.md` and print it. Template:
 ```
 
 Every assertion is `passed`, `failed`, or `untested` with a reason. Never skip silently. Keep each under 80 characters.
+
+<!-- crisp:shared handover -->
+## Handover Lines
+
+End every report with these four lines. Each is a list or `none`; never omit a line.
+
+```
+Captured: [widths, themes, states and interactions you actually saw]
+Not checked: [what you did not see, and why - "none" only when the Captured line covers every row of the evidence matrix]
+Assumptions: [what you took as true without checking]
+Unresolved: [findings still open, each with file:line or capture file]
+```
+
+An empty, failed, or `inconclusive` capture goes under `Not checked`, never under `Captured`. Ten green checks on a capture you did not look at are still not checked.
+<!-- /crisp:shared handover -->
 
 ## Step 6 - Attach to the PR
 
