@@ -2,7 +2,7 @@
 name: crisp-design-eng
 description: "Design engineering craft layer - motion decisions, micro-interaction quality, component polish, the invisible details that make an interface feel right. Use when an interaction feels janky or 'off', when adding or reviewing motion, or when polishing before ship: 'make it feel better', 'the modal feels wrong', 'add motion'. Home of the Mechanical Pre-Flight Checks run by /crisp-redesign and /crisp-funnel."
 metadata:
-  version: "1.3.1"
+  version: "1.4.0"
 ---
 
 # CRISP Design Engineering - `/crisp-design-eng`
@@ -17,6 +17,7 @@ This file holds the decision frameworks and the checkable rules. Load the deeper
 - Reviewing animation performance, or debugging motion that drops frames or feels wrong → `references/performance.md`
 - Picking colours or typefaces, or the surface under review declares colour values or font choices → `references/color-typography.md` (the OKLCH-only rule, the never-pure-black-or-white rule, and the reflex-reject font list are binding)
 - Writing the code fix for a craft rule violation, or building reusable components → `references/component-craft.md`
+- Diagnosing a transition or a still that feels wrong but you cannot name why → `references/teaching-pairs.md` (bad/good pairs: find the row that looks like your bug)
 - Building or reviewing a marketing or landing page that should reach award level (Awwwards directory, Site of the Day), or any client landing page where the look must not default to the CRISP brand → `references/award-level-landing.md` (its Award Pre-Flight runs after the Mechanical Pre-Flight Checks)
 
 ---
@@ -179,7 +180,7 @@ Component-building philosophy (zero-configuration defaults, defaults-are-the-pro
 
 ## Mechanical Pre-Flight Checks
 
-Run these before any surface ships. `/crisp-redesign` and `/crisp-funnel` call this checklist by name. Every check is countable - no judgement required. All eleven must pass.
+Run these before any surface ships. `/crisp-redesign` and `/crisp-funnel` call this checklist by name. Every check is countable - no judgement required. All twelve must pass.
 
 | # | Check | Pass condition |
 |---|---|---|
@@ -194,10 +195,11 @@ Run these before any surface ships. `/crisp-redesign` and `/crisp-funnel` call t
 | 9 | Entry scale | 0 elements entering from `scale(0)` |
 | 10 | Press feedback | Every interactive element has an `:active` state |
 | 11 | Body text size | Body copy ≥ 16px at every viewport |
+| 12 | Rendered layout | `npx @laith-wallace/crisp render-check "<url>" --width 1280,375` reports 0 P1 findings (no overflow, cut, overlapping or spilling text). No URL or no Playwright: report `12 untested` with the reason, never as a pass |
 
-Report as a single line: `Pre-flight: 11/11 pass`, or list each failure with file:line and the fix.
+Report as a single line: `Pre-flight: 12/12 pass`, or list each failure with file:line (or render-check rule id and element path) and the fix.
 
-For marketing and landing pages aimed at award level, also run the Award Pre-Flight in `references/award-level-landing.md`. The eleven checks above are the floor, not the bar.
+For marketing and landing pages aimed at award level, also run the Award Pre-Flight in `references/award-level-landing.md`. The twelve checks above are the floor, not the bar.
 
 ---
 
@@ -244,6 +246,14 @@ const enterY = shouldReduceMotion ? 0 : 12;
 ```
 
 **Fails if absent:** S - ignoring a system preference is a seamlessness failure, not just an audit item.
+
+### The poster frame
+
+Most people see one frame of an animated element: reduced motion, a thumbnail, a screenshot, a slow device. Pick that frame on purpose. It shows the result with the result left on screen, never a frame caught mid-change, and it reads alone with no motion at all. Under `prefers-reduced-motion`, render that frame complete.
+
+### Endpoints prove nothing
+
+Two matching screenshots of the start and end of a transition say nothing about the frames between. Check a transition by stepping through it (DevTools Animations panel at 10% speed, or captures every 40-80ms) and watch the neighbours: a new row should carry the rows below it, a resizing surface should never stretch its text, an exit should finish before its space closes. `references/teaching-pairs.md` lists the bad/good pairs to compare against.
 
 ### Touch device hover guard
 

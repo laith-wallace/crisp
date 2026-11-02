@@ -1,0 +1,26 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { font: 16px/1.4 system-ui, sans-serif; margin: 0; padding: 24px; }
+  .card { background: #f4f4f5; padding: 3px; margin-bottom: 24px; }            /* tight-inset */
+  .wide { width: 900px; height: 20px; background: #ddd; }                      /* page-overflow-x at 375 */
+  .clip { width: 120px; overflow: hidden; white-space: nowrap; background:#eee; padding: 12px; } /* text-cut */
+  .over { position: relative; height: 40px; }
+  .over span { position: absolute; left: 0; top: 0; }                          /* overlapping-text */
+  .btn { background: #111; color: #fff; border: 0; padding: 4px 18px 4px 4px; font-size: 14px; } /* uneven-inset */
+  .narrow-btn { width: 70px; background:#111; color:#fff; border:0; padding: 8px 12px; } /* wrapped-label */
+  .tiny { font-size: 10px; }                                                   /* small-text */
+  .x { width: 16px; height: 16px; padding: 0; border: 0; background: #ccc; }    /* small-target */
+  .spill { width: 60px; height: 44px; background: #eee; white-space: nowrap; padding: 12px; } /* text-spills */
+</style></head>
+<body>
+  <div class="card">Crammed card copy</div>
+  <div class="wide"></div>
+  <div class="clip">A long label that the box cuts off</div>
+  <div class="over"><span>First words</span><span>Second words</span></div>
+  <p><button class="btn">Save</button></p>
+  <p><button class="narrow-btn">Save draft now</button></p>
+  <p class="tiny">Fine print</p>
+  <p><button class="x" aria-label="Close"></button><button class="x" aria-label="Pin"></button></p>
+  <div class="spill">Overflowing text here</div>
+</body></html>

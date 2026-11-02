@@ -2,7 +2,7 @@
 name: crisp-redesign
 description: Redesign an existing UI or website without breaking what works - detects preserve vs overhaul mode, audits the current state first, applies modernisation levers in priority order, and protects SEO, analytics, and accessibility wins from regression. Use when the request is to redesign, modernise, refresh, or upgrade an existing surface.
 metadata:
-  version: "1.1.2"
+  version: "1.2.0"
 ---
 
 # /crisp-redesign - Redesign Without Regression
@@ -27,7 +27,7 @@ If ambiguous, ask exactly ONE question: **"Should this redesign preserve the exi
 
 ## Step 2 - Audit Before Touching
 
-Document the current state before proposing a single change. Output this audit before any design work:
+Document the current state before proposing a single change. If `.crisp.md` `## Benchmarks` has a `ref:` line for this surface type, capture the reference and the current surface at the same width first, and name the one biggest difference: that is the bar the redesign has to clear, not a mood. Output this audit before any design work:
 
 ```
 ## Redesign Audit: [Surface name]
@@ -102,9 +102,9 @@ If the redesign would benefit from changing one of these, surface it as a questi
 Before declaring the redesign done:
 
 1. Run the **Slop Check** below on the redesigned surface. Every tell must be gone, or recorded in `.crisp.md` `## Decisions`.
-2. Run the **Mechanical Pre-Flight Checks** from `/crisp-design-eng` (em-dash count, eyebrow count, zigzag cap, CTA contrast and wrap, palette and radius locks, body text size).
+2. Run the **Mechanical Pre-Flight Checks** from `/crisp-design-eng` (em-dash count, eyebrow count, zigzag cap, CTA contrast and wrap, palette and radius locks, body text size, rendered layout).
 3. Run the **Copy Self-Audit** from `/crisp-copy` on every string you touched.
-4. Re-run `/crisp-review` and compare the grade against the audit baseline. The redesign is done when the grade does not drop and the brief's goals are met, because a surface already at A cannot improve its grade.
+4. Re-run `/crisp-review` in **Blind Mode** - a fresh sub-agent gets the captures of the redesigned surface and the reference, never your lever list - and compare the grade against the audit baseline. The redesign is done when the grade does not drop and the brief's goals are met, because a surface already at A cannot improve its grade.
 5. Confirm every item in the SEO baseline and analytics surface from Step 2 is intact.
 
 ### Slop Check
@@ -167,7 +167,14 @@ Baseline grade: [from audit] → Post-redesign grade: [from re-review]
 
 ### Needs user approval
 - [Any Step 5 item the redesign wants to change, with trade-off]
+
+Captured: [widths, themes, states]
+Not checked: [what you did not see, and why]
+Assumptions: [what you took as true without checking]
+Unresolved: [open findings with file:line]
 ```
+
+The last four lines follow the shared Handover Lines rule (`/crisp-proof`, `/crisp-loop`): `none` is a valid value, a missing line is not.
 
 ## Longitudinal Tracking
 

@@ -2,7 +2,7 @@
 name: crisp-teach
 description: "Project onboarding - interviews you about users, design system, and benchmarks, then writes .crisp.md, the context file every other CRISP command reads. Re-running it merges updates and keeps History and Decisions. Use when starting CRISP on a project, when .crisp.md is missing or stale, or before design work that needs product context: 'set up CRISP', 'teach CRISP about my product', 'onboard the design skills'."
 metadata:
-  version: "1.5.1"
+  version: "1.6.0"
 ---
 
 # /crisp-teach - Project Onboarding
@@ -118,6 +118,7 @@ Example: "The Lab Notebook" (precise, structured, always slightly imperfect), "T
 Ask:
 - "Which products do you most admire from a design perspective? These become your positive references. (Reply 'default' to accept the defaults for your product type)"
 - "Which products do you NOT want to look or feel like? These become your anti-references."
+- "For your main surface types (a list, a form, a dashboard, a landing page), is there one screen you would hold yours up against? A URL or a screenshot path, one per type. (Reply 'skip' if none)" - these become `ref:` lines. Audits capture the reference at the target's width and name the one biggest difference, so a concrete screen beats a brand name.
 - "Of the CRISP dimensions - Contextual, Responsive, Intelligent, Seamless, Powerful - which matters most for your users right now? (Reply 'default' to accept the product-type default)"
 
 ---
@@ -165,6 +166,7 @@ Named Rules:
 Positive references: [Products to aspire to]
 Anti-references: [Products to avoid resembling]
 Priority CRISP dimension: [C / R / I / S / P]
+- ref: [surface type] | [URL or screenshot path] | [what to learn from it, under 15 words]
 
 ## Extensions
 [e.g. "CRISP + AI" for AI-Native products - activates /crisp-ai automatically]

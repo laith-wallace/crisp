@@ -18,6 +18,10 @@ Edit the block here, never inside a skill. `npm run sync` rewrites every marked 
 | `evidence-gate.md` | /crisp-audit, /crisp-review, /crisp-a11y, /crisp-ai |
 | `decisions.md` | /crisp-audit, /crisp-review, /crisp-a11y, /crisp-ai, /crisp-improve-ui |
 | `history.md` | /crisp-audit, /crisp-review, /crisp-loop, /crisp-proof, /crisp-tune, /crisp-variants |
+| `blind-review.md` | /crisp-loop, /crisp-proof |
+| `never-intentional.md` | /crisp-loop, /crisp-proof |
+| `handover.md` | /crisp-loop, /crisp-proof, /crisp-evidence |
+| `fix-order.md` | /crisp-audit, /crisp-loop, /crisp-review |
 
 ## Platform overlays
 

@@ -2,7 +2,7 @@
 name: crisp-audit
 description: "Full CRISP evaluation of a UI design - scores all five dimensions with P0-P3 severity, benchmarks against world-class products, and delivers a prioritised action plan. Use for a thorough design review: 'audit this', 'score this design', 'how good is this UI, really'."
 metadata:
-  version: "1.3.2"
+  version: "1.4.0"
 ---
 
 # /crisp-audit - Full CRISP Evaluation
@@ -21,6 +21,7 @@ A full audit runs two independent assessments and synthesises them - never one p
 - Delegate A and B to two isolated sub-agents via the Agent tool whenever one is available. They must not see each other's output or reasoning before both finish. Running them inline in one context is convenient, not permitted, when a sub-agent tool exists - a design director grading their own detector output anchors on it instead of checking it.
 - If no sub-agent/Task tool is exposed in this session, fall back sequentially: finish Assessment A, then Assessment B, then synthesise - and mark the report degraded (see Report header provenance under Output Format). A silent degraded run is a failed audit, not a shortcut.
 - Only the synthesis step (Output Format) sees both assessments together.
+- Neither assessment gets the builder's change list, plan, or reasons for a choice. Hand each one the target and `.crisp.md`; a reviewer told what a change was meant to do grades the intent, not the screen.
 
 ## Assessment B: Evidence + Detector Scan
 
@@ -29,7 +30,7 @@ When the design is a live codebase, do not grade from impressions - gather evide
 0. Run the deterministic scan before anything else: `npx @laith-wallace/crisp detect --json <target>` (or `crisp detect --json <target>` if the CLI is installed globally). Pass markup/style files or a directory; skip for screenshot-only or Figma-link targets - fall back to items 1-4 for those. Exit code 0 = clean, 2 = findings. Every finding is a candidate, not a verdict - re-open the cited file and verify it before citing it in the report, and name any false positive explicitly.
 1. Read the relevant components and enumerate their actual states: does an empty state exist in the code? A loading skeleton? An error branch? A disabled state? A state that exists in code passes; a state that doesn't is a finding, not a guess.
 2. Search for mechanical violations: pre-disabled submit buttons, spinner-on-filter patterns, generic "Something went wrong" strings, missing hover/focus states.
-3. If the project runs locally, render the surface and screenshot it before scoring.
+3. If the project runs locally, render the surface and screenshot it before scoring. Then measure it: `npx @laith-wallace/crisp render-check "<url>" --width 1280,375 --shots .artifacts/audit --json` (needs Playwright in the project). It reports what only exists at render time - cut, overlapping or spilling text, a page wider than the phone, text crammed against its box, wrapped labels, small targets. Exit 3 is `inconclusive`: say so, never call it clean. Its four P1 rules (`page-overflow-x`, `overlapping-text`, `text-cut`, `text-spills`) are never intentional; report them as at least P1.
 4. Cite evidence for every violation: file and line for code, screen region for screenshots. A violation without a citation is an impression, not a finding.
 
 Return this assessment's findings (detector JSON summary + manual evidence) to the synthesis step without editorialising on overall design quality - that judgement belongs to Assessment A.
@@ -100,6 +101,19 @@ Rate each violation using this scale:
 | P2 | Noticeable degradation in experience | Generic empty state copy |
 | P3 | Minor polish issue | Missing hover state on secondary action |
 <!-- /crisp:shared severity -->
+
+<!-- crisp:shared fix-order -->
+## Fix Order
+
+Severity (P0-P3) says what matters. This order says what to fix first inside one severity, because a later fix is wasted when an earlier layer moves:
+
+1. **Layout and framing** - overflow, cut or overlapping text, a crop that hides the point, empty bands
+2. **Hierarchy and density** - what the eye lands on first, competing weights, filler where the subject belongs
+3. **States and motion** - missing states, jumps, exits that skip
+4. **Polish** - spacing, alignment, icon and type details
+
+Rank a finding by how much of the screen it spoils, never by how easy it is to fix. Fix the largest visible fault, re-capture, then look again from the top: one fix often moves the next fault.
+<!-- /crisp:shared fix-order -->
 
 ## Step 3: CRISP Dimension Scoring
 
@@ -231,7 +245,9 @@ Gap: [Any moment that feels unaddressed - or "None identified"]
 
 ## Step 4: Benchmark Comparison
 
-Compare against one or more of these exemplars (or the benchmarks from `.crisp.md`):
+Start with the closest reference, not the whole list. If `.crisp.md` `## Benchmarks` has a `ref:` capture or URL for this surface type, capture it at the same width as the target and put the two side by side. Name the **one biggest difference** first: is the target the emptier, flatter, more boxed, or more crowded of the two? That difference is usually the top Strategic Recommendation.
+
+Then compare against one or more of these exemplars (or the benchmarks from `.crisp.md`):
 - **Stripe**: Clean, trustworthy, progressive disclosure, excellent error handling
 - **Linear**: Minimal, fast, keyboard-native, excellent micro-interactions
 - **Notion**: Flexible, intuitive, powerful yet approachable, great onboarding
@@ -329,7 +345,8 @@ Gap: [Any moment that feels unaddressed, or "None identified"]
 - [List]
 
 ### Benchmark Comparison
-Compared against [Stripe / Linear / Notion / project benchmark]:
+Compared against [Stripe / Linear / Notion / project benchmark, or the `ref:` capture]:
+One difference: [the single biggest gap between the target and the closest reference, one sentence]
 [2–3 sentences on where this design falls vs. the benchmark]
 
 ### Strategic Recommendations
