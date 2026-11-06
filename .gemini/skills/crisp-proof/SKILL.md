@@ -1,8 +1,8 @@
 ---
 name: crisp-proof
-description: Visual proof that a design change did what it claims - before/after screenshot pairs across states and breakpoints, a PR-ready markdown table, and /crisp-review grades on both sides so the improvement is a measured delta, not a sentence. Use when a PR needs screenshots, 'show me before and after', 'prove the redesign is better', or after /crisp-redesign, /crisp-improve-ui, or /crisp-loop lands changes.
+description: Visual proof that a design change did what it claims - before/after screenshot pairs across states and breakpoints (camera stops for 3D and canvas pages, captured from the same camera with time frozen), a PR-ready markdown table, and /crisp-review grades on both sides so the improvement is a measured delta, not a sentence. Use when a PR needs screenshots, 'show me before and after', 'prove the redesign is better', or after /crisp-redesign, /crisp-improve-ui, or /crisp-loop lands changes.
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   author: Laith Wallace - FlowConverts
   adapted-from: vercel-labs/before-and-after skill (workflow only, no vendored code), michaelshimeles/skills evidence-driven-testing, benjitaylor/skills stageshow (MIT - blind review, rendered-frame checks, handover lines)
 ---
@@ -110,6 +110,18 @@ In containers where Chromium fails with "No usable sandbox", launch with `args: 
 **Path D - no browser at all:** stop and ask the user for the captures. Do not describe what the screenshots would show.
 
 Naming, always: `.artifacts/proof/<slug>/<nn>-<state>-<viewport>[-<theme>]-<before|after>.png`. Add `.artifacts/` to `.gitignore` if it is not there - evidence gets uploaded, never committed.
+
+### 3D, WebGL and canvas surfaces
+
+A canvas page changes every frame, so two captures of "the same page" are not the same picture unless the camera and the clock are fixed.
+
+- **Camera stops are states.** Each stop or scroll chapter is one row in the evidence matrix, for example `02-stop-lounge-1280-after.png`.
+- **Same camera on both sides.** Open each stop by URL (`?stop=<n>`) or by scrolling to a fixed `scrollY`. Never by scrolling "about there".
+- **Freeze time.** Use the page's still mode (`?still`) or `prefers-reduced-motion: reduce` so idle motion and particles do not differ between sides.
+- **Wait for the frame.** Wait for the page's ready signal (for example `await page.waitForFunction(() => window.__sceneReady)`), then 2 more animation frames, before the screenshot. A capture before textures load is `untested`, not Before.
+- **Launch with a GPU path.** Headless Chromium may draw a black canvas. Try `args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"]`. A black or blank canvas is `untested` with the reason.
+- **Add a frame-time row** when the page exposes it (for example `window.__perf.fps`): read it at each stop on both sides and put the numbers in the table. A gain in looks that drops a stop under 30 fps is a regression.
+- **Add the score trend** when `/crisp-loop` ran in target-image mode: start and end score per stop, next to the grades.
 
 ## Step 4 - Grade both sides
 

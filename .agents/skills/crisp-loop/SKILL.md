@@ -1,10 +1,10 @@
 ---
 name: crisp-loop
-description: Bounded review-fix-review loop - runs /crisp-review, fixes every P0 and P1 it names, re-reviews, and repeats until the target grade (default B with zero P0) or the iteration cap (default 5), then reports the trend. Use for 'keep fixing until it's good', 'get this screen to an A', or to land a batch of design fixes with a measured result instead of a hope.
+description: Bounded review-fix-review loop - runs /crisp-review, fixes every P0 and P1 it names, re-reviews, and repeats until the target grade (default B with zero P0) or the iteration cap (default 5), then reports the trend. Target-image mode instead builds toward a picture of the finished look - a generated or supplied target from the same camera, scored out of 10 by a fresh judge each round until the target score, the cap or the time box. Use for 'keep fixing until it's good', 'get this screen to an A', 'it works but doesn't look right', 'make it look like this image', or to land a batch of design fixes with a measured result instead of a hope.
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   author: Laith Wallace - FlowConverts
-  adapted-from: greptileai/skills greploop (loop shape, MIT) - reviewer swapped for /crisp-review and the crisp detector; benjitaylor/skills stageshow (MIT - blind check before TARGET MET, fix order, rendered checks)
+  adapted-from: greptileai/skills greploop (loop shape, MIT) - reviewer swapped for /crisp-review and the crisp detector; benjitaylor/skills stageshow (MIT - blind check before TARGET MET, fix order, rendered checks); the dream-loop idea (ashimala/dream-loop, idea only, no code read) for target-image mode
 ---
 
 # /crisp-loop - Review, Fix, Repeat, Stop
@@ -22,8 +22,20 @@ Load `.crisp.md` if it exists. Its register decides how `/crisp-review` grades; 
 | `--max-iterations` | `5` | Hard cap on review-fix cycles |
 | `--scope` | inferred | Files allowed to change. Inferred as the files that render the target; state the list before iteration 1 |
 | `--commit` | off | When on, one commit per iteration. Off leaves changes in the working tree |
+| `--target-image` | off | Switch to target-image mode. Bare flag: generate the target. With a path: use that image as the target |
+| `--target-score` | `8` | Target-image mode only. Exit score out of 10 |
+| `--time-box` | none | Target-image mode only. Wall-clock limit, for example `2h`. Strongly advised: this mode spends tokens fast |
 
 If the target is vague ("the app"), ask for one surface. Never loop over a whole product.
+
+## Two modes
+
+| Mode | Judge asks | Use when |
+|---|---|---|
+| Grade (default) | "How many P0 and P1 issues are left?" | The surface has clear faults: broken states, hierarchy, copy, accessibility |
+| Target image | "How close is this capture to the target picture, out of 10?" | It works but does not look right: light, mood, material, fullness. Common in 3D, brand and editorial surfaces |
+
+Target-image mode replaces steps A and B of the iteration with the steps in Target-Image Mode below. Preconditions, scope, fix rules, and Never still apply.
 
 ## Preconditions
 
@@ -115,6 +127,58 @@ crisp-loop iteration N: [grade before] → [grade after], fixed [issue titles]
 Without it, leave the working tree changed and say so.
 
 ### D. Back to A
+
+## Target-Image Mode
+
+A surface can pass every check and still look flat. "Make it better" with no target is guessing. This mode gives the loop a picture to aim at and a judge who scores against it.
+
+### T1. Make the target (once)
+
+1. Capture the surface at one fixed view: one URL, one width, one scroll position or camera stop, time frozen when the page supports it. Save as `.crisp/loop/<slug>/start.png`. This exact view is used for every round.
+2. If `--target-image <path>` was given, copy it to `.crisp/loop/<slug>/target.png` and skip to step 4.
+3. Generate the target with the image tool the session has (an image-generation MCP or CLI), using `start.png` as the reference image. Prompt: the finished version of this exact view - same layout or room, same camera, same framing - plus the feel words from `.brief.md` or `DESIGN.md`. Never ask for a new composition. With no image tool, ask the user for a target image once. With no answer, fall back to grade mode and report `NO TARGET`.
+4. Show the target to an attended user and wait for "yes" or a change. The target sets the direction, so the user owns it. Headless: record `Target: auto-accepted`.
+
+### T2. Each round
+
+1. Make the change. Follow Fix Order, and fix the judge's top gap first.
+2. Capture the same view as `start.png`, saved as `round-NN.png`. Wait for the page's ready signal (for example `window.__sceneReady`) before capturing.
+3. Judge it. A fresh sub-agent gets only `target.png`, `round-NN.png`, and the one-line brief. Never the round number, earlier scores, earlier captures, or what changed. It returns:
+   ```
+   Score: [0-10, one decimal]
+   Gaps: [ranked list, biggest first, each a visible difference, for example "window light is green haze; target shows warm daylight"]
+   ```
+   Without a sub-agent, write `Judge: degraded (same context)` in the report.
+4. Append `{round, score, gaps, capture}` to `.crisp/loop/<slug>/scores.json`.
+5. If the capture shows a render-check P1 (overlap, cut text, page overflow), fix that first, whatever the score.
+
+### T3. Exit check
+
+| Condition | Stop reason |
+|---|---|
+| Score at or above `--target-score` | `TARGET MET` |
+| Round = `--max-iterations` | `CAP REACHED` |
+| `--time-box` used up | `TIME BOX` |
+| Score rose by less than 0.25 over the last 3 rounds | `STALLED` - change approach (another medium, baked light, a cut-out from the target), or hand back |
+| A fix needs a file outside scope | `SCOPE BLOCKED` |
+
+### T4. Rules for this mode
+
+- Same view every round. A capture from another width, scroll position, or camera is not comparable, and that round does not count.
+- Re-capture any other views that share code with this one (shared light, shared CSS, shared setup) before reporting. A gain here can break a view you did not touch.
+- The target is a direction, not a spec. Never copy pixels from it, except a cut-out the user approved (for example a plant lifted from the target into the page).
+- Light, material, and fullness first, geometry and layout second. Most score gains come from light.
+- Report the score trend, not only the end score.
+
+Report table for this mode:
+
+```
+| Round | Score | Top gap | Change made |
+|---|---|---|---|
+| 1 | 4.6 | flat light, no shadows | added textures and a light probe |
+| 4 | 6.2 | windows read as green haze | outside image plus low-opacity glass |
+| 11 | 8.1 | - target met | baked light difference into floor texture |
+```
 
 ## Never
 
