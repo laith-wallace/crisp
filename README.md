@@ -50,12 +50,18 @@ as the agent works and reports only the problems that edit added.
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/crisp-funnel`  | Assembles a mobile-first funnel from a brief: classifies the funnel type, sequences sections from the CRISP Funnel Kit (10 tested sections) to the audience's awareness level, writes the copy, and runs `/crisp-review` before delivery. Ships with the `crisp-funnel-kit.html` section library. |
 
+### 3D websites
+
+| Command     | What it does |
+| ----------- | ------------ |
+| `/crisp-3d` | One 3D scene from idea to proof. Chains `/crisp-brief`, `/crisp-research` (2 references blended into one concept), `/crisp-worlds`, a scene plan where scroll moves the camera between chapter stops and every object gets the right medium, then `/crisp-loop --target-image` per stop (a target picture and a blind judge scoring out of 10), render, frame-time and accessibility checks, and `/crisp-proof`. |
+
 ### Ship gate
 
 | Command                   | What it does                                                                                                                                                                                                                                                                                        |
 | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `/crisp-production-ready` | Complete production-readiness audit: repeated passes through 24 lenses (security, auth, claims-vs-code, data shapes, perf, a11y, config, concurrency and more) until two consecutive passes find nothing new. Outputs a flat findings list plus `production-playbook.html` - a visual, checkable, step-by-step fix plan with a binary READY / FIX FIRST / NOT READY verdict. |
-| `/crisp-loop`             | Bounded review-fix-review loop. Detector + `/crisp-review`, fix only the cited P0/P1s, re-review, stop on TARGET MET (default B, zero P0), CAP REACHED (default 5), STALLED, or SCOPE BLOCKED. Reports the grade trend per iteration. Never lowers the target or widens scope. |
+| `/crisp-loop`             | Bounded review-fix-review loop. Detector + `/crisp-review`, fix only the cited P0/P1s, re-review, stop on TARGET MET (default B, zero P0), CAP REACHED (default 5), STALLED, or SCOPE BLOCKED. Reports the grade trend per iteration. Never lowers the target or widens scope. `--target-image` mode builds toward a picture of the finished look instead, scored out of 10 by a fresh judge each round. |
 | `/crisp-proof`            | Visual proof a change did what it claims: before/after screenshot pairs across states and breakpoints, `/crisp-review` grades on both sides, detector on After, and a binary IMPROVED / NO CHANGE / REGRESSED verdict in a PR-ready markdown table. Never switches branches to fake a Before. |
 
 ### Repo setup

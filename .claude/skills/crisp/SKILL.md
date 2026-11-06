@@ -3,7 +3,7 @@ name: crisp
 description: "Router for the CRISP skill pack - names every skill, its pipeline stage, and when to reach for it. Use when unsure which design or workflow skill fits: 'which crisp command should I use', 'what can CRISP do', 'where do I start with this design'."
 disable-model-invocation: true
 metadata:
-  version: "1.5.0"
+  version: "1.6.0"
 ---
 
 # /crisp - Skill Pack Router
@@ -54,6 +54,8 @@ One place to find the right CRISP skill. Read the user's situation, name the mat
 | "let me click on it and tell you" | `/crisp-live` | `/crisp-variants` |
 | "prove it works" | `/crisp-evidence` | `/crisp-proof` (that is before/after visuals) |
 | "fix this error message" | `/crisp-copy` | `/crisp-unslop` (that is long-form prose) |
+| "build a 3D website" | `/crisp-3d` | `/crisp-design-eng` (that is one effect inside a page) |
+| "it works but doesn't look right" | `/crisp-loop --target-image` | `/crisp-loop` grade mode (that counts faults, not looks) |
 
 ## Whole-surface work
 
@@ -62,6 +64,7 @@ One place to find the right CRISP skill. Read the user's situation, name the mat
 | `/crisp-redesign` | Overhauling an existing UI or site without breaking what works |
 | `/crisp-improve-ui` | Tightening an existing surface without redesigning it - evidence-locked, writes plans to `design-plans/` |
 | `/crisp-funnel` | Landing pages, sales pages, funnels, conversion problems - ATM methodology |
+| `/crisp-3d` | A whole site that is one 3D scene - chains brief, reference blend, worlds, scene plan, a target-image loop per camera stop, checks and proof |
 | `/crisp-production-ready` | Pre-launch audit of the whole product - 24 lenses, HTML remediation playbook |
 
 ## Maintenance
