@@ -1,9 +1,9 @@
 ---
 name: crisp-worlds
-description: Show 3 genuinely different visual directions before any code is written, picked from a curated library of 30 worlds (each with an OKLCH palette, type pairing, layout grammar and real-world inspiration), next to the category default built on purpose as a baseline, in one local picker page with a Build this button per direction; the recommended direction borrows the best ideas from the others, and the chosen world becomes a linted DESIGN.md. Use when "show me some directions", "what could this look like", "explore visual directions", "I don't want it to look like every other SaaS site", "moodboard this", or before a new product, homepage, rebrand or redesign has a look. Not for variants of one component in the real code (use /crisp-variants), extracting tokens from an existing site or screenshot (use /crisp-study), changing an existing surface (use /crisp-redesign), or building a landing page that converts (use /crisp-funnel).
+description: Show 3 genuinely different visual directions before any code is written, picked from a curated library of 30 worlds (each with an OKLCH palette, type pairing, layout grammar and real-world inspiration), next to the category default built on purpose as a baseline, in one local picker page with a Build this button per direction; the recommended direction borrows the best ideas from the others, and the chosen world becomes a linted DESIGN.md. With two references, it blends one idea from each into the recommendation. Use when "show me some directions", "what could this look like", "explore visual directions", "I don't want it to look like every other SaaS site", "moodboard this", or before a new product, homepage, rebrand or redesign has a look. Not for variants of one component in the real code (use /crisp-variants), extracting tokens from an existing site or screenshot (use /crisp-study), changing an existing surface (use /crisp-redesign), or building a landing page that converts (use /crisp-funnel).
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   author: Laith Wallace
 ---
 
@@ -31,6 +31,7 @@ Directions come from a curated library, `worlds/*.md`, not from a blank prompt, 
 | `--n` | `3` | Worlds besides the baseline, 2 to 4; the picker holds 5 cards at most |
 | `--worlds` | chosen by fit | Force specific world ids, for example `--worlds ledger-book,swiss-timetable` |
 | `--serve` | off | Run `crisp worlds serve` so Build this records the choice without copy and paste |
+| `--refs` | from `.research.md` | Two references with one idea taken from each (the `REFERENCE BLEND` block `/crisp-research` writes). Enables the reference blend in step 5 |
 
 ## Steps
 
@@ -39,6 +40,7 @@ Directions come from a curated library, `worlds/*.md`, not from a blank prompt, 
 3. **Shortlist worlds.** Run `crisp worlds list --register <register> --json`, and `--fights "<default>"` for the defaults you named in step 2. Pick 3 worlds that suit the brief. Every pair, and each against the baseline, must differ on at least 2 of: layout, type, colour, density (the same difference test as `/crisp-variants`). Write the pairwise axes down. Read each world in full with `crisp worlds show <id>` before using it.
 4. **Render previews.** For each direction write one self-contained HTML document: the surface's hero plus one real product surface (the dashboard, a settings panel, a list), with the brief's real copy and plausible data. Use the world's tokens exactly (`crisp worlds show <id> --css` prints them as CSS variables plus the Google Fonts link). Follow its layout grammar and its three signature moves. Rules for preview markup are in `references/world-format.md`.
 5. **Challenger pass.** Choose the direction you recommend. Look at the other directions for ideas that would make it stronger without breaking its world (a ledger's red-for-negatives rule, a receipt's dot leaders). Fold in at most 3, update its preview, and record each in `borrowedFrom` as `{from, what, why}`. The picker labels it "Improved by".
+   **Reference blend.** With `--refs` or a `REFERENCE BLEND` block in `.research.md`, the recommended direction must carry the one idea taken from each reference, recorded in `borrowedFrom` with the reference name as `from`, and the concept line goes in its description. These two count toward the limit of 3. The world still owns the tokens: a reference gives an idea, never its palette, logo, copy or layout. For a 3D surface, render the preview as a still frame of the first camera stop in HTML and CSS, not WebGL, so the picker sandbox can show it.
 6. **Write the spec and picker.** Save `.crisp/worlds/spec.json` (shape in `references/world-format.md`), then:
    ```bash
    npx @laith-wallace/crisp worlds picker .crisp/worlds/spec.json

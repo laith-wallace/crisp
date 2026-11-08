@@ -13,6 +13,14 @@ Severity language matches the CRISP framework: P0 (breaking) / P1 (significant) 
 
 ## [Unreleased]
 
+### 1.14.0 - /crisp-3d 1.0.0 (new), /crisp-loop 1.2.0, /crisp-research 1.2.0, /crisp-proof 1.2.0, /crisp-worlds 1.1.0, /crisp 1.6.0
+- **New** `/crisp-3d` runs an immersive 3D site as one chain: brief, two references blended into one concept, a scene plan (scroll moves the camera between chapter stops, a medium chosen per object, light and frame budgets), build, a target-image loop per camera stop, render, frame-time and accessibility checks, then proof. `references/3d-build-rules.md` holds the medium table, light order, frame-time rules and known traps.
+- **P1** `/crisp-loop` gains target-image mode (`--target-image`, `--target-score`, `--time-box`): a generated or supplied target from the same camera, a fresh judge that sees only the target and the capture and scores out of 10, and stops on score, cap, time box or a stall under 0.25 over 3 rounds. Idea from the dream-loop workflow; no code taken.
+- **P2** `/crisp-research` uses the Mobbin connector first when connected, requires screenshots for any `[verified via search]` pattern, adds a 3D / Immersive feature type, and writes a `REFERENCE BLEND` block (one idea from each of 2 references, one concept line).
+- **P2** `/crisp-worlds` takes `--refs` or the `REFERENCE BLEND` block and carries one idea from each reference into the recommended direction.
+- **P2** `/crisp-proof` captures 3D and canvas pages per camera stop from the same camera with time frozen, waits for a ready signal, and adds frame-time and target-score rows.
+- **P3** `/crisp` router lists `/crisp-3d` and two new confusable pairs.
+
 ### /crisp-brief 1.4.2, /feature-design 1.3.2 (status and headless fixes)
 - **P2** A new `Check:` line records what ran (cold read, self-check, or skipped). `Status: Stress-tested` is set only after a cold read, and `Draft - confirmation pending` survives the check.
 - **P2** `/crisp-brief` headless runs no longer wait on interview answers: inferred answers go under Open Questions as assumptions.

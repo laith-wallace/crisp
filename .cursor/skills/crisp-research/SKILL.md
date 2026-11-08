@@ -1,8 +1,8 @@
 ---
 name: crisp-research
-description: "Design research synthesis before designing - searches designated reference sources, surfaces competitive patterns, anti-patterns, CRISP dimension risks, and brief gaps. Writes .research.md, which /feature-design reads. Use when a brief exists and you need patterns before designing: 'how do others do this', 'competitor patterns for onboarding', 'research before we design'."
+description: "Design research synthesis before designing - searches designated reference sources (the Mobbin connector first when connected, with screenshots the agent actually looks at), surfaces competitive patterns, anti-patterns, CRISP dimension risks, and brief gaps, and for brand, 3D and immersive work blends two references into one concept. Writes .research.md, which /feature-design and /crisp-3d read. Use when a brief exists and you need patterns before designing: 'how do others do this', 'competitor patterns for onboarding', 'find references for a 3D site', 'research before we design'."
 metadata:
-  version: "1.1.1"
+  version: "1.2.0"
 ---
 
 # CRISP Research Synthesis - `/crisp-research`
@@ -70,6 +70,7 @@ Map the brief to one of these feature types. This determines source priority and
 | **Profile / Account** | User details, billing, identity | C · P |
 | **Search** | Global search, filters, autocomplete | R · I · P |
 | **Mobile / Responsive** | Any feature with mobile-first requirement | R · S |
+| **3D / Immersive** | Whole-page 3D scenes, WebGL landing pages, scroll-driven camera sites | C · R · P |
 
 If the feature does not match a type above, classify it as **General** and flag all five dimensions for risk assessment.
 
@@ -121,6 +122,7 @@ Search these sources in the priority order defined for the feature type. Run sea
 | Modal | Mobbin · SaaSpo | Screenlane |
 | Search | SaaSpo · Google | Mobbin · Laws of UX |
 | Mobile | Mobbin | Screenlane · SaaSpo |
+| 3D / Immersive | Mobbin sites (sections, full page, recordings) | Google (Awwwards, FWA) · Dribbble |
 | General | SaaSpo · Mobbin · Google | Screenlane · Dribbble |
 
 ### Source URLs and search approach
@@ -128,6 +130,12 @@ Search these sources in the priority order defined for the feature type. Run sea
 **Mobbin** - `mobbin.com`
 Search: `[feature type] [platform: web/iOS/Android]`
 Focus: Real production UI patterns from shipped apps. Highest signal source for interaction patterns.
+
+When the Mobbin connector (MCP) is connected, use it before web search, because it reaches screens a web search cannot:
+- `search_sections` for website sections ("3D website", "hero", "pricing"), `search_screens` for app screens, `search_flows` for multi-step flows.
+- Ask for screenshots, not only links. A pattern you did not look at is not `[verified via search]`. Open the image of every pattern you cite.
+- For motion-heavy work (3D, scroll scenes), prefer results with recordings and open the full page, because the motion is the design.
+- Save every pick to one collection named after the feature (`create_collection`, then `save_content`) so the user can see the same set.
 
 **SaaSpo** - `saaspo.com`
 Search: `[feature keyword]`
@@ -151,6 +159,17 @@ Focus: Written analysis, design system documentation, case studies from engineer
 **Laws of UX** - `lawsofux.com`
 Consult for: Any pattern that involves cognitive load, attention, or expectation. Cite by principle name.
 Do not search - apply from knowledge. Flag which law is relevant to each pattern.
+
+### Reference blend (brand, 3D, immersive)
+
+For **3D / Immersive** work, and any brand surface where the look is the point, finish Step 3 with a blend:
+
+1. Pick exactly 2 references the agent has seen as images.
+2. Name one idea taken from each, as a noun phrase. "Line-drawn single room you move through", not "nice vibe".
+3. Write one concept line that joins them: "A room that starts as a drawing and turns into a sunlit space."
+4. Name what is not taken: layout, copy, logos, models. The blend is inspiration, never a copy.
+
+If the user named references, use theirs. Never swap a user's reference for one you found.
 
 ### Search quality rules
 
@@ -264,6 +283,15 @@ OPEN QUESTIONS FOR PM
 · [Specific gap 1]
 · [Specific gap 2]
 · [Specific gap 3 - only if genuinely needed]
+
+─────────────────────────────────────────────────────
+
+REFERENCE BLEND   (3D / Immersive and brand surfaces only)
+
+A · [Reference name] · [capture path] · Take: [one idea]
+B · [Reference name] · [capture path] · Take: [one idea]
+Concept: [one line joining them]
+Not taken: [layout, copy, logos, models - what stays theirs]
 
 ─────────────────────────────────────────────────────
 
