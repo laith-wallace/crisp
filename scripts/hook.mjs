@@ -220,7 +220,7 @@ function suppressionProblems(files, root) {
   if (broad.length) {
     problems.push(`${broad.length} broad ignore${broad.length === 1 ? '' : 's'} added to .crisp/config.json:\n` +
       broad.slice(0, MAX_FINDINGS_SHOWN).map(s => `- ${s.rule} in ${s.where}`).join('\n') +
-      `\nThese silence a rule or a file everywhere. Remove them, or tell the user what they hide and get their OK.`);
+      `\nThese silence a rule or a file everywhere. Remove them, or tell the user what they hide. The gate flags them once; a repeat stop with no change passes, so the user's OK is on you.`);
   }
   const weak = added.filter(s => !s.broad && s.reason.length < MIN_REASON);
   if (weak.length) {

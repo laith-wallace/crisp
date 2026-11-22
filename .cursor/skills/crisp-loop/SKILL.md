@@ -44,7 +44,7 @@ Target-image mode replaces steps A and B of the iteration with the steps in Targ
 Check all four before iteration 1. State the result in one line each.
 
 1. `git status --porcelain` on the scope files is empty, or the user has said dirty is fine. Record `git rev-parse --short HEAD` as the start commit.
-2. The scope list is written out - every file path the loop may edit. Zero edits outside it, ever.
+2. The scope list is written out - every file path the loop may edit. Zero edits outside it, ever. `.crisp/lessons.md` and `.crisp/render/` are logs and tool output, not edits.
 3. `.crisp.md` is loaded, or its absence is declared and the register is inferred from the target.
 4. The target renders: a dev server answers, or the files parse. A loop over a broken build fixes nothing.
 
@@ -117,7 +117,7 @@ Per fix, binary:
 - Cite the file:line the review cited. No location, no fix - ask the review to be specific instead.
 - Use the specialist's rules when the issue is in their domain: `/crisp-a11y` for accessibility, `/crisp-copy` for strings, `/crisp-design-eng` for motion and component craft (its `references/component-craft.md` has the code fixes). Do not reinvent them.
 - Zero new dependencies. Zero suppression comments (`crisp-disable`) to make the detector pass - a suppression needs a reason and the user's approval, outside the loop.
-- Zero edits outside the scope list.
+- Zero edits outside the scope list (`.crisp/lessons.md` and `.crisp/render/` are logs and tool output, not edits).
 - The build still passes after the fix (`npm run build` or the project's equivalent, and `tsc --noEmit` where present). A fix that breaks the build is reverted before the next review.
 
 With `--commit`, one commit per iteration:
@@ -221,7 +221,7 @@ Print after the loop exits, whatever the reason:
 **Remaining**
 - [C] P1 - breadcrumb missing on deal detail (src/routes/deals/[id]/+page.svelte:12) - out of scope
 
-Next: <command> - <why>   (from the Next step list below)
+Next: <command> - <why>
 ```
 
 The `Remaining` list is every P0 and P1 still open, each with file:line. Empty is a valid list.
@@ -258,7 +258,7 @@ Each iteration's `/crisp-review` is a nested call and writes no History line of 
 ## Taste rules
 
 <!-- crisp:shared taste -->
-**Taste rules.** Each rule is a count, so a check can say pass or fail. Rules 1 to 7 apply when this skill makes or judges a rendered UI (a screen, a page, a component). The copy tells apply to all copy, prose included. Where this skill states a stricter limit for the same pattern, the stricter limit wins.
+**Taste rules.** Each rule is a count, so a check can say pass or fail. Rules 1 to 7 apply when this skill makes or judges a rendered UI (a screen, a page, a component). The copy tells apply to all copy, prose included. Where this skill states a stricter limit for the same pattern, the stricter limit wins. Em dashes follow this skill's own rule where it has one.
 
 1. **One detail only this client has.** Each screen shows at least 1 detail taken from the brief or the product: its units, its terms, its real prices, hours or numbers. A screen that would fit any business in the category fails.
 2. **Real material first.** The client's own product, UI, photos and words lead. A stand-in (stock photo, mock data, coined name) is listed in the report as a stand-in. Zero stand-ins are presented as the client's own.
@@ -306,7 +306,7 @@ Each iteration's `/crisp-review` is a nested call and writes no History line of 
 **Lessons log.** The pack learns the user's taste from their corrections.
 
 - **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
-- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed in every skill, read-only ones and ones limited to their target's files included. It never counts against a skill's scope, clean-tree or zero-writes rules.
 - **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
   `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
   Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
@@ -315,7 +315,7 @@ Each iteration's `/crisp-review` is a nested call and writes no History line of 
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** or `Ready for` line, write this line there instead. Where the report ends with Handover lines, put it directly above them.
 
 - TARGET MET: `/crisp-stress`, then `/crisp-proof`
 - CAP REACHED with P0 left: `/crisp-audit` for the full picture

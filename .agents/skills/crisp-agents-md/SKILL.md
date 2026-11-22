@@ -26,7 +26,7 @@ Infer the mode from the file system. Declare it in one line and proceed.
 | **Create** | No `AGENTS.md` at the repo root | A complete `AGENTS.md` plus the `CLAUDE.md` include line |
 | **Refresh** | `AGENTS.md` exists with managed markers | Managed sections regenerated, hand-written text untouched, a diff summary |
 | **Adopt** | `AGENTS.md` exists without managed markers | Managed sections appended below the existing text, nothing above them edited |
-| **Check** | "is my AGENTS.md stale?", "check", "dry run" | A drift report. Zero writes. |
+| **Check** | "is my AGENTS.md stale?", "check", "dry run" | A drift report. Zero writes, apart from a `.crisp/lessons.md` line after a user correction. |
 
 ## Step 0 - Discover (facts, never questions)
 
@@ -182,7 +182,7 @@ After delivery, append one line to the `## History` section of `.crisp.md` if it
 **Lessons log.** The pack learns the user's taste from their corrections.
 
 - **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
-- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed in every skill, read-only ones and ones limited to their target's files included. It never counts against a skill's scope, clean-tree or zero-writes rules.
 - **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
   `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
   Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
@@ -191,7 +191,7 @@ After delivery, append one line to the `## History` section of `.crisp.md` if it
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** or `Ready for` line, write this line there instead. Where the report ends with Handover lines, put it directly above them.
 
 - No `.crisp.md` yet: `/crisp-teach`
 - Otherwise: back to the task
