@@ -3,6 +3,8 @@ name: crisp-tune
 description: Turn the tone of an existing UI up or down without redesigning it - three modes (bolder, quieter, simpler) each made of a fixed, countable list of moves, plus --dial overrides for VARIANCE, MOTION, and DENSITY on a 1-10 scale, all inside the project's tokens. Use when "make it bolder", "tone it down", "this is too loud", "too busy", "simplify this", "distill it", "more personality", "less motion", or "denser". Fixing specific usability issues belongs to /crisp-improve-ui; changing the brand or the IA belongs to /crisp-redesign; motion craft details belong to /crisp-design-eng.
 metadata:
   version: "1.0.1"
+  checked: "2026-11-22"
+  checked-with: "claude-opus-5-5"
   author: Laith Wallace - FlowConverts
   adapted-from: workflow inspired by impeccable bolder/quieter/distill and taste-skill dials (no vendored code)
 ---
@@ -144,7 +146,7 @@ Run on the baseline and on the result.
 4. No dial exceeds the register cap; every clamp is reported.
 5. Detector findings after <= detector findings before.
 6. Slop tells after <= slop tells before. A bolder run that adds a tell (gradient text, glow halo, hero pill) has failed that move; revert it.
-7. Zero edits outside the target's files.
+7. Zero edits outside the target's files, except the History line and `.crisp/lessons.md`.
 8. Zero changes to copy, IA, routes, anchor IDs, or tracked element labels. Exception: `simpler` moves 1, 3 and 7 may delete copy, because distilling is their purpose; every deletion is listed in the report.
 9. Build passes after the run.
 10. `bolder` and `quieter` never run in the same pass.
@@ -179,7 +181,7 @@ Run on the baseline and on the result.
 **Detector:** 4 -> 1   **Slop Check:** Fail (2 tells) -> Pass (0)
 **Off-token values added:** 0   **Build:** pass
 **Needs token:** <omit if none>
-**Next:** /crisp-proof for the before/after pair
+Next: <command> - <why>   (from the Next step list below)
 ```
 
 If the result regressed, the first line is `REGRESSED` and the table follows.
@@ -204,3 +206,85 @@ Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y
 ```
 - [YYYY-MM-DD] | /crisp-tune | [mode] | [surface] | V[a->b] M[a->b] D[a->b] | detector [a->b]
 ```
+
+## Finish check
+
+<!-- crisp:shared finish-check -->
+**Finish check.** Before you say a built or changed page is done, measure it as the browser draws it:
+
+```bash
+npx @laith-wallace/crisp render-check "<local url>" --width 1280,375 --shots .crisp/render
+```
+
+- Exit 0: clean. Say so in the report.
+- Exit 2: findings. `page-overflow-x`, `overlapping-text`, `text-cut` and `text-spills` are bugs, never style choices. Fix them and run it again, at most 3 rounds.
+- Exit 3 (inconclusive), exit 1 (no URL, no Playwright, or the page did not load), or no local URL to give it: report `render-check: untested` with the reason. Never report the page as checked.
+
+Then open `.crisp/render/render-1280.png` and `.crisp/render/render-375.png` and look at them once against the taste rules. A clean exit code proves the layout holds, not that the page has taste.
+<!-- /crisp:shared finish-check -->
+
+## Taste rules
+
+<!-- crisp:shared taste -->
+**Taste rules.** Each rule is a count, so a check can say pass or fail. Rules 1 to 7 apply when this skill makes or judges a rendered UI (a screen, a page, a component). The copy tells apply to all copy, prose included. Where this skill states a stricter limit for the same pattern, the stricter limit wins.
+
+1. **One detail only this client has.** Each screen shows at least 1 detail taken from the brief or the product: its units, its terms, its real prices, hours or numbers. A screen that would fit any business in the category fails.
+2. **Real material first.** The client's own product, UI, photos and words lead. A stand-in (stock photo, mock data, coined name) is listed in the report as a stand-in. Zero stand-ins are presented as the client's own.
+3. **One system.** 1 primary and 1 secondary button style, 1 card style, 1 radius scale, 1 heading scale, 1 link style per surface.
+4. **One bold move per screen.** At most 1 element per screen breaks the system (an oversized heading, a full-bleed photo, a colour block). Everything around it stays quiet.
+5. **Structure says something true.** Numbers (01, 02) only on steps a user follows in order. A label over a heading only when it adds information the heading does not.
+6. **Motion answers the user.** Every button, link and linked card answers hover and press. Zero sections fade in on scroll by default. Anything that moves for more than 5 seconds has a pause control.
+7. **Read the taste bank.** When `.crisp/taste-bank/` exists, read it before designing and name the 1 or 2 references this work borrows from, and what it borrows. Never copy a reference's code, copy, images or signature effect.
+
+**Copy tells that current models still write.** These look like good copy, so they pass review. Count them on the whole surface.
+
+| Tell | Limit | Fix |
+|---|---|---|
+| Invented specifics: room numbers, batch numbers, times, percentages the brief does not give | 0 | Use a fact from the brief, or write a plainer line |
+| A strip of 3 or 4 figures over one-word labels | 0, unless every figure is a brief fact (price, hours, count) | Put each figure in the sentence it proves |
+| Two-fragment heading, "X. Y." ("Twelve rooms. Three ways to stay.") | 1 | A name with a claim under it, a verb and the thing, or one plain sentence |
+| Number-pair heading ("Four projects, four problems") | 0 | Say what the section holds |
+| Contrast frames: "not X but Y", "isn't X", "rather than", "instead of", "without the" | 2, all forms counted together | State the positive fact alone |
+| Negation runs ("No forms, no waiting") | 1 | Keep it only when each item is a refusal the buyer can check |
+| Virtue words about the client: honest, calm, quiet, quietly, genuinely, truly, simply, thoughtful, carefully, intentional | 0 | Show it with a fact or an admission |
+| A dry closing quip at the end of a paragraph | 1 | End on information |
+| Default cast names: Priya, Okafor, Marcus, Dana, Aisha, Theo, Kestrel, Halcyon, Acme, Northwind, Lumen, Nimbus, Zenith | 0 | Names only from the brief; mock names that fit the place and age |
+| The same section shape (label, heading, short lede, 3 cards) used back to back | 2 in a row | Shape each section from the question the reader has there |
+| Testimonials or quotes the brief does not give word for word | 0 | Leave them out |
+| Unsourced proof figures ("3x faster", "10,000+ teams", "98% happy") | 0 | Only figures from the brief, with their unit, in a sentence |
+| The page talks about itself ("Below you'll find", "This section shows") | 0 | Say the thing |
+
+**Over-correction.** Every ban breeds a substitute. Check for the substitute too.
+
+| Rule applied | Habit it breeds | Counter |
+|---|---|---|
+| No em dashes | Comma splices and nothing but full stops | Rewrite the sentence: split it in two, or join the parts with a plain word ("and", "so", "because") |
+| No "not X but Y" | "rather than", "instead of", "without the" | Count them together; state the positive |
+| No hype words | Calm words: quietly, steady, honest, practical | A fact in place of the adjective |
+| Avoid lists of three | Everything in pairs | List as many items as there are |
+| Be specific | Invented numbers and stories | Brief facts, or a plainer line |
+| Short sentences | A drumbeat of fragments | Let 1 sentence per section run long |
+| End strong | A moral or quip on every paragraph | End on information |
+| Vary section length | One huge and one tiny section on every page | Length follows the material |
+<!-- /crisp:shared taste -->
+
+## Lessons
+
+<!-- crisp:shared lessons -->
+**Lessons log.** The pack learns the user's taste from their corrections.
+
+- **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
+- **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
+  `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
+  Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
+- **Promote:** when the same rule appears 3 times, tell the user it is ready to move into the pack's shared taste rules (`skills/_shared/taste.md` in the CRISP repo).
+<!-- /crisp:shared lessons -->
+
+## Next step
+
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
+
+- The tone is right: `/crisp-proof` for the before and after
+- The run surfaced other issues: `/crisp-review`
+- NO TOKENS: `/crisp-study .`

@@ -3,6 +3,8 @@ name: crisp-ux-laws
 description: Cognitive and perceptual laws applied to interface decisions - Fitts, Hick, Miller, Doherty Threshold, Von Restorff, Proximity, Common Region - mapped to CRISP dimensions and actionable rules. Use during design reviews or when evaluating interaction complexity.
 metadata:
   version: "1.1.1"
+  checked: "2026-11-22"
+  checked-with: "claude-opus-5-5"
 ---
 
 # CRISP UX Laws - `/crisp-ux-laws`
@@ -242,3 +244,22 @@ NO VIOLATIONS
 *CRISP UX Laws Skill - getcrisp.design*
 *Part of the CRISP skill pack · github.com/laith-wallace/crisp*
 *Laws sourced from: Fitts (1954), Hick (1952), Miller (1956), Doherty & Thadani (1982), Von Restorff (1933), Wertheimer (1923)*
+
+## Lessons
+
+<!-- crisp:shared lessons -->
+**Lessons log.** The pack learns the user's taste from their corrections.
+
+- **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
+- **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
+  `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
+  Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
+- **Promote:** when the same rule appears 3 times, tell the user it is ready to move into the pack's shared taste rules (`skills/_shared/taste.md` in the CRISP repo).
+<!-- /crisp:shared lessons -->
+
+## Next step
+
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
+
+- Back to the design skill you were in

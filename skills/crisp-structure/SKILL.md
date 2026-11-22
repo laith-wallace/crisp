@@ -3,6 +3,8 @@ name: crisp-structure
 description: Two-layer code structure - actions own the why and when (business rules, auth, state transitions), a service layer owns the how (reusable operational mechanics with explicit inputs and structured returns). Audits an existing codebase for duplicated mechanics and leaky services with file:line evidence, decides where new-feature code belongs, and writes a one-caller-at-a-time extraction plan. Use for 'where should this go', 'this logic is copy-pasted', 'a fix in one flow didn't reach the others', or before adding a feature that shares mechanics with an existing one.
 metadata:
   version: "1.0.1"
+  checked: "2026-11-22"
+  checked-with: "claude-opus-5-5"
   author: Laith Wallace - FlowConverts
   adapted-from: michaelshimeles/skills code-structure (two-layer model)
 ---
@@ -183,3 +185,22 @@ Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y
 ```
 - [YYYY-MM-DD] | /crisp-structure | [Audit/Design/Extract] | [scope] | [N] findings, [N] P1
 ```
+
+## Lessons
+
+<!-- crisp:shared lessons -->
+**Lessons log.** The pack learns the user's taste from their corrections.
+
+- **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
+- **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
+  `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
+  Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
+- **Promote:** when the same rule appears 3 times, tell the user it is ready to move into the pack's shared taste rules (`skills/_shared/taste.md` in the CRISP repo).
+<!-- /crisp:shared lessons -->
+
+## Next step
+
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
+
+- After the UI is built: `/crisp-review`

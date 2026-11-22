@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, writeFileSync, rmSync, realpathSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, realpathSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { execFileSync } from 'node:child_process';
@@ -106,6 +106,72 @@ test('Stop passes when changes add nothing', async () => {
     await inRepo(dir, async () => {
       writeFileSync('page.html', `<main>\n${OLD_IMG}<p>ok</p>\n</main>\n`);
       assert.equal(await runStop({}), null);
+    });
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('Stop blocks again while findings change, and stops after MAX_ROUNDS', async () => {
+  const dir = repo();
+  try {
+    await inRepo(dir, async () => {
+      const p = { session_id: 'rounds' };
+      writeFileSync('new.html', NEW_IMG);
+      assert.match((await runStop(p)).reason, /round 1 of 3/);
+      writeFileSync('new.html', NEW_IMG + '<img src="b.png">\n');
+      assert.match((await runStop({ ...p, stop_hook_active: true })).reason, /round 2 of 3/);
+      writeFileSync('new.html', NEW_IMG + '<img src="b.png">\n<img src="c.png">\n');
+      assert.match((await runStop({ ...p, stop_hook_active: true })).reason, /round 3 of 3/);
+      writeFileSync('new.html', NEW_IMG + '<img src="d.png">\n');
+      assert.equal(await runStop({ ...p, stop_hook_active: true }), null);
+    });
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('Stop blocks a suppression added without a real reason', async () => {
+  const dir = repo();
+  try {
+    await inRepo(dir, async () => {
+      writeFileSync('new.html', '<!-- crisp-disable-next-line missing-alt-text: ok -->\n' + NEW_IMG);
+      const out = await runStop({ session_id: 'weak' });
+      assert.equal(out.decision, 'block');
+      assert.match(out.reason, /without a reason of 12\+ characters/);
+    });
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('Stop passes a suppression with a real reason', async () => {
+  const dir = repo();
+  try {
+    await inRepo(dir, async () => {
+      writeFileSync('new.html', '<!-- crisp-disable-next-line missing-alt-text: decorative divider, aria-hidden parent -->\n' + NEW_IMG);
+      assert.equal(await runStop({ session_id: 'good' }), null);
+    });
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('Stop blocks more than MAX_SUPPRESSIONS added suppressions', async () => {
+  const dir = repo();
+  try {
+    await inRepo(dir, async () => {
+      const lines = Array.from({ length: 6 }, (_, i) => `<!-- crisp-disable-next-line missing-alt-text: decorative image number ${i} -->\n<img src="${i}.png">`).join('\n');
+      writeFileSync('new.html', lines + '\n');
+      const out = await runStop({ session_id: 'bulk' });
+      assert.match(out.reason, /6 suppressions added this session \(limit 5\)/);
+    });
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('Stop flags a broad config ignore for the user\'s OK', async () => {
+  const dir = repo();
+  try {
+    await inRepo(dir, async () => {
+      mkdirSync('.crisp');
+      writeFileSync('.crisp/config.json', JSON.stringify({ detector: { ignoreRules: ['missing-alt-text'] } }));
+      writeFileSync('page.html', `<main>\n${OLD_IMG}<p>ok</p>\n</main>\n`);
+      const out = await runStop({ session_id: 'cfg' });
+      assert.match(out.reason, /1 broad ignore added/);
+      assert.match(out.reason, /missing-alt-text in ignoreRules/);
+      assert.doesNotMatch(out.reason, /without a reason/);
     });
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });

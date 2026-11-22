@@ -3,7 +3,7 @@ name: crisp
 description: "Router for the CRISP skill pack - names every skill, its pipeline stage, and when to reach for it. Use when unsure which design or workflow skill fits: 'which crisp command should I use', 'what can CRISP do', 'where do I start with this design'."
 disable-model-invocation: true
 metadata:
-  version: "1.6.0"
+  version: "1.7.0"
 ---
 
 # /crisp - Skill Pack Router
@@ -20,6 +20,7 @@ One place to find the right CRISP skill. Read the user's situation, name the mat
 | Research | `/crisp-research` | Before designing - competitive patterns, anti-patterns, dimension risks, writes `.research.md` |
 | Research | `/crisp-study` | A URL, screenshot, or codebase has a look worth learning from - extracts its design DNA into a `DESIGN.md` with provenance |
 | Direction | `/crisp-worlds` | Nothing has a look yet - shows the category default plus 3 distinct visual worlds in a local picker; the chosen one becomes a `DESIGN.md` |
+| Direction | `/crisp-brand` | A look is chosen and needs a home - asks website or app first; builds a `/brand` page, or a design system plus `design-system.html` |
 | Design | `/feature-design` | Designing a new feature from a problem statement - reads `.brief.md` and `.research.md` |
 | Design | `/crisp-variants` | Choosing between options for one component in real code - 3 to 5 live variants of one component behind a dev-only switcher, then deletes the losers |
 | Build | `/crisp-structure` | Deciding where code goes - actions own why and when, services own how; auditing duplicated mechanics or leaky services |
@@ -51,6 +52,7 @@ One place to find the right CRISP skill. Read the user's situation, name the mat
 | "grade this", "quick look" | `/crisp-review` | `/crisp-audit` (that is the full /50 score) |
 | "make it bolder", "tone it down" | `/crisp-tune` | `/crisp-redesign` (that changes identity) |
 | "show me directions" before anything exists | `/crisp-worlds` | `/crisp-variants` (that varies one component in code) |
+| "brand page", "design system", "showcase our components" | `/crisp-brand` | `/crisp-worlds` (that picks the look; brand builds with it) |
 | "let me click on it and tell you" | `/crisp-live` | `/crisp-variants` |
 | "prove it works" | `/crisp-evidence` | `/crisp-proof` (that is before/after visuals) |
 | "fix this error message" | `/crisp-copy` | `/crisp-unslop` (that is long-form prose) |
@@ -78,4 +80,6 @@ If no `.crisp.md` exists yet, suggest `/crisp-teach` first - every skill above r
 
 ## Always on
 
-The design detector runs without being asked once its hooks are installed (plugin installs get them automatically; the npm installer offers them). After each UI file edit it reports only the issues that edit added. Before the agent stops it checks every changed UI file once and blocks on new P0/P1 findings. Run it by hand with `npx @laith-wallace/crisp detect <path>`.
+The design detector runs without being asked once its hooks are installed (plugin installs get them automatically; the npm installer offers them). After each UI file edit it reports only the issues that edit added. Before the agent stops, the finish gate blocks on new P0/P1 findings, on a suppression added without a reason of 12+ characters, and on more than 5 suppressions added. It blocks again while the open findings change, up to 3 rounds a turn. Run it by hand with `npx @laith-wallace/crisp detect <path>`.
+
+Every skill reads `.crisp/lessons.md` (the user's past corrections) before it starts, and ends with a `Next:` line naming the skill to run after it. Design skills also read `.crisp/taste-bank/` (fill it with `/crisp-study <url> --bank`). The visual map of this pipeline is `docs/workflow-map.html`.

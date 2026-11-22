@@ -3,6 +3,8 @@ name: handoff
 description: Convert a CRISP-reviewed design into a developer-ready specification - component states, implementation notes, token references, edge cases, and an accessibility checklist. Use after /crisp-audit or /crisp-review, or for 'dev handoff', 'spec this for engineering'.
 metadata:
   version: "1.1.4"
+  checked: "2026-11-22"
+  checked-with: "claude-opus-5-5"
 ---
 
 # /handoff - Developer Handoff Spec
@@ -243,3 +245,24 @@ Before delivering the spec, check:
 | Error messages | Specific failure type + specific recovery action |
 | Success confirmations | Name exactly what changed, not "Success" or "Done" |
 | Table/list preview data | Realistic production-representative values, not "John Doe / example@email.com" |
+
+## Lessons
+
+<!-- crisp:shared lessons -->
+**Lessons log.** The pack learns the user's taste from their corrections.
+
+- **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
+- **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
+  `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
+  Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
+- **Promote:** when the same rule appears 3 times, tell the user it is ready to move into the pack's shared taste rules (`skills/_shared/taste.md` in the CRISP repo).
+<!-- /crisp:shared lessons -->
+
+## Next step
+
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
+
+- Spec ready to build: build it, then `/crisp-review` on the result
+- Open questions left in the spec: `/feature-design` to settle them
+- Built and close to launch: `/crisp-production-ready`

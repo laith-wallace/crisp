@@ -3,6 +3,8 @@ name: crisp-teach
 description: "Project onboarding - interviews you about users, design system, and benchmarks, then writes .crisp.md, the context file every other CRISP command reads. Re-running it merges updates and keeps History and Decisions. Use when starting CRISP on a project, when .crisp.md is missing or stale, or before design work that needs product context: 'set up CRISP', 'teach CRISP about my product', 'onboard the design skills'."
 metadata:
   version: "1.6.0"
+  checked: "2026-11-22"
+  checked-with: "claude-opus-5-5"
 ---
 
 # /crisp-teach - Project Onboarding
@@ -187,3 +189,23 @@ Priority CRISP dimension: [C / R / I / S / P]
 When writing any date into `.crisp.md`, get today's date from the `date` command (`date +%Y-%m-%d`) - never from memory. For `[SKILL_VERSION]`, use this skill's own `version` field from its frontmatter (the `version: "X.Y.Z"` line at the top of this file) - this stamp is what `/crisp-doctor` later reads to tell whether a project's `.crisp.md` predates fields a newer version expects.
 
 Confirm to the user that `.crisp.md` has been written (or merged, with History and Decisions preserved), list any sections left as TODO, and say that all CRISP commands will now use this context automatically.
+
+## Lessons
+
+<!-- crisp:shared lessons -->
+**Lessons log.** The pack learns the user's taste from their corrections.
+
+- **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
+- **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
+  `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
+  Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
+- **Promote:** when the same rule appears 3 times, tell the user it is ready to move into the pack's shared taste rules (`skills/_shared/taste.md` in the CRISP repo).
+<!-- /crisp:shared lessons -->
+
+## Next step
+
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
+
+- New work: `/crisp-brief`
+- An existing surface to judge: `/crisp-review`

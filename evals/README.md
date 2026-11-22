@@ -6,9 +6,9 @@ Every case is a directory holding a `prompt.md` (frontmatter = run limits, body 
 
 | Folder | Cases | What it measures |
 |---|---|---|
-| `triggering/<skill>/` | 31 | A natural request (no skill name in it) makes Claude invoke that skill. One free `tool_used: Skill` grader each |
+| `triggering/<skill>/` | 32 | A natural request (no skill name in it) makes Claude invoke that skill. One free `tool_used: Skill` grader each |
 | `negative/<name>/` | 5 | Ordinary coding requests where no CRISP skill may fire. `tool_used` with `min: 0`, `max: 0`, `arm: both` |
-| `graded/<name>/` | 7 | Output quality on the regression fixtures in `tests/fixtures/`, graded against `tests/expected/` |
+| `graded/<name>/` | 12 | Output quality: 7 regression fixtures from `tests/fixtures/` graded against `tests/expected/`, plus 5 `taste-*` cases graded against `skills/_shared/taste.md` |
 
 Graded cases:
 
@@ -22,7 +22,17 @@ Graded cases:
 | `review-bad-dashboard` | crisp-review | `bad-dashboard.md` | `tests/expected/bad-dashboard.md` (grade, slop, P0 only - review returns the top 3) |
 | `decisions-suppression` | crisp-audit | `bad-dashboard.md` + `decisions/.crisp.md` | `tests/expected/decisions.md` |
 
-Each graded case has a `skill-fired` indicator, `llm` rubrics for the must-find lists (split into chunks of 3 to 5 items so the judge stays stable), `llm` rubrics for the must-not-flag / fabrication checks, and free `regex` graders for binary outputs (pre-flight FAIL lines, `Grade: D`, `Suppressed by decisions: 1`, the Self-audit line, the Evidence line).
+Taste cases (the benchmark set). Each gives a short brief in `fixture/brief.md` and grades the output against the counted rules in `skills/_shared/taste.md`. Run them before and after any change to a skill or a shared block. A drop in pass rate means the change made the pack worse.
+
+| Case | Skill | What it measures |
+|---|---|---|
+| `taste-cafe-homepage` | crisp-funnel | Invented specifics, virtue words, figure strips, contrast cap, one client detail in the hero |
+| `taste-devtool-landing` | crisp-funnel | Unsourced proof figures, testimonials, two-fragment headings, stated limits |
+| `taste-unslop-gen2` | crisp-unslop | Finds second-generation tells and keeps only the owner's facts |
+| `taste-overcorrection` | crisp-unslop (Detect) | Finds the substitute habits that bans breed |
+| `taste-feature-detail` | feature-design | Uses the client's own terms; a real empty state |
+
+Each regression case (the 7 non-taste graded cases) has a `skill-fired` indicator, `llm` rubrics for the must-find lists (split into chunks of 3 to 5 items so the judge stays stable), `llm` rubrics for the must-not-flag / fabrication checks, and free `regex` graders for binary outputs (pre-flight FAIL lines, `Grade: D`, `Suppressed by decisions: 1`, the Self-audit line, the Evidence line).
 
 Fixtures are copies. Six cases read theirs from a read-only `fixture/` folder (`context.add_dirs`). `decisions-suppression` needs `.crisp.md` at the project root, so its `fixture.sh` scaffold writes both files into the workspace; it only runs with `--scaffold`. If you change a file in `tests/fixtures/`, copy it into the matching `graded/*/fixture/` folder and the heredocs in `graded/decisions-suppression/fixture.sh`.
 
@@ -55,7 +65,7 @@ To also check that `decisions-suppression` never writes to `## Decisions`, grant
 
 ## Cost
 
-Every agent run and every `llm` judge vote is a real model call on your account. The full suite is 43 cases x 3 runs x 2 arms = 258 agent runs, plus 3 judge votes per `llm` grader per run (27 `llm` graders across the 7 graded cases). Triggering and negative cases use only free graders, so they cost just their agent runs. Set `--max-cost-usd` as a ceiling, use `--ablation none` to halve the cost when you don't need the delta, and use `--runs 1` while iterating (then confirm at 3 runs). Results land in `evals/results/<timestamp>/` (git-ignored).
+Every agent run and every `llm` judge vote is a real model call on your account. The full suite is 50 cases x 3 runs x 2 arms = 300 agent runs, plus 3 judge votes per `llm` grader per run (43 `llm` graders across the 12 graded cases: 27 in the regression cases, 16 in the taste cases). Triggering and negative cases use only free graders, so they cost just their agent runs. Set `--max-cost-usd` as a ceiling, use `--ablation none` to halve the cost when you don't need the delta, and use `--runs 1` while iterating (then confirm at 3 runs). Results land in `evals/results/<timestamp>/` (git-ignored).
 
 ## After a run
 

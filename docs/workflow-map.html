@@ -1,0 +1,335 @@
+<title>CRISP Workflow Map</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a vertical route map. Stages are stations on one line; skills sit beside each station, tagged by track. */
+:root {
+  --bg: #F5F6F8;
+  --surface: #FFFFFF;
+  --ink: #141821;
+  --muted: #586172;
+  --line: #DCE0E7;
+  --feat: #2C57CC;
+  --web: #C9501B;
+  --both: #4A5262;
+  --feat-soft: #E8EEFC;
+  --web-soft: #FBEBE3;
+  --both-soft: #ECEEF2;
+  --display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1217; --surface: #171B22; --ink: #E8EBF0; --muted: #9AA3B3; --line: #2A303B;
+    --feat: #85A2FF; --web: #FF8D55; --both: #AEB6C3;
+    --feat-soft: #1C2540; --web-soft: #33211A; --both-soft: #222731;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1217; --surface: #171B22; --ink: #E8EBF0; --muted: #9AA3B3; --line: #2A303B;
+  --feat: #85A2FF; --web: #FF8D55; --both: #AEB6C3;
+  --feat-soft: #1C2540; --web-soft: #33211A; --both-soft: #222731;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 48px 72px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(32px, 5vw, 52px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; }
+h2 { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; }
+h3 { font-size: 18px; font-weight: 700; }
+p { margin: 0; }
+code, .cmd { font-family: var(--mono); font-size: 13.5px; }
+.lede { color: var(--muted); max-width: 62ch; margin-top: 14px; font-size: 16px; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin-top: 28px; }
+.seg { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 4px; gap: 4px; }
+.seg button { font: 600 14px var(--body); color: var(--muted); background: transparent; border: 0; border-radius: 999px; padding: 8px 16px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; }
+.seg button:hover { color: var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.seg button:focus-visible, .copy:focus-visible, .chip:focus-visible { outline: 2px solid var(--feat); outline-offset: 2px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; color: var(--muted); font-size: 13px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: none; }
+.dot.feature { background: var(--feat); } .dot.web { background: var(--web); } .dot.both { background: var(--both); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+section { margin-top: 56px; }
+.sec-head { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+.sec-head p { color: var(--muted); max-width: 64ch; }
+
+/* Routes */
+.routes { display: grid; gap: 12px; }
+.route { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; display: grid; grid-template-columns: 200px 1fr; gap: 12px 20px; align-items: center; }
+.route h3 { display: flex; align-items: center; gap: 10px; font-size: 16px; }
+.route p.sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+.path { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-width: 0; }
+.chip { font-family: var(--mono); font-size: 13px; padding: 5px 10px; border-radius: 8px; background: var(--both-soft); color: var(--ink); border: 0; cursor: pointer; }
+.route.feature .chip { background: var(--feat-soft); }
+.route.web .chip { background: var(--web-soft); }
+.chip:hover { outline: 1px solid var(--muted); }
+.arrow { color: var(--muted); font-size: 13px; }
+.route.dim { opacity: .35; }
+
+/* Map */
+.map { position: relative; display: grid; gap: 0; }
+.stage { display: grid; grid-template-columns: 48px 230px 1fr; gap: 0 20px; position: relative; padding-bottom: 36px; }
+.stage::before { content: ""; position: absolute; left: 23px; top: 40px; bottom: 0; width: 2px; background: var(--line); }
+.stage:last-child::before { display: none; }
+.station { width: 48px; height: 48px; border-radius: 50%; background: var(--surface); border: 2px solid var(--ink); display: grid; place-items: center; font: 800 18px var(--display); position: relative; z-index: 1; }
+.stage-info { padding-top: 8px; }
+.stage-info p { color: var(--muted); font-size: 14px; margin-top: 6px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; min-width: 0; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 14px 14px 16px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.card-top { display: flex; align-items: center; gap: 8px; }
+.card .cmd { font-weight: 500; overflow-wrap: anywhere; }
+.card .when { color: var(--muted); font-size: 14px; }
+.tag { font-size: 12px; color: var(--muted); display: inline-flex; align-items: center; gap: 5px; margin-left: auto; white-space: nowrap; }
+.copy { border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 8px; font: 500 12px var(--body); padding: 4px 8px; cursor: pointer; min-height: 28px; }
+.copy:hover { color: var(--ink); border-color: var(--muted); }
+.card[hidden] { display: none !important; }
+.empty-note { color: var(--muted); font-size: 14px; padding-top: 12px; }
+
+/* Stuck */
+.stuck { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.table-scroll { overflow-x: auto; }
+.stuck th, .stuck td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.stuck th { font: 600 13px var(--body); color: var(--muted); background: var(--both-soft); }
+.stuck tr:last-child td { border-bottom: 0; }
+.stuck td.not { color: var(--muted); font-size: 14px; }
+
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.note { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+.note p { color: var(--muted); margin-top: 6px; font-size: 14px; }
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 14px; }
+
+@media (max-width: 860px) {
+  .stage { grid-template-columns: 40px 1fr; }
+  .station { width: 40px; height: 40px; font-size: 16px; }
+  .stage::before { left: 19px; top: 36px; }
+  .stage-info { grid-column: 2; padding-top: 4px; }
+  .cards { grid-column: 2; margin-top: 14px; grid-template-columns: 1fr; }
+  .route { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .card, .route { transition: opacity .2s; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>CRISP Workflow Map</h1>
+    <p class="lede">Which skill to run at each stage of design work. Pick your track, follow the stations top to bottom, and skip what the job does not need. Every skill ends with a "Next:" line, so you can also just follow that. Click any command to copy it.</p>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Show skills for">
+        <button type="button" id="t-all" data-track="all" aria-pressed="true">All work</button>
+        <button type="button" id="t-feature" data-track="feature" aria-pressed="false"><span class="dot feature"></span>Client feature</button>
+        <button type="button" id="t-web" data-track="web" aria-pressed="false"><span class="dot web"></span>Website</button>
+      </div>
+      <div class="legend" aria-hidden="true">
+        <span><i class="dot feature"></i>Feature work</span>
+        <span><i class="dot web"></i>Website work</span>
+        <span><i class="dot both"></i>Both</span>
+      </div>
+    </div>
+  </header>
+
+  <section aria-labelledby="routes-h">
+    <div class="sec-head">
+      <h2 id="routes-h">Fast routes for common jobs</h2>
+      <p>The usual order for each job. Start at the left. When a step is not needed, skip it.</p>
+    </div>
+    <div class="routes" id="routes"></div>
+  </section>
+
+  <section aria-labelledby="map-h">
+    <div class="sec-head">
+      <h2 id="map-h">Every skill, by stage</h2>
+      <p>Seven stages, in the order you meet them. Stage 0 happens once per project. Stages 4 and 5 repeat until the grade is where you want it.</p>
+    </div>
+    <div class="map" id="map"></div>
+  </section>
+
+  <section aria-labelledby="stuck-h">
+    <div class="sec-head">
+      <h2 id="stuck-h">Stuck? Match what you would say</h2>
+      <p>Some skills sound alike. Find the words closest to yours.</p>
+    </div>
+    <div class="table-scroll">
+      <table class="stuck">
+        <thead><tr><th scope="col">You would say</th><th scope="col">Run</th><th scope="col">Not this one</th></tr></thead>
+        <tbody id="stuck"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="always-h">
+    <div class="sec-head"><h2 id="always-h">Runs without you</h2></div>
+    <div class="notes">
+      <div class="note">
+        <h3>Design detector and finish gate</h3>
+        <p>After each UI file edit, it reports only the issues that edit added. Before the agent stops, it blocks on new P0 or P1 findings, on a suppression with no real reason, and on more than 5 suppressions. It keeps blocking while fixes land, up to 3 rounds. Run it by hand with <code>npx @laith-wallace/crisp detect &lt;path&gt;</code>.</p>
+      </div>
+      <div class="note">
+        <h3>Lessons log</h3>
+        <p>When you correct a skill, it writes one line to <code>.crisp/lessons.md</code>. Every skill reads it before it starts. A rule that comes up 3 times is ready to move into the shared taste rules.</p>
+      </div>
+      <div class="note">
+        <h3>Taste bank</h3>
+        <p>Save a great site with <code>/crisp-study &lt;url&gt; --bank</code>. Design skills read <code>.crisp/taste-bank/</code> before they design and name what they borrow.</p>
+      </div>
+      <div class="note">
+        <h3>Taste test set</h3>
+        <p>Five graded briefs in <code>evals/graded/taste-*</code>. Run them before and after you change a skill. If the pass rate drops, the change made the pack worse.</p>
+      </div>
+      <div class="note">
+        <h3>Render check</h3>
+        <p>Measures the page as the browser draws it, at desktop and phone widths. <code>crisp render-check &lt;url&gt; --width 1280,375</code>. Exit 0 is clean, 2 has findings, 3 could not decide.</p>
+      </div>
+      <div class="note">
+        <h3>Not sure at all?</h3>
+        <p>Run <code>/crisp</code>. It reads your situation and names the skill to use. It does not do the work itself.</p>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+const STAGES = [
+  { n: 0, name: "Set up", why: "Once per project, before the first task.", skills: [
+    ["/crisp-teach", "both", "Write .crisp.md: your users, design system and benchmarks. Every other skill reads it."],
+    ["/crisp-isolate", "both", "Start each task in its own worktree and branch, cut from origin/main, after a check for clashing work."],
+    ["/crisp-agents-md", "both", "Write AGENTS.md so Codex, Cursor, Gemini and Claude Code all follow the same chain."],
+    ["/crisp-doctor", "both", "After a CRISP upgrade, find and repair a stale .crisp.md or config."]
+  ]},
+  { n: 1, name: "Understand the job", why: "Know what you are building and for whom before you draw anything.", skills: [
+    ["/crisp-brief", "both", "The request is vague. Get a .brief.md with the problem, the user, success criteria and scope."],
+    ["/crisp-research", "both", "See how others solve it: patterns, anti-patterns and real screens, Mobbin first when connected."],
+    ["/crisp-study", "both", "A site, screenshot or codebase has a look to learn from. Extract it into a DESIGN.md, or add --bank to save it to your taste bank."]
+  ]},
+  { n: 2, name: "Pick a direction", why: "Choose the look or the option before you commit to code.", skills: [
+    ["/crisp-worlds", "web", "Nothing has a look yet. See the category default plus 3 different visual worlds, then pick one."],
+    ["/crisp-variants", "both", "Compare 3 to 5 real versions of one component behind a dev-only switcher. The losers are deleted."],
+    ["/crisp-brand", "both", "A look is chosen. Asks website or app first: a website gets a /brand page, an app gets a design system and a design-system.html showcase."]
+  ]},
+  { n: 3, name: "Design and build", why: "Pick the main skill for the job, then add specialists as needed.", skills: [
+    ["/feature-design", "feature", "A problem statement becomes user flows, component choices and the reasons for each."],
+    ["/crisp-ai", "feature", "The feature is chat, streaming, agents, inline assist or generative UI."],
+    ["/crisp-structure", "feature", "Decide where code goes: actions own the why and when, services own the how."],
+    ["/crisp-funnel", "web", "Landing pages, sales pages, opt-ins and funnels, built with Attention, Trust, Money."],
+    ["/crisp-redesign", "web", "Overhaul an existing site without breaking SEO, analytics or flows that work."],
+    ["/crisp-3d", "web", "The whole site is one 3D scene, with the camera moving between stops as you scroll."],
+    ["/crisp-copy", "both", "UI words: labels, errors, empty states, tooltips and buttons."],
+    ["/crisp-unslop", "both", "Prose that sounds like AI: landing copy, docs, posts, release notes."],
+    ["/crisp-design-eng", "both", "Motion, micro-interactions and polish. Use it when something feels off."],
+    ["/crisp-ux-laws", "both", "Back a design choice with Fitts, Hick, Miller and the other laws."]
+  ]},
+  { n: 4, name: "Check", why: "Find the problems. Run the quick check often and the full one before you ship.", skills: [
+    ["/crisp-review", "both", "30 seconds: a grade from A to F and the top 3 issues with fixes."],
+    ["/crisp-audit", "both", "The full score across all five CRISP dimensions, with a ranked action plan."],
+    ["/crisp-stress", "both", "Worst-case data: empty, 1000 items, long names, RTL, slow network, 200% zoom, 320px."],
+    ["/crisp-a11y", "both", "A deep WCAG 2.2 AA check with fixes at code level."]
+  ]},
+  { n: 5, name: "Fix and polish", why: "Fix what the checks found, then check again.", skills: [
+    ["/crisp-loop", "both", "Review, fix P0 and P1, review again, until grade B or 5 rounds. Add --target-image to match a picture."],
+    ["/crisp-tune", "both", "The design is right but the tone is wrong: bolder, quieter or simpler."],
+    ["/crisp-improve-ui", "both", "Tighten an existing screen without a redesign. Writes plans to design-plans/."],
+    ["/crisp-live", "both", "Click parts of your running site and say what to change."]
+  ]},
+  { n: 6, name: "Prove and ship", why: "Show that it works and that it got better, then hand it over.", skills: [
+    ["/crisp-proof", "both", "Before and after screenshots with the change in grade, for the PR."],
+    ["/crisp-evidence", "both", "A recorded run of the live app that proves the change works."],
+    ["/handoff", "feature", "A developer-ready spec: states, tokens, edge cases and an accessibility list."],
+    ["/crisp-production-ready", "both", "Pre-launch audit through 24 lenses, ending in an HTML fix playbook."]
+  ]}
+];
+
+const ROUTES = [
+  { track: "feature", name: "Client feature", sub: "A new feature in an app that exists",
+    path: ["/crisp-isolate", "/crisp-brief", "/crisp-research", "/feature-design", "/crisp-copy", "/crisp-review", "/crisp-loop", "/crisp-stress", "/crisp-proof", "/handoff"] },
+  { track: "web", name: "New website", sub: "From an empty folder",
+    path: ["/crisp-teach", "/crisp-brief", "/crisp-study", "/crisp-worlds", "/crisp-brand", "/crisp-funnel", "/crisp-unslop", "/crisp-loop", "/crisp-stress", "/crisp-proof", "/crisp-production-ready"] },
+  { track: "web", name: "Website redesign", sub: "An existing site that must keep working",
+    path: ["/crisp-isolate", "/crisp-audit", "/crisp-redesign", "/crisp-tune", "/crisp-loop", "/crisp-proof", "/crisp-production-ready"] },
+  { track: "both", name: "Quick polish", sub: "A screen that is nearly right",
+    path: ["/crisp-review", "/crisp-tune", "/crisp-loop", "/crisp-proof"] }
+];
+
+const STUCK = [
+  ["“Where do I even start?”", "/crisp-brief", ""],
+  ["“Grade this” or “quick look”", "/crisp-review", "/crisp-audit is the full score"],
+  ["“Make it bolder” or “tone it down”", "/crisp-tune", "/crisp-redesign changes the identity"],
+  ["“Show me directions”, nothing built yet", "/crisp-worlds", "/crisp-variants varies one component in code"],
+  ["“Let me click on it and tell you”", "/crisp-live", "/crisp-variants"],
+  ["“It works but does not look like the reference”", "/crisp-loop --target-image", "/crisp-loop grade mode counts faults, not looks"],
+  ["“The copy sounds like AI”", "/crisp-unslop", "/crisp-copy is for buttons and errors"],
+  ["“Fix this error message”", "/crisp-copy", "/crisp-unslop is for long prose"],
+  ["“Prove it works”", "/crisp-evidence", "/crisp-proof is before and after pictures"],
+  ["“Make a brand page” or “build our design system”", "/crisp-brand", "/crisp-worlds picks the look; brand builds with it"],
+  ["“Build a 3D website”", "/crisp-3d", "/crisp-design-eng is one effect inside a page"],
+  ["“Can we ship?”", "/crisp-production-ready", ""]
+];
+
+const TRACK_LABEL = { feature: "Feature", web: "Website", both: "Both" };
+const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+document.getElementById("routes").innerHTML = ROUTES.map(r => `
+  <div class="route ${r.track}" data-track="${r.track}">
+    <div><h3><span class="dot ${r.track}"></span>${esc(r.name)}</h3><p class="sub">${esc(r.sub)}</p></div>
+    <div class="path">${r.path.map((c, i) => `${i ? '<span class="arrow" aria-hidden="true">→</span>' : ""}<button type="button" class="chip" data-copy="${esc(c)}">${esc(c)}</button>`).join("")}</div>
+  </div>`).join("");
+
+document.getElementById("map").innerHTML = STAGES.map(s => `
+  <div class="stage">
+    <div class="station" aria-hidden="true">${s.n}</div>
+    <div class="stage-info"><h3>${esc(s.name)}</h3><p>${esc(s.why)}</p></div>
+    <div class="cards">${s.skills.map(([cmd, t, when]) => `
+      <div class="card" data-track="${t}">
+        <div class="card-top"><span class="cmd">${esc(cmd)}</span><span class="tag"><i class="dot ${t}"></i>${TRACK_LABEL[t]}</span></div>
+        <p class="when">${esc(when)}</p>
+        <div><button type="button" class="copy" data-copy="${esc(cmd)}" aria-label="Copy ${esc(cmd)}">Copy</button></div>
+      </div>`).join("")}
+      <p class="empty-note" hidden>Nothing here for this track. Go to the next stage.</p>
+    </div>
+  </div>`).join("");
+
+document.getElementById("stuck").innerHTML = STUCK.map(([say, run, not]) => `
+  <tr><td>${esc(say)}</td><td><button type="button" class="chip" data-copy="${esc(run)}">${esc(run)}</button></td><td class="not">${not ? esc(not) : "–"}</td></tr>`).join("");
+
+function setTrack(track) {
+  document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.track === track)));
+  document.querySelectorAll(".card").forEach(c => { c.hidden = !(track === "all" || c.dataset.track === "both" || c.dataset.track === track); });
+  document.querySelectorAll(".cards").forEach(g => { g.querySelector(".empty-note").hidden = !!g.querySelector(".card:not([hidden])"); });
+  document.querySelectorAll(".route").forEach(r => r.classList.toggle("dim", !(track === "all" || r.dataset.track === "both" || r.dataset.track === track)));
+  try { localStorage.setItem("crisp-map-track", track); } catch (e) {}
+}
+document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => setTrack(b.dataset.track)));
+let saved = "all";
+try { saved = localStorage.getItem("crisp-map-track") || "all"; } catch (e) {}
+setTrack(["all", "feature", "web"].includes(saved) ? saved : "all");
+
+const toast = document.getElementById("toast");
+let toastTimer;
+function show(msg) { toast.textContent = msg; toast.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { toast.hidden = true; }, 1600); }
+document.addEventListener("click", e => {
+  const btn = e.target.closest("[data-copy]");
+  if (!btn) return;
+  const text = btn.dataset.copy;
+  const done = () => show(`Copied ${text}`);
+  try {
+    navigator.clipboard.writeText(text).then(done, () => fallback(text, done));
+  } catch (err) { fallback(text, done); }
+});
+function fallback(text, done) {
+  const t = document.createElement("textarea");
+  t.value = text; t.setAttribute("readonly", ""); t.style.position = "fixed"; t.style.opacity = "0";
+  document.body.appendChild(t); t.select();
+  let ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+  t.remove();
+  ok ? done() : show(`Select and copy: ${text}`);
+}
+</script>
