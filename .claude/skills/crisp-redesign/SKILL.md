@@ -203,23 +203,24 @@ Append to the `## History` section of `.crisp.md` (if it exists). Get today's da
 ## Finish check
 
 <!-- crisp:shared finish-check -->
-**Finish check.** Before you say a built or changed page is done, measure it as the browser draws it:
+**Finish check.** Before you say a built or changed page is done, measure it as the browser draws it. Screenshots go to `.crisp/render/`: tool output, git-ignored, and never counted as an edit outside this skill's scope.
 
 ```bash
+mkdir -p .crisp/render && printf '*\n' > .crisp/render/.gitignore && rm -f .crisp/render/*.png
 npx @laith-wallace/crisp render-check "<local url>" --width 1280,375 --shots .crisp/render
 ```
 
 - Exit 0: clean. Say so in the report.
 - Exit 2: findings. `page-overflow-x`, `overlapping-text`, `text-cut` and `text-spills` are bugs, never style choices. Fix them and run it again, at most 3 rounds.
-- Exit 3 (inconclusive), exit 1 (no URL, no Playwright, or the page did not load), or no local URL to give it: report `render-check: untested` with the reason. Never report the page as checked.
+- Exit 3 (inconclusive), exit 1 (no URL, no Playwright, or the page did not load), or no local URL to give it: report `render-check: untested` with the reason. Never report the page as checked, and open no screenshots: this run took none.
 
-Then open `.crisp/render/render-1280.png` and `.crisp/render/render-375.png` and look at them once against the taste rules. A clean exit code proves the layout holds, not that the page has taste.
+Only after exit 0 or 2, open `.crisp/render/render-1280.png` and `.crisp/render/render-375.png` (the folder was emptied first, so both are from this run) and look at them once against the taste rules. A clean exit code proves the layout holds, not that the page has taste.
 <!-- /crisp:shared finish-check -->
 
 ## Taste rules
 
 <!-- crisp:shared taste -->
-**Taste rules.** Each rule is a count, so a check can say pass or fail. Rules 1 to 7 apply when this skill makes or judges a rendered UI (a screen, a page, a component). The copy tells apply to all copy, prose included. Where this skill states a stricter limit for the same pattern, the stricter limit wins.
+**Taste rules.** Each rule is a count, so a check can say pass or fail. Rules 1 to 7 apply when this skill makes or judges a rendered UI (a screen, a page, a component). The copy tells apply to all copy, prose included. Where this skill states a stricter limit for the same pattern, the stricter limit wins. Em dashes follow this skill's own rule where it has one.
 
 1. **One detail only this client has.** Each screen shows at least 1 detail taken from the brief or the product: its units, its terms, its real prices, hours or numbers. A screen that would fit any business in the category fails.
 2. **Real material first.** The client's own product, UI, photos and words lead. A stand-in (stock photo, mock data, coined name) is listed in the report as a stand-in. Zero stand-ins are presented as the client's own.
@@ -267,7 +268,7 @@ Then open `.crisp/render/render-1280.png` and `.crisp/render/render-375.png` and
 **Lessons log.** The pack learns the user's taste from their corrections.
 
 - **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
-- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed in every skill, read-only ones and ones limited to their target's files included. It never counts against a skill's scope, clean-tree or zero-writes rules.
 - **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
   `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
   Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
@@ -276,7 +277,7 @@ Then open `.crisp/render/render-1280.png` and `.crisp/render/render-375.png` and
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** or `Ready for` line, write this line there instead. Where the report ends with Handover lines, put it directly above them.
 
 - Then: `/crisp-loop` to a grade of B
 - Then: `/crisp-proof` for before and after

@@ -150,7 +150,7 @@ Run on every world preview before the picker is written.
 Pick in the page, or reply: build A | build B | build C | build D
 ```
 
-After the choice: `**Stop reason:** CHOSEN C`, the DESIGN.md path and its lint line, and **Next:** `/crisp-redesign` or `/feature-design` with DESIGN.md, then `/crisp-proof` baseline vs chosen.
+After the choice: `**Stop reason:** CHOSEN C`, the DESIGN.md path and its lint line, and the `Next:` line from the Next step list below.
 
 ## Self-check before delivery
 
@@ -173,7 +173,7 @@ Append one line to `## History` in `.crisp.md` if it exists, after the choice. D
 ## Taste rules
 
 <!-- crisp:shared taste -->
-**Taste rules.** Each rule is a count, so a check can say pass or fail. Rules 1 to 7 apply when this skill makes or judges a rendered UI (a screen, a page, a component). The copy tells apply to all copy, prose included. Where this skill states a stricter limit for the same pattern, the stricter limit wins.
+**Taste rules.** Each rule is a count, so a check can say pass or fail. Rules 1 to 7 apply when this skill makes or judges a rendered UI (a screen, a page, a component). The copy tells apply to all copy, prose included. Where this skill states a stricter limit for the same pattern, the stricter limit wins. Em dashes follow this skill's own rule where it has one.
 
 1. **One detail only this client has.** Each screen shows at least 1 detail taken from the brief or the product: its units, its terms, its real prices, hours or numbers. A screen that would fit any business in the category fails.
 2. **Real material first.** The client's own product, UI, photos and words lead. A stand-in (stock photo, mock data, coined name) is listed in the report as a stand-in. Zero stand-ins are presented as the client's own.
@@ -221,7 +221,7 @@ Append one line to `## History` in `.crisp.md` if it exists, after the choice. D
 **Lessons log.** The pack learns the user's taste from their corrections.
 
 - **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
-- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed in every skill, read-only ones and ones limited to their target's files included. It never counts against a skill's scope, clean-tree or zero-writes rules.
 - **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
   `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
   Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
@@ -230,9 +230,10 @@ Append one line to `## History` in `.crisp.md` if it exists, after the choice. D
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** or `Ready for` line, write this line there instead. Where the report ends with Handover lines, put it directly above them.
 
+- Waiting for the pick: `build <id>` - the user clicks Build this or types the choice
 - The team needs the look in one place: `/crisp-brand` (it asks website or app)
 - A landing or sales page: `/crisp-funnel`
-- An existing site: `/crisp-redesign`
+- An existing site: `/crisp-redesign`, then `/crisp-proof` baseline vs chosen
 - A feature: `/feature-design`

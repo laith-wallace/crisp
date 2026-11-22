@@ -60,9 +60,10 @@ Load `.crisp.md` if it exists. Its register and Named Rules decide which extract
 Steps 1 to 7 run unchanged. Then:
 
 - **Path.** Write to `.crisp/taste-bank/<slug>.md`, never to `--out`. The slug is the URL's host without `www.` (or the image file name), lowercase, hyphens only. An existing file with that slug is overwritten only after the user says so.
-- **Shape.** The same DESIGN.md format and Provenance table, with one extra first line in the Overview: `Best at: <one check another page can pass or fail>`, for example `Best at: every empty state names what is missing and gives 1 action`.
+- **Shape.** The same DESIGN.md format and Provenance table. The Overview keeps its "study, not clone" first sentence; its second line is `Best at: <one check another page can pass or fail>`, for example `Best at: every empty state names what is missing and gives 1 action`.
 - **Step 8.** Lint the bank file: `npx @laith-wallace/crisp design-md lint .crisp/taste-bank/<slug>.md`.
-- **Step 9.** Skip the `.crisp.md` pointer. Instead add 1 line to `.crisp/taste-bank/README.md` (create it with a `# Taste bank` heading if needed): `- <slug> | <source> | <the Best at line>`. A slug already listed gets its line replaced, not repeated.
+- **Step 9.** Skip the `.crisp.md` pointer. Instead add 1 line to `.crisp/taste-bank/README.md` (create it with a `# Taste bank` heading if needed): `- <slug> | <source> | <the Best at line> | for: <the design skill it was saved for, or none>`. A slug already listed gets its line replaced, not repeated.
+- **No `.crisp.md` writes.** Bank mode skips Longitudinal tracking too: zero lines added to `.crisp.md`, History included.
 - **Report.** The report names the bank file in place of DESIGN.md, and `**.crisp.md:**` reads `not touched (bank mode)`.
 
 ## Binary rules
@@ -153,7 +154,7 @@ The report back to the user:
 
 **Adapt first:** <the 2-3 decisions most worth taking, one line each>
 **Not fixed:** <omit if empty>
-Next: <command> - <why>   (from the Next step list below)
+Next: <command> - <why>
 ```
 
 ## Self-check before delivery
@@ -168,7 +169,7 @@ Next: <command> - <why>   (from the Next step list below)
 
 ## Longitudinal tracking
 
-Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y-%m-%d`:
+Append one line to `## History` in `.crisp.md` if it exists (never in bank mode). Date from `date +%Y-%m-%d`:
 
 ```
 - [YYYY-MM-DD] | /crisp-study | [source] | [N] tokens, lint [errors]/[warnings] | [stop reason]
@@ -177,7 +178,7 @@ Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y
 ## Taste rules
 
 <!-- crisp:shared taste -->
-**Taste rules.** Each rule is a count, so a check can say pass or fail. Rules 1 to 7 apply when this skill makes or judges a rendered UI (a screen, a page, a component). The copy tells apply to all copy, prose included. Where this skill states a stricter limit for the same pattern, the stricter limit wins.
+**Taste rules.** Each rule is a count, so a check can say pass or fail. Rules 1 to 7 apply when this skill makes or judges a rendered UI (a screen, a page, a component). The copy tells apply to all copy, prose included. Where this skill states a stricter limit for the same pattern, the stricter limit wins. Em dashes follow this skill's own rule where it has one.
 
 1. **One detail only this client has.** Each screen shows at least 1 detail taken from the brief or the product: its units, its terms, its real prices, hours or numbers. A screen that would fit any business in the category fails.
 2. **Real material first.** The client's own product, UI, photos and words lead. A stand-in (stock photo, mock data, coined name) is listed in the report as a stand-in. Zero stand-ins are presented as the client's own.
@@ -225,7 +226,7 @@ Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y
 **Lessons log.** The pack learns the user's taste from their corrections.
 
 - **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
-- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed in every skill, read-only ones and ones limited to their target's files included. It never counts against a skill's scope, clean-tree or zero-writes rules.
 - **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
   `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
   Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
@@ -234,11 +235,11 @@ Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** or `Ready for` line, write this line there instead. Where the report ends with Handover lines, put it directly above them.
 
 - No direction chosen yet: `/crisp-worlds` (the new DESIGN.md is one input)
 - Turn the tokens into a brand page or design system: `/crisp-brand`
 - A feature to design: `/feature-design`
 - A landing or sales page: `/crisp-funnel`
 - An existing UI to restyle: `/crisp-redesign`, or `/crisp-tune` when only the tone changes
-- Saved with `--bank`: back to the design skill the reference was saved for
+- Saved with `--bank`: the skill in the bank line's `for:` field, or `/crisp` when it says none
