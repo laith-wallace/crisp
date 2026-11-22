@@ -3,6 +3,8 @@ name: crisp-agents-md
 description: Generate or refresh a repo's AGENTS.md - the workflow file every coding agent reads before it touches the code. Discovers the installed skills and the repo's real facts (scripts, stack, CI, env var names), maps them onto the CRISP workflow chain (Isolate, Scope, Build, Prove, Ship, Write), and writes managed sections it can regenerate later without touching hand-written rules. Use for 'write an AGENTS.md', 'agent workflow file', 'set this repo up for agents', or when skills changed and the table is stale.
 metadata:
   version: "1.0.1"
+  checked: "2026-11-22"
+  checked-with: "claude-opus-5-5"
   author: Laith Wallace - FlowConverts
   inspired-by: michaelshimeles/skills AGENTS.md (workflow-beats structure)
 ---
@@ -173,3 +175,22 @@ After delivery, append one line to the `## History` section of `.crisp.md` if it
 ```
 - [YYYY-MM-DD] | /crisp-agents-md | [Create/Refresh/Adopt/Check] | AGENTS.md | [N]/6 beats wired, [N] TODOs
 ```
+
+## Lessons
+
+<!-- crisp:shared lessons -->
+**Lessons log.** The pack learns the user's taste from their corrections.
+
+- **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
+- **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
+  `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
+  Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
+- **Promote:** when the same rule appears 3 times, tell the user it is ready to move into the pack's shared taste rules (`skills/_shared/taste.md` in the CRISP repo).
+<!-- /crisp:shared lessons -->
+
+## Next step
+
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found:
+
+- No `.crisp.md` yet: `/crisp-teach`
+- Otherwise: back to the task

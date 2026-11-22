@@ -22,6 +22,9 @@ Edit the block here, never inside a skill. `npm run sync` rewrites every marked 
 | `never-intentional.md` | /crisp-loop, /crisp-proof |
 | `handover.md` | /crisp-loop, /crisp-proof, /crisp-evidence |
 | `fix-order.md` | /crisp-audit, /crisp-loop, /crisp-review |
+| `taste.md` | Every skill that makes or judges design or copy (17 skills). Adapted from github.com/Leonxlnx/taste-skill (MIT): the copy-tell and over-correction ideas, rewritten as counted rules |
+| `lessons.md` | Every skill except the /crisp router |
+| `finish-check.md` | /feature-design, /crisp-funnel, /crisp-redesign, /crisp-tune, /crisp-variants, /crisp-live |
 
 ## Platform overlays
 

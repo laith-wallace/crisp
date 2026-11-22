@@ -3,6 +3,8 @@ name: crisp-production-ready
 description: Production-readiness audit ending in a visual HTML remediation playbook - repeated passes through 24 lenses until two consecutive passes surface nothing new, every finding verified against the real code, delivered as a findings list plus production-playbook.html. Use for 'production ready', 'can we ship', 'pre-launch audit', or any launch-readiness check.
 metadata:
   version: "1.0.0"
+  checked: "2026-11-22"
+  checked-with: "claude-opus-5-5"
   author: Laith Wallace - FlowConverts
 ---
 
@@ -86,3 +88,22 @@ Load `references/playbook.md` and generate `production-playbook.html` exactly to
 ## If asked to fix
 
 Fix in severity waves (1: CRITICAL+HIGH, 2: MEDIUM, 3: LOW+IMPROVEMENT), gating each wave on green clean build + typecheck + lint + full test suite, then reviewing every change for over-reach (anything changed beyond its finding gets reverted). Deferrals are listed with a reason, never silently dropped. Then run a verification loop: re-audit with fresh angles (regression, fix-completeness, over-reach; the same mistake is almost never made once) and fix what surfaces, round after round, until two consecutive passes find zero CRITICAL and zero HIGH. Expect 10+ rounds on a real codebase; cap at a sane ceiling and report any still-open CRITICAL/HIGH rather than looping forever. After each wave, regenerate `production-playbook.html` so the playbook reflects reality.
+
+## Lessons
+
+<!-- crisp:shared lessons -->
+**Lessons log.** The pack learns the user's taste from their corrections.
+
+- **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
+- **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
+  `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
+  Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
+- **Promote:** when the same rule appears 3 times, tell the user it is ready to move into the pack's shared taste rules (`skills/_shared/taste.md` in the CRISP repo).
+<!-- /crisp:shared lessons -->
+
+## Next step
+
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found:
+
+- NOT READY or FIX FIRST: fix in waves, then run this skill again
+- READY: ship

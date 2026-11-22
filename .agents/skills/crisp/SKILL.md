@@ -3,7 +3,7 @@ name: crisp
 description: "Router for the CRISP skill pack - names every skill, its pipeline stage, and when to reach for it. Use when unsure which design or workflow skill fits: 'which crisp command should I use', 'what can CRISP do', 'where do I start with this design'."
 disable-model-invocation: true
 metadata:
-  version: "1.6.0"
+  version: "1.7.0"
 ---
 
 # /crisp - Skill Pack Router
@@ -78,4 +78,6 @@ If no `.crisp.md` exists yet, suggest `/crisp-teach` first - every skill above r
 
 ## Always on
 
-The design detector runs without being asked once its hooks are installed (plugin installs get them automatically; the npm installer offers them). After each UI file edit it reports only the issues that edit added. Before the agent stops it checks every changed UI file once and blocks on new P0/P1 findings. Run it by hand with `npx @laith-wallace/crisp detect <path>`.
+The design detector runs without being asked once its hooks are installed (plugin installs get them automatically; the npm installer offers them). After each UI file edit it reports only the issues that edit added. Before the agent stops, the finish gate blocks on new P0/P1 findings, on a suppression added without a reason of 12+ characters, and on more than 5 suppressions added. It blocks again while the open findings change, up to 3 rounds a turn. Run it by hand with `npx @laith-wallace/crisp detect <path>`.
+
+Every skill reads `.crisp/lessons.md` (the user's past corrections) before it starts, and ends with a `Next:` line naming the skill to run after it. Design skills also read `.crisp/taste-bank/` (fill it with `/crisp-study <url> --bank`). The visual map of this pipeline is `docs/workflow-map.html`.

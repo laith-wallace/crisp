@@ -3,6 +3,8 @@ name: crisp-brief
 description: "Turn a vague design request into a structured, unambiguous design brief - writes .brief.md with problem statement, target user, observable success criteria, scope, constraints, and CRISP priority. Use when a request is vague or before designing anything new: 'write a brief', 'scope this feature', 'what exactly are we building'."
 metadata:
   version: "1.4.2"
+  checked: "2026-11-22"
+  checked-with: "claude-opus-5-5"
 ---
 
 # /crisp-brief - Design Brief Generator
@@ -204,3 +206,22 @@ Report to the user in chat: how many findings by severity, which you fixed, and 
 ## After Writing
 
 Tell the user which file was written and what check it got: cold read, self-check, or skipped at their request. Never call a brief stress-tested when the cold read did not run. Suggest running `/feature-design` next with that brief file as input - it reads the brief and `.crisp.md` together to design the solution.
+
+## Lessons
+
+<!-- crisp:shared lessons -->
+**Lessons log.** The pack learns the user's taste from their corrections.
+
+- **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
+- **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
+  `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
+  Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
+- **Promote:** when the same rule appears 3 times, tell the user it is ready to move into the pack's shared taste rules (`skills/_shared/taste.md` in the CRISP repo).
+<!-- /crisp:shared lessons -->
+
+## Next step
+
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found:
+
+- A feature: `/crisp-research`, then `/feature-design`
+- A website with no look yet: `/crisp-study` on a reference, or `/crisp-worlds`

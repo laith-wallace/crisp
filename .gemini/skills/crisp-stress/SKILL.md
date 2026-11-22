@@ -3,6 +3,8 @@ name: crisp-stress
 description: Worst-case data stress test of a UI - runs a fixed 16-case matrix (empty, one item, 1000 items, 200-character names, unbroken strings, RTL, emoji, missing images, slow network, error, offline, 200% zoom, 320px width, +40% translations, 10-digit numbers, null fields) with a binary pass condition per case, P0-P3 severity, and a pass/fail table plus fix list. Read-only by default; --fix repairs P0 and P1 only. Use when "stress test this", "break this UI", "what happens with long names", "test edge cases", "will this survive real data", or before ship. Grading the design overall belongs to /crisp-review; accessibility depth belongs to /crisp-a11y; capturing before/after proof belongs to /crisp-proof.
 metadata:
   version: "1.0.1"
+  checked: "2026-11-22"
+  checked-with: "claude-opus-5-5"
   author: Laith Wallace - FlowConverts
   adapted-from: workflow inspired by emilkowalski/skills break-ui (no vendored code)
 ---
@@ -160,3 +162,22 @@ Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y
 ```
 - [YYYY-MM-DD] | /crisp-stress | [surface] | [pass]/[applicable] pass | worst [P0-P3] | [read-only or fixed N]
 ```
+
+## Lessons
+
+<!-- crisp:shared lessons -->
+**Lessons log.** The pack learns the user's taste from their corrections.
+
+- **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
+- **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
+  `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
+  Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
+- **Promote:** when the same rule appears 3 times, tell the user it is ready to move into the pack's shared taste rules (`skills/_shared/taste.md` in the CRISP repo).
+<!-- /crisp:shared lessons -->
+
+## Next step
+
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found:
+
+- Any FAIL: `/crisp-loop`
+- All pass: `/crisp-proof`

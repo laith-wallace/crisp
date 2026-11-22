@@ -11,11 +11,15 @@
  *                          problems in the file never repeat on every edit.
  *                          Never blocks; findings go back as additionalContext.
  *
- *   Stop (--stop)          Before the agent stops, scan every changed UI file
- *                          (tracked changes vs HEAD plus untracked files) and
- *                          compare with HEAD. New P0/P1 findings block the
- *                          stop once with a reason; a second stop in the same
- *                          turn (stop_hook_active) always passes.
+ *   Stop (--stop)          The finish gate. Before the agent stops, scan every
+ *                          changed UI file (tracked changes vs HEAD plus
+ *                          untracked files) and compare with HEAD. New P0/P1
+ *                          findings, a suppression added without a reason of
+ *                          12+ characters, or more than 5 suppressions added
+ *                          block the stop. It blocks again while the open
+ *                          findings change, up to 3 rounds a turn; a stop with
+ *                          the same findings as the last block passes, so the
+ *                          agent can explain them to the user.
  *
  * Registration:
  *   Plugin install: hooks/hooks.json registers both, nothing to do.
@@ -26,9 +30,11 @@
  * A hook bug, a clean scan, or a non-git folder all exit 0 silently.
  */
 
-import { extname, relative, resolve } from 'node:path';
-import { existsSync, readFileSync } from 'node:fs';
+import { extname, join, relative, resolve } from 'node:path';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { tmpdir } from 'node:os';
 import { scanText, newFindings } from './detector/engine.mjs';
 import { loadConfig, makeIsIgnored } from './detector/ignores.mjs';
 import { CODE_EXTENSIONS } from './detector/rules.mjs';
@@ -141,12 +147,104 @@ export function changedFiles(cwd = process.cwd()) {
     .slice(0, MAX_STOP_FILES);
 }
 
+// ─── Finish gate: rounds and suppression rules ───
+// The stop blocks while fixes are still landing, up to MAX_ROUNDS a turn. A
+// stop whose open findings are the same as the last block passes: the agent
+// chose to explain them to the user. Suppressions are checked so a finding is
+// never silenced without a reason, and never silenced in bulk.
+
+export const MAX_ROUNDS = 3;
+export const MIN_REASON = 12;
+export const MAX_SUPPRESSIONS = 5;
+const MARKER = /crisp-disable(-line|-next-line)?\s+([a-z0-9-]+)(?:\s*:\s*([^\n*>]*))?/gi;
+
+function markers(text) {
+  const out = [];
+  if (!text) return out;
+  MARKER.lastIndex = 0;
+  let m;
+  while ((m = MARKER.exec(text)) !== null) {
+    out.push({ rule: m[2].toLowerCase(), reason: (m[3] ?? '').replace(/\s*(-->|\*\/)?\s*$/, '').trim() });
+  }
+  return out;
+}
+
+/** Inline suppressions in `after` that `before` did not have (multiset difference). */
+export function addedMarkers(before, after) {
+  const pool = new Map();
+  for (const m of markers(before)) {
+    const k = `${m.rule}|${m.reason}`;
+    pool.set(k, (pool.get(k) ?? 0) + 1);
+  }
+  const added = [];
+  for (const m of markers(after)) {
+    const k = `${m.rule}|${m.reason}`;
+    if (pool.get(k) > 0) pool.set(k, pool.get(k) - 1);
+    else added.push(m);
+  }
+  return added;
+}
+
+/** Ignore entries in .crisp/config.json that HEAD did not have. */
+export function addedConfigIgnores(beforeJson, afterJson) {
+  const parse = s => { try { return JSON.parse(s || '{}')?.detector ?? {}; } catch { return {}; } };
+  const b = parse(beforeJson), a = parse(afterJson);
+  const out = [];
+  for (const r of a.ignoreRules ?? []) if (!(b.ignoreRules ?? []).includes(r)) out.push({ rule: r, reason: '', where: 'ignoreRules (a whole rule, everywhere)' });
+  for (const f of a.ignoreFiles ?? []) if (!(b.ignoreFiles ?? []).includes(f)) out.push({ rule: f, reason: '', where: 'ignoreFiles (a whole file)' });
+  const val = e => (typeof e === 'string' ? e : e?.value);
+  for (const [rule, list] of Object.entries(a.ignoreValues ?? {})) {
+    const old = new Set((b.ignoreValues?.[rule] ?? []).map(val));
+    for (const e of list ?? []) {
+      if (!old.has(val(e))) out.push({ rule, reason: (typeof e === 'object' && e?.reason) || '', where: `ignoreValues "${val(e)}"` });
+    }
+  }
+  return out;
+}
+
+function suppressionProblems(files, root) {
+  const added = [];
+  for (const file of files) {
+    try {
+      added.push(...addedMarkers(headText(file), readFileSync(file, 'utf8')).map(m => ({ ...m, where: relative(root, file) })));
+    } catch { /* unreadable: skip */ }
+  }
+  const cfg = resolve(root, '.crisp', 'config.json');
+  if (existsSync(cfg)) {
+    try { added.push(...addedConfigIgnores(headText(cfg), readFileSync(cfg, 'utf8'))); } catch { /* skip */ }
+  }
+  const problems = [];
+  const weak = added.filter(s => s.reason.length < MIN_REASON);
+  if (weak.length) {
+    problems.push(`${weak.length} suppression${weak.length === 1 ? '' : 's'} added without a reason of ${MIN_REASON}+ characters:\n` +
+      weak.slice(0, MAX_FINDINGS_SHOWN).map(s => `- ${s.rule} in ${s.where}`).join('\n') +
+      `\nWrite why the finding is wrong here, or fix it.`);
+  }
+  if (added.length > MAX_SUPPRESSIONS) {
+    problems.push(`${added.length} suppressions added this session (limit ${MAX_SUPPRESSIONS}). Fix the findings instead of silencing them.`);
+  }
+  return problems;
+}
+
+function statePath(root, sessionId) {
+  const key = createHash('sha1').update(`${root}|${sessionId ?? 'default'}`).digest('hex').slice(0, 16);
+  return join(tmpdir(), `crisp-gate-${key}.json`);
+}
+function readState(p) { try { return JSON.parse(readFileSync(p, 'utf8')); } catch { return { blocks: 0, lastKey: null }; } }
+function writeState(p, s) { try { writeFileSync(p, JSON.stringify(s)); } catch { /* state is best effort */ } }
+
 export async function runStop(payload) {
-  if (payload?.stop_hook_active) return null; // already blocked once this turn
+  const root = git(['rev-parse', '--show-toplevel'], process.cwd())?.trim();
+  if (!root) return null;
+  const sp = statePath(root, payload?.session_id);
+  // A new turn starts a new count; a repeat stop in the same turn continues it.
+  const state = payload?.stop_hook_active ? readState(sp) : { blocks: 0, lastKey: null };
+  if (state.blocks >= MAX_ROUNDS) return null; // rounds used up: let the agent report what is open
 
   const opts = { isIgnored: loadIsIgnored() };
+  const files = changedFiles();
   const all = [];
-  for (const file of changedFiles()) {
+  for (const file of files) {
     try {
       all.push(...diffFile(file, headText(file), opts));
     } catch {
@@ -154,12 +252,23 @@ export async function runStop(payload) {
     }
   }
   const blocking = all.filter(f => f.severity === 'P0' || f.severity === 'P1');
-  if (blocking.length === 0) return null;
+  const problems = suppressionProblems(files, root);
+  if (blocking.length === 0 && problems.length === 0) return null;
 
-  const rest = all.length - blocking.length;
+  const key = JSON.stringify([blocking.map(f => `${f.id}|${f.file}|${f.line}`).sort(), problems]);
+  if (payload?.stop_hook_active && key === state.lastKey) return null; // unchanged since the last block: the agent explains them
+
+  writeState(sp, { blocks: state.blocks + 1, lastKey: key });
+  const round = `round ${state.blocks + 1} of ${MAX_ROUNDS}`;
+  const parts = [];
+  if (blocking.length) {
+    const rest = all.length - blocking.length;
+    parts.push(`this session's changes added ${blocking.length} P0/P1 design issue${blocking.length === 1 ? '' : 's'}${rest > 0 ? ` (and ${rest} lower)` : ''}:\n${format(blocking)}`);
+  }
+  parts.push(...problems);
   return {
     decision: 'block',
-    reason: `crisp detect: this session's changes added ${blocking.length} P0/P1 design issue${blocking.length === 1 ? '' : 's'}${rest > 0 ? ` (and ${rest} lower)` : ''}:\n${format(blocking)}\nFix them, or tell the user why they stay. ${SUPPRESS_HINT}`,
+    reason: `crisp gate (${round}): ${parts.join('\n')}\nFix them, or stop again without changes and tell the user why they stay. ${SUPPRESS_HINT}`,
   };
 }
 

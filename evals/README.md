@@ -8,7 +8,7 @@ Every case is a directory holding a `prompt.md` (frontmatter = run limits, body 
 |---|---|---|
 | `triggering/<skill>/` | 31 | A natural request (no skill name in it) makes Claude invoke that skill. One free `tool_used: Skill` grader each |
 | `negative/<name>/` | 5 | Ordinary coding requests where no CRISP skill may fire. `tool_used` with `min: 0`, `max: 0`, `arm: both` |
-| `graded/<name>/` | 7 | Output quality on the regression fixtures in `tests/fixtures/`, graded against `tests/expected/` |
+| `graded/<name>/` | 12 | Output quality: 7 regression fixtures from `tests/fixtures/` graded against `tests/expected/`, plus 5 `taste-*` cases graded against `skills/_shared/taste.md` |
 
 Graded cases:
 
@@ -21,6 +21,16 @@ Graded cases:
 | `audit-bad-dashboard` | crisp-audit | `bad-dashboard.md` | `tests/expected/bad-dashboard.md` |
 | `review-bad-dashboard` | crisp-review | `bad-dashboard.md` | `tests/expected/bad-dashboard.md` (grade, slop, P0 only - review returns the top 3) |
 | `decisions-suppression` | crisp-audit | `bad-dashboard.md` + `decisions/.crisp.md` | `tests/expected/decisions.md` |
+
+Taste cases (the benchmark set). Each gives a short brief in `fixture/brief.md` and grades the output against the counted rules in `skills/_shared/taste.md`. Run them before and after any change to a skill or a shared block. A drop in pass rate means the change made the pack worse.
+
+| Case | Skill | What it measures |
+|---|---|---|
+| `taste-cafe-homepage` | crisp-funnel | Invented specifics, virtue words, figure strips, contrast cap, one client detail in the hero |
+| `taste-devtool-landing` | crisp-funnel | Unsourced proof figures, testimonials, two-fragment headings, stated limits |
+| `taste-unslop-gen2` | crisp-unslop | Finds second-generation tells and keeps only the owner's facts |
+| `taste-overcorrection` | crisp-unslop (Detect) | Finds the substitute habits that bans breed |
+| `taste-feature-detail` | feature-design | Uses the client's own terms; a real empty state |
 
 Each graded case has a `skill-fired` indicator, `llm` rubrics for the must-find lists (split into chunks of 3 to 5 items so the judge stays stable), `llm` rubrics for the must-not-flag / fabrication checks, and free `regex` graders for binary outputs (pre-flight FAIL lines, `Grade: D`, `Suppressed by decisions: 1`, the Self-audit line, the Evidence line).
 
