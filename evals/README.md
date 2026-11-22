@@ -65,7 +65,7 @@ To also check that `decisions-suppression` never writes to `## Decisions`, grant
 
 ## Cost
 
-Every agent run and every `llm` judge vote is a real model call on your account. The full suite is 50 cases x 3 runs x 2 arms = 300 agent runs, plus 3 judge votes per `llm` grader per run (43 `llm` graders across the 12 graded cases: 27 in the regression cases, 16 in the taste cases). Triggering and negative cases use only free graders, so they cost just their agent runs. Set `--max-cost-usd` as a ceiling, use `--ablation none` to halve the cost when you don't need the delta, and use `--runs 1` while iterating (then confirm at 3 runs). Results land in `evals/results/<timestamp>/` (git-ignored).
+Every agent run and every `llm` judge vote is a real model call on your account. The full suite is 50 cases x 3 runs x 2 arms = 300 agent runs, plus 3 judge votes per `llm` grader per run (52 `llm` graders across the 12 graded cases: 27 in the regression cases, 25 in the taste cases). Triggering and negative cases use only free graders, so they cost just their agent runs. Set `--max-cost-usd` as a ceiling, use `--ablation none` to halve the cost when you don't need the delta, and use `--runs 1` while iterating (then confirm at 3 runs). Results land in `evals/results/<timestamp>/` (git-ignored).
 
 ## After a run
 

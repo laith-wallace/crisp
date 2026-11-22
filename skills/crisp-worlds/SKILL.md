@@ -52,10 +52,10 @@ Directions come from a curated library, `worlds/*.md`, not from a blank prompt, 
 7. **Wait for the choice.** Stop here. The user clicks Build this (served: writes `.crisp/worlds/choice.json`; opened as a file: copies `build <id>` to paste back), or types "build B". Read it with `crisp worlds choice --json` (exit 3 means no choice yet). Never pick for an attended user.
 8. **Hand off to DESIGN.md.** For a world direction:
    ```bash
-   npx @laith-wallace/crisp worlds to-design-md <worldId> --out DESIGN.md
-   npx @laith-wallace/crisp design-md lint DESIGN.md
+   npx @laith-wallace/crisp worlds to-design-md <worldId> --out <design file>
+   npx @laith-wallace/crisp design-md lint <design file>
    ```
-   If `DESIGN.md` exists, write `DESIGN.worlds.md` and say so instead of overwriting. Add each `borrowedFrom` idea to its Do's and Don'ts by hand. If the baseline was chosen, write no DESIGN.md and say the category default stands.
+   The design file is `DESIGN.md`, or `DESIGN.worlds.md` when `DESIGN.md` already exists (say so; never overwrite). Add each `borrowedFrom` idea to its Do's and Don'ts by hand. If the baseline was chosen, write no DESIGN.md and say the category default stands.
 9. **Build and prove.** Hand over to `/crisp-redesign` (existing surface, overhaul mode) or `/feature-design` (new surface) with DESIGN.md as the token source. After the build, `/crisp-proof` captures baseline vs chosen with `/crisp-review` grades on both sides.
 
 ## Headless and missing input
@@ -113,7 +113,7 @@ Run on every world preview before the picker is written.
 | Condition | Stop reason |
 |---|---|
 | Picker written, waiting for the user | `READY TO PICK` |
-| Choice recorded and DESIGN.md linted | `CHOSEN <id>` |
+| Choice recorded and the design file step 8 wrote linted clean (or the baseline chosen, with no file) | `CHOSEN <id>` |
 | Headless run, recommendation recorded | `AUTO-CHOSEN <id>` |
 | Fewer than 2 worlds pass the difference test and the Slop Check | `NOT ENOUGH DISTINCT DIRECTIONS` - say which failed and why |
 | `crisp worlds picker` rejects the spec 3 times | `SPEC INVALID` - quote the errors |
@@ -141,7 +141,7 @@ Run on every world preview before the picker is written.
 Pick in the page, or reply: build A | build B | build C | build D
 ```
 
-After the choice: `**Stop reason:** CHOSEN C`, the DESIGN.md path and its lint line, and **Next:** `/crisp-redesign` or `/feature-design` with DESIGN.md, then `/crisp-proof` baseline vs chosen.
+After the choice: `**Stop reason:** CHOSEN C`, then for a world the design file step 8 wrote (`DESIGN.md`, or `DESIGN.worlds.md` when `DESIGN.md` already existed) and its lint line, or for the baseline the line `Category default stands; no DESIGN.md written.`, then the `Next:` line from the Next step list below.
 
 ## Self-check before delivery
 
@@ -164,7 +164,7 @@ Append one line to `## History` in `.crisp.md` if it exists, after the choice. D
 ## Taste rules
 
 <!-- crisp:shared taste -->
-**Taste rules.** Each rule is a count, so a check can say pass or fail. Rules 1 to 7 apply when this skill makes or judges a rendered UI (a screen, a page, a component). The copy tells apply to all copy, prose included. Where this skill states a stricter limit for the same pattern, the stricter limit wins.
+**Taste rules.** Each rule is a count, so a check can say pass or fail. Rules 1 to 7 apply when this skill makes or judges a rendered UI (a screen, a page, a component). The copy tells apply to all copy, prose included. Where this skill states a stricter limit for the same pattern, the stricter limit wins. Em dashes follow this skill's own rule where it has one.
 
 1. **One detail only this client has.** Each screen shows at least 1 detail taken from the brief or the product: its units, its terms, its real prices, hours or numbers. A screen that would fit any business in the category fails.
 2. **Real material first.** The client's own product, UI, photos and words lead. A stand-in (stock photo, mock data, coined name) is listed in the report as a stand-in. Zero stand-ins are presented as the client's own.
@@ -212,7 +212,7 @@ Append one line to `## History` in `.crisp.md` if it exists, after the choice. D
 **Lessons log.** The pack learns the user's taste from their corrections.
 
 - **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
-- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed in every skill, read-only ones and ones limited to their target's files included. It never counts against a skill's scope, clean-tree or zero-writes rules.
 - **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
   `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
   Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
@@ -221,9 +221,12 @@ Append one line to `## History` in `.crisp.md` if it exists, after the choice. D
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** field or a `Ready for /<command>` line, write this line there instead (a status line such as `Status: Ready for development` stays as it is). Where the report ends with Handover lines, put it directly above them.
 
+- Waiting for the pick: `build <id>` - the user clicks Build this or types the choice
 - The team needs the look in one place: `/crisp-brand` (it asks website or app)
-- A landing or sales page: `/crisp-funnel`
-- An existing site: `/crisp-redesign`
-- A feature: `/feature-design`
+- A landing or sales page: `/crisp-funnel` with the design file step 8 wrote
+- An existing site: `/crisp-redesign` with the design file step 8 wrote as the token source, then `/crisp-proof` baseline vs chosen
+- A feature: `/feature-design` with the design file step 8 wrote
+- Baseline chosen for a new surface: `/feature-design`, or `/crisp-funnel` for a landing page, with the category default as the direction
+- Baseline chosen on an existing surface: `/crisp-review`, since the current look stands

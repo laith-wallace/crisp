@@ -102,7 +102,7 @@ Default mapping for this matrix, overridden only with a stated reason:
 1. Every applicable case has a row: `pass`, `fail`, `n/a` (with reason), or `accepted` (with decision date). Zero blank rows.
 2. Every `fail` has evidence: a screenshot path or `file:line` plus the measurement that failed.
 3. Zero writes to production data or production APIs.
-4. Without `--fix`, zero source edits remain at the end (`git status` clean apart from `.artifacts/`).
+4. Without `--fix`, zero source edits remain at the end (`git status` clean apart from `.artifacts/`, `.crisp/lessons.md`, and the one `## History` line in `.crisp.md`).
 5. With `--fix`, zero P2 or P3 edits; every fix re-runs its case.
 6. Zero temporary injection code left behind unless the user asked to keep it.
 7. A case that could not be injected is `untested` with the reason, never `pass`.
@@ -169,7 +169,7 @@ Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y
 **Lessons log.** The pack learns the user's taste from their corrections.
 
 - **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
-- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed in every skill, read-only ones and ones limited to their target's files included. It never counts against a skill's scope, clean-tree or zero-writes rules.
 - **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
   `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
   Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
@@ -178,7 +178,7 @@ Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** field or a `Ready for /<command>` line, write this line there instead (a status line such as `Status: Ready for development` stays as it is). Where the report ends with Handover lines, put it directly above them.
 
 - Any FAIL: `/crisp-loop`
 - All pass: `/crisp-proof`

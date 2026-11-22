@@ -76,7 +76,7 @@ Read `.crisp/variants.json` first; if it is missing, rebuild the list from `git 
     ```bash
     grep -rn "data-crisp-variants\|crisp-variant" <src dirs>                     # must print nothing
     grep -rnF "<each losing variant file's basename from .crisp/variants.json>" <src dirs>   # must print nothing
-    git diff --stat <start commit>                                               # only the target's files
+    git diff --stat <start commit> && git status --porcelain --untracked-files=all # only the target's files, plus .crisp.md (History) and .crisp/lessons.md
     ```
 12. **Re-run** the detector and the build on the kept file. Report the diff with the Pick report.
 
@@ -126,8 +126,8 @@ Run on every variant before handover.
 5. Zero off-token values in any variant.
 6. Every variant keeps the original's props interface, copy source, tracked labels, and anchor IDs. Copy may be rearranged, not rewritten, unless the brief asks for copy variants.
 7. The switcher is unreachable in production: the production build contains 0 references to variant files or the switcher marker.
-8. Zero edits outside the target's file, its new sibling variant files, the one render site that hosts the switcher, and `.crisp/variants.json`.
-9. After the pick: `grep` for variant markers returns 0 lines, and `git diff --stat` against the start commit lists only the target's files.
+8. Zero edits outside the target's file, its new sibling variant files, the one render site that hosts the switcher, and `.crisp/variants.json`. `.crisp/lessons.md`, the finish check's git-ignored `.crisp/render/`, and the one `## History` line in `.crisp.md` are logs and tool output, not edits; no other `.crisp.md` change is allowed.
+9. After the pick: `grep` for variant markers returns 0 lines, and `git diff --stat` against the start commit plus `git status --porcelain --untracked-files=all` list only the target's files, plus `.crisp.md` (its one History line) and `.crisp/lessons.md` when a lesson was logged.
 10. Build passes at handover and after the pick.
 
 ## Stop conditions
@@ -162,7 +162,7 @@ Build report:
 **Guard proof:** production build, 0 hits for variant files and data-crisp-variants
 **Build:** pass
 
-Pick one: /crisp-variants pick <id>
+Next: /crisp-variants pick <id> - choose the variant to keep
 ```
 
 Pick report:
@@ -175,7 +175,7 @@ Pick report:
 **Dead-code check:** 0 matches for variant markers
 **Diff vs abc1234:** 1 file changed, +34 -41 (src/components/Hero.tsx)
 **Detector:** 0   **Build:** pass
-Next: <command> - <why>   (from the Next step list below)
+Next: <command> - <why>
 ```
 
 ## Self-check before delivery
@@ -202,23 +202,24 @@ Append one line to `## History` in `.crisp.md` if it exists, after the pick. Dat
 ## Finish check
 
 <!-- crisp:shared finish-check -->
-**Finish check.** Before you say a built or changed page is done, measure it as the browser draws it:
+**Finish check.** Before you say a built or changed page is done, measure it as the browser draws it. Screenshots go to `.crisp/render/`: tool output, git-ignored, and never counted as an edit outside this skill's scope.
 
 ```bash
+mkdir -p .crisp/render && { grep -qx '\*' .crisp/render/.gitignore 2>/dev/null || printf '\n*\n' >> .crisp/render/.gitignore; } && find .crisp/render -name '*.png' -delete
 npx @laith-wallace/crisp render-check "<local url>" --width 1280,375 --shots .crisp/render
 ```
 
 - Exit 0: clean. Say so in the report.
 - Exit 2: findings. `page-overflow-x`, `overlapping-text`, `text-cut` and `text-spills` are bugs, never style choices. Fix them and run it again, at most 3 rounds.
-- Exit 3 (inconclusive), exit 1 (no URL, no Playwright, or the page did not load), or no local URL to give it: report `render-check: untested` with the reason. Never report the page as checked.
+- Exit 3 (inconclusive), exit 1 (no URL, no Playwright, or the page did not load), or no local URL to give it: report `render-check: untested` with the reason. Never report the page as checked, and open no screenshots: an untested or inconclusive run proves nothing about the layout.
 
-Then open `.crisp/render/render-1280.png` and `.crisp/render/render-375.png` and look at them once against the taste rules. A clean exit code proves the layout holds, not that the page has taste.
+Only after exit 0 or 2, open `.crisp/render/render-1280.png` and `.crisp/render/render-375.png` (the folder was emptied first, so both are from this run) and look at them once against the taste rules. A clean exit code proves the layout holds, not that the page has taste.
 <!-- /crisp:shared finish-check -->
 
 ## Taste rules
 
 <!-- crisp:shared taste -->
-**Taste rules.** Each rule is a count, so a check can say pass or fail. Rules 1 to 7 apply when this skill makes or judges a rendered UI (a screen, a page, a component). The copy tells apply to all copy, prose included. Where this skill states a stricter limit for the same pattern, the stricter limit wins.
+**Taste rules.** Each rule is a count, so a check can say pass or fail. Rules 1 to 7 apply when this skill makes or judges a rendered UI (a screen, a page, a component). The copy tells apply to all copy, prose included. Where this skill states a stricter limit for the same pattern, the stricter limit wins. Em dashes follow this skill's own rule where it has one.
 
 1. **One detail only this client has.** Each screen shows at least 1 detail taken from the brief or the product: its units, its terms, its real prices, hours or numbers. A screen that would fit any business in the category fails.
 2. **Real material first.** The client's own product, UI, photos and words lead. A stand-in (stock photo, mock data, coined name) is listed in the report as a stand-in. Zero stand-ins are presented as the client's own.
@@ -266,7 +267,7 @@ Then open `.crisp/render/render-1280.png` and `.crisp/render/render-375.png` and
 **Lessons log.** The pack learns the user's taste from their corrections.
 
 - **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
-- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed in every skill, read-only ones and ones limited to their target's files included. It never counts against a skill's scope, clean-tree or zero-writes rules.
 - **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
   `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
   Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
@@ -275,7 +276,11 @@ Then open `.crisp/render/render-1280.png` and `.crisp/render/render-375.png` and
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** field or a `Ready for /<command>` line, write this line there instead (a status line such as `Status: Ready for development` stays as it is). Where the report ends with Handover lines, put it directly above them.
 
+- READY TO COMPARE: `/crisp-variants pick <id>` once the user chooses - never choose for them
 - A variant was picked: `/crisp-proof` for the before and after
 - The picked variant still shows issues: `/crisp-review`
+- NOT ENOUGH DISTINCT VARIANTS: `/crisp-worlds` when the problem is direction, not one component
+- NO SWITCH POINT or GUARD UNPROVEN: `/crisp-variants` again once the user names the render site or the env flag
+- REVERTED: `/crisp-review` on the original to decide what to change instead
