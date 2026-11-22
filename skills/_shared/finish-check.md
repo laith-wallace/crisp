@@ -1,7 +1,7 @@
 **Finish check.** Before you say a built or changed page is done, measure it as the browser draws it. Screenshots go to `.crisp/render/`: tool output, git-ignored, and never counted as an edit outside this skill's scope.
 
 ```bash
-mkdir -p .crisp/render && { grep -qx '\*' .crisp/render/.gitignore 2>/dev/null || printf '*\n' >> .crisp/render/.gitignore; } && rm -f .crisp/render/*.png
+mkdir -p .crisp/render && { grep -qx '\*' .crisp/render/.gitignore 2>/dev/null || printf '\n*\n' >> .crisp/render/.gitignore; } && find .crisp/render -name '*.png' -delete
 npx @laith-wallace/crisp render-check "<local url>" --width 1280,375 --shots .crisp/render
 ```
 

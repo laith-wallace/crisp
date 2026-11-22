@@ -44,7 +44,7 @@ Target-image mode replaces steps A and B of the iteration with the steps in Targ
 Check all four before iteration 1. State the result in one line each.
 
 1. `git status --porcelain` on the scope files is empty, or the user has said dirty is fine. Record `git rev-parse --short HEAD` as the start commit.
-2. The scope list is written out - every file path the loop may edit. Zero edits outside it, ever. The loop's own outputs are logs and tool output, not edits: `.crisp/lessons.md`, `.crisp/render/`, `.crisp/loop/<slug>/` in target-image mode, and the one `## History` line in `.crisp.md` on a top-level run.
+2. The scope list is written out - every file path the loop may edit. Zero edits outside it, ever. The loop's own outputs are logs and tool output, not edits: `.crisp/lessons.md`, `.crisp/render/`, `.crisp/loop/<slug>/` in target-image mode, and on a top-level run the one `## History` line in `.crisp.md` and the `.crisp/critique/` snapshot.
 3. `.crisp.md` is loaded, or its absence is declared and the register is inferred from the target.
 4. The target renders: a dev server answers, or the files parse. A loop over a broken build fixes nothing.
 

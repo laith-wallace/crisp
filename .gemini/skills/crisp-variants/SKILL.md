@@ -76,7 +76,7 @@ Read `.crisp/variants.json` first; if it is missing, rebuild the list from `git 
     ```bash
     grep -rn "data-crisp-variants\|crisp-variant" <src dirs>                     # must print nothing
     grep -rnF "<each losing variant file's basename from .crisp/variants.json>" <src dirs>   # must print nothing
-    git diff --stat <start commit>                                               # only the target's files
+    git diff --stat <start commit>; git status --porcelain --untracked-files=all # only the target's files, plus .crisp.md (History) and .crisp/lessons.md
     ```
 12. **Re-run** the detector and the build on the kept file. Report the diff with the Pick report.
 
@@ -127,7 +127,7 @@ Run on every variant before handover.
 6. Every variant keeps the original's props interface, copy source, tracked labels, and anchor IDs. Copy may be rearranged, not rewritten, unless the brief asks for copy variants.
 7. The switcher is unreachable in production: the production build contains 0 references to variant files or the switcher marker.
 8. Zero edits outside the target's file, its new sibling variant files, the one render site that hosts the switcher, and `.crisp/variants.json`. `.crisp/lessons.md`, the finish check's git-ignored `.crisp/render/`, and the one `## History` line in `.crisp.md` are logs and tool output, not edits; no other `.crisp.md` change is allowed.
-9. After the pick: `grep` for variant markers returns 0 lines, and `git diff --stat` against the start commit lists only the target's files, plus `.crisp.md` (its one History line) and `.crisp/lessons.md` when a lesson was logged.
+9. After the pick: `grep` for variant markers returns 0 lines, and `git diff --stat` against the start commit plus `git status --porcelain --untracked-files=all` list only the target's files, plus `.crisp.md` (its one History line) and `.crisp/lessons.md` when a lesson was logged.
 10. Build passes at handover and after the pick.
 
 ## Stop conditions
@@ -205,7 +205,7 @@ Append one line to `## History` in `.crisp.md` if it exists, after the pick. Dat
 **Finish check.** Before you say a built or changed page is done, measure it as the browser draws it. Screenshots go to `.crisp/render/`: tool output, git-ignored, and never counted as an edit outside this skill's scope.
 
 ```bash
-mkdir -p .crisp/render && { grep -qx '\*' .crisp/render/.gitignore 2>/dev/null || printf '*\n' >> .crisp/render/.gitignore; } && rm -f .crisp/render/*.png
+mkdir -p .crisp/render && { grep -qx '\*' .crisp/render/.gitignore 2>/dev/null || printf '\n*\n' >> .crisp/render/.gitignore; } && find .crisp/render -name '*.png' -delete
 npx @laith-wallace/crisp render-check "<local url>" --width 1280,375 --shots .crisp/render
 ```
 

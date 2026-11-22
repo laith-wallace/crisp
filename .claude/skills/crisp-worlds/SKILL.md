@@ -150,7 +150,7 @@ Run on every world preview before the picker is written.
 Pick in the page, or reply: build A | build B | build C | build D
 ```
 
-After the choice: `**Stop reason:** CHOSEN C`, then for a world the DESIGN.md path and its lint line, or for the baseline the line `Category default stands; no DESIGN.md written.`, then the `Next:` line from the Next step list below.
+After the choice: `**Stop reason:** CHOSEN C`, then for a world the design file step 8 wrote (`DESIGN.md`, or `DESIGN.worlds.md` when `DESIGN.md` already existed) and its lint line, or for the baseline the line `Category default stands; no DESIGN.md written.`, then the `Next:` line from the Next step list below.
 
 ## Self-check before delivery
 
@@ -234,7 +234,8 @@ End the report with one line, `Next: <command> - <why>`, picked from these by wh
 
 - Waiting for the pick: `build <id>` - the user clicks Build this or types the choice
 - The team needs the look in one place: `/crisp-brand` (it asks website or app)
-- A landing or sales page: `/crisp-funnel` with the new DESIGN.md
-- An existing site: `/crisp-redesign` with the new DESIGN.md as the token source, then `/crisp-proof` baseline vs chosen
-- A feature: `/feature-design` with the new DESIGN.md
-- Baseline chosen: `/crisp-review` on the current surface, since the category default stands
+- A landing or sales page: `/crisp-funnel` with the design file step 8 wrote
+- An existing site: `/crisp-redesign` with the design file step 8 wrote as the token source, then `/crisp-proof` baseline vs chosen
+- A feature: `/feature-design` with the design file step 8 wrote
+- Baseline chosen for a new surface: `/feature-design`, or `/crisp-funnel` for a landing page, with the category default as the direction
+- Baseline chosen on an existing surface: `/crisp-review`, since the current look stands

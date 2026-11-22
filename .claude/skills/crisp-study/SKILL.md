@@ -237,6 +237,10 @@ Append one line to `## History` in `.crisp.md` if it exists (never in bank mode)
 
 End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** field or a `Ready for /<command>` line, write this line there instead (a status line such as `Status: Ready for development` stays as it is). Where the report ends with Handover lines, put it directly above them.
 
+- BLOCKED: source not readable: `/crisp-study <screenshot>` with a screenshot of the page
+- INSUFFICIENT SIGNAL: `/crisp-study` again on another page or a sharper screenshot
+- LINT NOT CLEAN: `/crisp-study` again after the listed findings are fixed
+- WAITING: overwrite: `/crisp-study` again once the user approves, or with `--out DESIGN.study.md`
 - No direction chosen yet: `/crisp-worlds` (the new DESIGN.md is one input)
 - Turn the tokens into a brand page or design system: `/crisp-brand`
 - A feature to design: `/feature-design`
