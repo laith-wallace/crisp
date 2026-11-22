@@ -1,6 +1,6 @@
 # CRISP - Design Intelligence for AI Agents
 
-Twenty-eight skills plus a `/crisp` router that give your AI agent a senior product designer's eye. Drop them
+Thirty-two skills plus a `/crisp` router that give your AI agent a senior product designer's eye. Drop them
 into Claude Code, Codex, Cursor, Copilot, or Gemini CLI and get structured design reviews,
 feature specs, developer handoffs, accessibility audits, AI surface evaluations,
 funnel assembly, craft-level motion polish, before/after proof, and human-sounding prose,
@@ -40,6 +40,7 @@ as the agent works and reports only the problems that edit added.
 | `/crisp-tune`       | Tone dials for a UI that is right but feels wrong: `bolder`, `quieter`, `simpler`, plus VARIANCE, MOTION, and DENSITY dials (1-10). Every move is on-token and checked by the detector. |
 | `/crisp-stress`     | Worst-case data stress test: empty, one item, 1000 items, 200-char names, RTL, emoji, 200% zoom, 320px, slow network, +40% translations. Pass/fail table with P0-P3 fixes. |
 | `/crisp-worlds`     | Visual directions before any code. Shows the category default next to 3 distinct worlds from a curated library of 30, in a local picker with a Build this button. The pick becomes a linted `DESIGN.md`. |
+| `/crisp-brand`      | Asks first: website or app? A website gets a `/brand` page in its own stack (logo, colour with contrast, type, voice, buttons). An app gets a tokens file, core components with every state, and a self-contained `design-system.html` showcase. Reads `DESIGN.md`; never invents a brand. |
 | `/crisp-live`       | Edit your running dev site in place. A dev-only toolbar lets you click an element, press Bolder, Quieter, Animate, Rewrite copy and more, get variants back, and accept one. Everything stays on 127.0.0.1. |
 | `/crisp-variants`   | 3 to 5 genuinely different variants of one component, live in your app behind a dev-only switcher. Pick one and the others are deleted, with zero dead code left. |
 | `/crisp-improve-ui` | Evidence-locked improvement audit. Read-only on product source: traces the rendered path, keeps only findings that pass a three-proof gate (contract, runtime, correction), tags each with a CRISP dimension and P0–P3 severity, then writes self-contained execution plans to `design-plans/`. Improves a surface without replacing its identity. |
@@ -232,6 +233,7 @@ are grounded in your specific context, not generic advice.
 /crisp-research    ->  competitor patterns, anti-patterns, brief gaps
 /crisp-study       ->  DESIGN.md from a reference URL, screenshot, or codebase (optional)
 /crisp-worlds      ->  category default vs 3 visual worlds in a picker, pick one (optional)
+/crisp-brand       ->  asks website or app: a /brand page, or a design system + design-system.html
 /feature-design    ->  user flows + component decisions, reads .crisp.md + .brief.md
 /crisp-variants    ->  3-5 live variants behind a dev-only switcher (optional)
 /crisp-live        ->  click-to-edit toolbar in your dev server (optional)

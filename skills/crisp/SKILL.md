@@ -20,6 +20,7 @@ One place to find the right CRISP skill. Read the user's situation, name the mat
 | Research | `/crisp-research` | Before designing - competitive patterns, anti-patterns, dimension risks, writes `.research.md` |
 | Research | `/crisp-study` | A URL, screenshot, or codebase has a look worth learning from - extracts its design DNA into a `DESIGN.md` with provenance |
 | Direction | `/crisp-worlds` | Nothing has a look yet - shows the category default plus 3 distinct visual worlds in a local picker; the chosen one becomes a `DESIGN.md` |
+| Direction | `/crisp-brand` | A look is chosen and needs a home - asks website or app first; builds a `/brand` page, or a design system plus `design-system.html` |
 | Design | `/feature-design` | Designing a new feature from a problem statement - reads `.brief.md` and `.research.md` |
 | Design | `/crisp-variants` | Choosing between options for one component in real code - 3 to 5 live variants of one component behind a dev-only switcher, then deletes the losers |
 | Build | `/crisp-structure` | Deciding where code goes - actions own why and when, services own how; auditing duplicated mechanics or leaky services |
@@ -51,6 +52,7 @@ One place to find the right CRISP skill. Read the user's situation, name the mat
 | "grade this", "quick look" | `/crisp-review` | `/crisp-audit` (that is the full /50 score) |
 | "make it bolder", "tone it down" | `/crisp-tune` | `/crisp-redesign` (that changes identity) |
 | "show me directions" before anything exists | `/crisp-worlds` | `/crisp-variants` (that varies one component in code) |
+| "brand page", "design system", "showcase our components" | `/crisp-brand` | `/crisp-worlds` (that picks the look; brand builds with it) |
 | "let me click on it and tell you" | `/crisp-live` | `/crisp-variants` |
 | "prove it works" | `/crisp-evidence` | `/crisp-proof` (that is before/after visuals) |
 | "fix this error message" | `/crisp-copy` | `/crisp-unslop` (that is long-form prose) |

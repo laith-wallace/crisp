@@ -213,7 +213,8 @@ const STAGES = [
   ]},
   { n: 2, name: "Pick a direction", why: "Choose the look or the option before you commit to code.", skills: [
     ["/crisp-worlds", "web", "Nothing has a look yet. See the category default plus 3 different visual worlds, then pick one."],
-    ["/crisp-variants", "both", "Compare 3 to 5 real versions of one component behind a dev-only switcher. The losers are deleted."]
+    ["/crisp-variants", "both", "Compare 3 to 5 real versions of one component behind a dev-only switcher. The losers are deleted."],
+    ["/crisp-brand", "both", "A look is chosen. Asks website or app first: a website gets a /brand page, an app gets a design system and a design-system.html showcase."]
   ]},
   { n: 3, name: "Design and build", why: "Pick the main skill for the job, then add specialists as needed.", skills: [
     ["/feature-design", "feature", "A problem statement becomes user flows, component choices and the reasons for each."],
@@ -251,7 +252,7 @@ const ROUTES = [
   { track: "feature", name: "Client feature", sub: "A new feature in an app that exists",
     path: ["/crisp-isolate", "/crisp-brief", "/crisp-research", "/feature-design", "/crisp-copy", "/crisp-review", "/crisp-loop", "/crisp-stress", "/crisp-proof", "/handoff"] },
   { track: "web", name: "New website", sub: "From an empty folder",
-    path: ["/crisp-teach", "/crisp-brief", "/crisp-study", "/crisp-worlds", "/crisp-funnel", "/crisp-unslop", "/crisp-loop", "/crisp-stress", "/crisp-proof", "/crisp-production-ready"] },
+    path: ["/crisp-teach", "/crisp-brief", "/crisp-study", "/crisp-worlds", "/crisp-brand", "/crisp-funnel", "/crisp-unslop", "/crisp-loop", "/crisp-stress", "/crisp-proof", "/crisp-production-ready"] },
   { track: "web", name: "Website redesign", sub: "An existing site that must keep working",
     path: ["/crisp-isolate", "/crisp-audit", "/crisp-redesign", "/crisp-tune", "/crisp-loop", "/crisp-proof", "/crisp-production-ready"] },
   { track: "both", name: "Quick polish", sub: "A screen that is nearly right",
@@ -268,6 +269,7 @@ const STUCK = [
   ["“The copy sounds like AI”", "/crisp-unslop", "/crisp-copy is for buttons and errors"],
   ["“Fix this error message”", "/crisp-copy", "/crisp-unslop is for long prose"],
   ["“Prove it works”", "/crisp-evidence", "/crisp-proof is before and after pictures"],
+  ["“Make a brand page” or “build our design system”", "/crisp-brand", "/crisp-worlds picks the look; brand builds with it"],
   ["“Build a 3D website”", "/crisp-3d", "/crisp-design-eng is one effect inside a page"],
   ["“Can we ship?”", "/crisp-production-ready", ""]
 ];

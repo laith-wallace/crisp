@@ -232,6 +232,7 @@ Append one line to `## History` in `.crisp.md` if it exists, after the choice. D
 
 End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
 
+- The team needs the look in one place: `/crisp-brand` (it asks website or app)
 - A landing or sales page: `/crisp-funnel`
 - An existing site: `/crisp-redesign`
 - A feature: `/feature-design`

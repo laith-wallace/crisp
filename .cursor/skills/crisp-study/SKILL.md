@@ -237,6 +237,7 @@ Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y
 End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
 
 - No direction chosen yet: `/crisp-worlds` (the new DESIGN.md is one input)
+- Turn the tokens into a brand page or design system: `/crisp-brand`
 - A feature to design: `/feature-design`
 - A landing or sales page: `/crisp-funnel`
 - An existing UI to restyle: `/crisp-redesign`, or `/crisp-tune` when only the tone changes
