@@ -65,7 +65,7 @@ There is no automatic boot-time check yet - `/crisp-doctor` only runs when invok
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** or `Ready for` line, write this line there instead. Where the report ends with Handover lines, put it directly above them.
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** field or a `Ready for /<command>` line, write this line there instead (a status line such as `Status: Ready for development` stays as it is). Where the report ends with Handover lines, put it directly above them.
 
 - `route` findings: `/crisp-teach`
-- Config repaired, only `mention` findings, or nothing found: `/crisp` to pick the next skill for the task
+- `auto` fixes applied, only `mention` findings, or nothing found: `/crisp` to pick the next skill for the task

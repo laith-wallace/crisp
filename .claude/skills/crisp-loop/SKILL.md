@@ -44,7 +44,7 @@ Target-image mode replaces steps A and B of the iteration with the steps in Targ
 Check all four before iteration 1. State the result in one line each.
 
 1. `git status --porcelain` on the scope files is empty, or the user has said dirty is fine. Record `git rev-parse --short HEAD` as the start commit.
-2. The scope list is written out - every file path the loop may edit. Zero edits outside it, ever. `.crisp/lessons.md` and `.crisp/render/` are logs and tool output, not edits.
+2. The scope list is written out - every file path the loop may edit. Zero edits outside it, ever. The loop's own outputs are logs and tool output, not edits: `.crisp/lessons.md`, `.crisp/render/`, `.crisp/loop/<slug>/` in target-image mode, and the one `## History` line in `.crisp.md` on a top-level run.
 3. `.crisp.md` is loaded, or its absence is declared and the register is inferred from the target.
 4. The target renders: a dev server answers, or the files parse. A loop over a broken build fixes nothing.
 
@@ -117,7 +117,7 @@ Per fix, binary:
 - Cite the file:line the review cited. No location, no fix - ask the review to be specific instead.
 - Use the specialist's rules when the issue is in their domain: `/crisp-a11y` for accessibility, `/crisp-copy` for strings, `/crisp-design-eng` for motion and component craft (its `references/component-craft.md` has the code fixes). Do not reinvent them.
 - Zero new dependencies. Zero suppression comments (`crisp-disable`) to make the detector pass - a suppression needs a reason and the user's approval, outside the loop.
-- Zero edits outside the scope list (`.crisp/lessons.md` and `.crisp/render/` are logs and tool output, not edits).
+- Zero edits outside the scope list (the loop's own outputs in Preconditions item 2 are logs and tool output, not edits).
 - The build still passes after the fix (`npm run build` or the project's equivalent, and `tsc --noEmit` where present). A fix that breaks the build is reverted before the next review.
 
 With `--commit`, one commit per iteration:
@@ -315,7 +315,7 @@ Each iteration's `/crisp-review` is a nested call and writes no History line of 
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** or `Ready for` line, write this line there instead. Where the report ends with Handover lines, put it directly above them.
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** field or a `Ready for /<command>` line, write this line there instead (a status line such as `Status: Ready for development` stays as it is). Where the report ends with Handover lines, put it directly above them.
 
 - TARGET MET: `/crisp-stress`, then `/crisp-proof`
 - CAP REACHED with P0 left: `/crisp-audit` for the full picture

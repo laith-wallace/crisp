@@ -102,7 +102,7 @@ Default mapping for this matrix, overridden only with a stated reason:
 1. Every applicable case has a row: `pass`, `fail`, `n/a` (with reason), or `accepted` (with decision date). Zero blank rows.
 2. Every `fail` has evidence: a screenshot path or `file:line` plus the measurement that failed.
 3. Zero writes to production data or production APIs.
-4. Without `--fix`, zero source edits remain at the end (`git status` clean apart from `.artifacts/` and `.crisp/lessons.md`).
+4. Without `--fix`, zero source edits remain at the end (`git status` clean apart from `.artifacts/`, `.crisp/lessons.md`, and the one `## History` line in `.crisp.md`).
 5. With `--fix`, zero P2 or P3 edits; every fix re-runs its case.
 6. Zero temporary injection code left behind unless the user asked to keep it.
 7. A case that could not be injected is `untested` with the reason, never `pass`.
@@ -178,7 +178,7 @@ Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** or `Ready for` line, write this line there instead. Where the report ends with Handover lines, put it directly above them.
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** field or a `Ready for /<command>` line, write this line there instead (a status line such as `Status: Ready for development` stays as it is). Where the report ends with Handover lines, put it directly above them.
 
 - Any FAIL: `/crisp-loop`
 - All pass: `/crisp-proof`

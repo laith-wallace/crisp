@@ -77,7 +77,7 @@ Steps 1 to 7 run unchanged. Then:
 7. At most 12 colour tokens and at most 8 typography tokens. More means clustering failed; re-run step 3.
 8. Text/background colour pairs used by components pass 4.5:1, or the failure is listed under Do's and Don'ts as a Don't with the measured ratio.
 9. Lint ends with 0 errors and 0 warnings, or each remaining one is under **Not fixed**.
-10. Exactly one line added to `.crisp.md`, and only when the file already exists.
+10. Exactly one line added to `.crisp.md`, and only when the file already exists. In bank mode: zero lines.
 
 ## Stop conditions
 
@@ -235,7 +235,7 @@ Append one line to `## History` in `.crisp.md` if it exists (never in bank mode)
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** or `Ready for` line, write this line there instead. Where the report ends with Handover lines, put it directly above them.
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** field or a `Ready for /<command>` line, write this line there instead (a status line such as `Status: Ready for development` stays as it is). Where the report ends with Handover lines, put it directly above them.
 
 - No direction chosen yet: `/crisp-worlds` (the new DESIGN.md is one input)
 - Turn the tokens into a brand page or design system: `/crisp-brand`

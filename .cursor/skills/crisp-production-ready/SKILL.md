@@ -106,5 +106,5 @@ Fix in severity waves (1: CRITICAL+HIGH, 2: MEDIUM, 3: LOW+IMPROVEMENT), gating 
 
 This skill keeps its own ending rules (no closing summary in chat; TRUNCATED stays last). Put the `Next: <command> - <why>` line in the playbook's verdict banner, not in chat, picked from these by the verdict:
 
-- NOT READY or FIX FIRST: `/crisp-production-ready` again after the fixes - UI findings through `/crisp-loop`, security, backend and data findings through the waves in If asked to fix
+- NOT READY or FIX FIRST: `/crisp-production-ready` again after the fixes - fix every finding in the waves of If asked to fix (Wave 1 CRITICAL and HIGH first), using `/crisp-loop` for UI findings
 - READY: `/crisp-proof` for the PR evidence, then ship

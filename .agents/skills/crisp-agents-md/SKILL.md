@@ -26,7 +26,7 @@ Infer the mode from the file system. Declare it in one line and proceed.
 | **Create** | No `AGENTS.md` at the repo root | A complete `AGENTS.md` plus the `CLAUDE.md` include line |
 | **Refresh** | `AGENTS.md` exists with managed markers | Managed sections regenerated, hand-written text untouched, a diff summary |
 | **Adopt** | `AGENTS.md` exists without managed markers | Managed sections appended below the existing text, nothing above them edited |
-| **Check** | "is my AGENTS.md stale?", "check", "dry run" | A drift report. Zero writes, apart from a `.crisp/lessons.md` line after a user correction. |
+| **Check** | "is my AGENTS.md stale?", "check", "dry run" | A drift report. Zero writes to AGENTS.md or the repo, apart from the History line below and a `.crisp/lessons.md` line after a user correction. |
 
 ## Step 0 - Discover (facts, never questions)
 
@@ -191,7 +191,7 @@ After delivery, append one line to the `## History` section of `.crisp.md` if it
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** or `Ready for` line, write this line there instead. Where the report ends with Handover lines, put it directly above them.
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** field or a `Ready for /<command>` line, write this line there instead (a status line such as `Status: Ready for development` stays as it is). Where the report ends with Handover lines, put it directly above them.
 
 - No `.crisp.md` yet: `/crisp-teach`
 - Otherwise: back to the task

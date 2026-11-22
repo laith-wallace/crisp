@@ -133,7 +133,7 @@ Use this skeleton verbatim for tokens, layout, and behavior; replace the sample 
     <p class="meta">Acme App · Full product · Audited 2026-07-14 · commit a1b2c3d</p>
     <p class="verdict not-ready">NOT READY</p>
     <p class="verdict-rule">2 CRITICAL findings block launch. READY requires zero CRITICAL and zero HIGH.</p>
-    <p class="verdict-rule">Next: /crisp-production-ready again after the fixes - UI findings through /crisp-loop, the rest through the fix waves</p>
+    <p class="verdict-rule">Next: /crisp-production-ready again after the fixes - every finding fixed in waves, CRITICAL and HIGH first</p>
   </header>
 
   <section>

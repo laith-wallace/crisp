@@ -141,7 +141,7 @@ Run on every world preview before the picker is written.
 Pick in the page, or reply: build A | build B | build C | build D
 ```
 
-After the choice: `**Stop reason:** CHOSEN C`, the DESIGN.md path and its lint line, and the `Next:` line from the Next step list below.
+After the choice: `**Stop reason:** CHOSEN C`, then for a world the DESIGN.md path and its lint line, or for the baseline the line `Category default stands; no DESIGN.md written.`, then the `Next:` line from the Next step list below.
 
 ## Self-check before delivery
 
@@ -221,10 +221,11 @@ Append one line to `## History` in `.crisp.md` if it exists, after the choice. D
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** or `Ready for` line, write this line there instead. Where the report ends with Handover lines, put it directly above them.
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** field or a `Ready for /<command>` line, write this line there instead (a status line such as `Status: Ready for development` stays as it is). Where the report ends with Handover lines, put it directly above them.
 
 - Waiting for the pick: `build <id>` - the user clicks Build this or types the choice
 - The team needs the look in one place: `/crisp-brand` (it asks website or app)
-- A landing or sales page: `/crisp-funnel`
-- An existing site: `/crisp-redesign`, then `/crisp-proof` baseline vs chosen
-- A feature: `/feature-design`
+- A landing or sales page: `/crisp-funnel` with the new DESIGN.md
+- An existing site: `/crisp-redesign` with the new DESIGN.md as the token source, then `/crisp-proof` baseline vs chosen
+- A feature: `/feature-design` with the new DESIGN.md
+- Baseline chosen: `/crisp-review` on the current surface, since the category default stands

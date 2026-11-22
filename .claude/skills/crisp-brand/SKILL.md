@@ -39,7 +39,7 @@ Before reading files or writing anything, ask exactly one question and wait for 
 | Input | Default | Notes |
 |---|---|---|
 | Route | asked in Step 0 | `website` or `app`. Never inferred |
-| Token source | the project's token file in code (CSS variables, `@theme`, `tailwind.config.*`) | Else `DESIGN.md`, `DESIGN.worlds.md` or `DESIGN.study.md` at the repo root. None found: stop with `NO TOKENS` |
+| Token source | the project's token file in code (CSS variables, `@theme`, `tailwind.config.*`) | Else the first of `DESIGN.md`, `DESIGN.worlds.md`, `DESIGN.study.md` at the repo root: this is the design file below. None of the four found: stop with `NO TOKENS` |
 | Brand facts | `.crisp.md`, `.brief.md` | Name, logo files, voice. Missing facts are asked for once, in one message |
 | `--out` | by route and stack | See the route steps. An existing file is overwritten only after the user says so |
 
@@ -67,7 +67,7 @@ Before reading files or writing anything, ask exactly one question and wait for 
 6. **Buttons and links.** The primary and secondary button and a text link, each in default, hover, focus and disabled, built from the real components when they exist.
 7. **Imagery.** Only when DESIGN.md has imagery rules, with real examples from the repo.
 
-**One source.** The page reads the project's tokens (CSS variables or the Tailwind theme). Zero colour, size or font values are typed into the page itself. With no token file in code yet, first write one from DESIGN.md exactly as the app route's Tokens step does, then build the page on it.
+**One source.** The page reads the project's tokens (CSS variables or the Tailwind theme). Zero colour, size or font values are typed into the page itself. With no token file in code yet, first write one from the design file exactly as the app route's Tokens step does, then build the page on it.
 
 ### App route: design system plus `design-system.html`
 
@@ -88,7 +88,7 @@ Before reading files or writing anything, ask exactly one question and wait for 
 
 Reuse a component that already exists: restyle it to the tokens, never duplicate it. Build only what is missing.
 
-**Showcase.** One self-contained `design-system.html` at the repo root (or in `docs/` when the repo has one): every token as a swatch or specimen with its name and value, and every component in every state from the table. It works offline: tokens inlined from the token file, no build step. Its first line is a comment naming the token file, the date it was generated, and how to regenerate it: run `/crisp-brand` again and answer `app`, which rewrites the inlined tokens and states from the token file. With dark values, a light and dark toggle. Each state is labelled with its name, so a reviewer can find it.
+**Showcase.** One self-contained `design-system.html` at the repo root (or in `docs/` when the repo has one): every token as a swatch or specimen with its name and value, and every component in every state from the table. It works offline: tokens inlined from the token file, no build step. Its first line is a comment naming the token file, the date it was generated, and how to regenerate it: run `/crisp-brand` again, answer `app`, and approve the overwrite when asked; it rewrites the inlined tokens and states from the token file. With dark values, a light and dark toggle. Each state is labelled with its name, so a reviewer can find it.
 
 ## Binary rules
 
@@ -106,7 +106,7 @@ Reuse a component that already exists: restyle it to the tokens, never duplicate
 | Condition | Stop reason |
 |---|---|
 | No answer to the route question | `WAITING: route` |
-| No DESIGN.md and no token file | `NO TOKENS` - suggest `/crisp-worlds` (no look yet) or `/crisp-study .` (a look exists in the code) |
+| No token file and no design file (`DESIGN.md`, `DESIGN.worlds.md`, `DESIGN.study.md`) | `NO TOKENS` - suggest `/crisp-worlds` (no look yet) or `/crisp-study .` (a look exists in the code) |
 | The target file exists and the user has not approved overwrite | `WAITING: overwrite` |
 | All binary rules pass | `DONE` |
 | 3 check rounds used with rules still failing | `CAP REACHED` - list what fails |
@@ -140,13 +140,13 @@ Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y
 **Finish check.** Before you say a built or changed page is done, measure it as the browser draws it. Screenshots go to `.crisp/render/`: tool output, git-ignored, and never counted as an edit outside this skill's scope.
 
 ```bash
-mkdir -p .crisp/render && printf '*\n' > .crisp/render/.gitignore && rm -f .crisp/render/*.png
+mkdir -p .crisp/render && { grep -qx '\*' .crisp/render/.gitignore 2>/dev/null || printf '*\n' >> .crisp/render/.gitignore; } && rm -f .crisp/render/*.png
 npx @laith-wallace/crisp render-check "<local url>" --width 1280,375 --shots .crisp/render
 ```
 
 - Exit 0: clean. Say so in the report.
 - Exit 2: findings. `page-overflow-x`, `overlapping-text`, `text-cut` and `text-spills` are bugs, never style choices. Fix them and run it again, at most 3 rounds.
-- Exit 3 (inconclusive), exit 1 (no URL, no Playwright, or the page did not load), or no local URL to give it: report `render-check: untested` with the reason. Never report the page as checked, and open no screenshots: this run took none.
+- Exit 3 (inconclusive), exit 1 (no URL, no Playwright, or the page did not load), or no local URL to give it: report `render-check: untested` with the reason. Never report the page as checked, and open no screenshots: an untested or inconclusive run proves nothing about the layout.
 
 Only after exit 0 or 2, open `.crisp/render/render-1280.png` and `.crisp/render/render-375.png` (the folder was emptied first, so both are from this run) and look at them once against the taste rules. A clean exit code proves the layout holds, not that the page has taste.
 <!-- /crisp:shared finish-check -->
@@ -213,10 +213,12 @@ For the app route's `design-system.html`, serve its folder first (`python3 -m ht
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** or `Ready for` line, write this line there instead. Where the report ends with Handover lines, put it directly above them.
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** field or a `Ready for /<command>` line, write this line there instead (a status line such as `Status: Ready for development` stays as it is). Where the report ends with Handover lines, put it directly above them.
 
+- WAITING: route or WAITING: overwrite: `/crisp-brand` again once the user answers
+- NO TOKENS: `/crisp-worlds`, or `/crisp-study .` when the look already lives in the code
+- CAP REACHED: `/crisp-review` on the page to decide how to clear what still fails
 - Website route, pages still in the old look: `/crisp-redesign` to apply the brand, or `/crisp-funnel` for a landing page
 - App route, first screen to build: `/feature-design`
 - App route, existing screens: `/crisp-improve-ui` to find where they drift from the tokens
-- NO TOKENS: `/crisp-worlds`, or `/crisp-study .` when the look already lives in the code
-- Built and checked: `/crisp-review` on the page
+- Built and checked, nothing else pending: `/crisp-review` on the page

@@ -117,8 +117,8 @@ Run on every variant before handover.
 5. Zero off-token values in any variant.
 6. Every variant keeps the original's props interface, copy source, tracked labels, and anchor IDs. Copy may be rearranged, not rewritten, unless the brief asks for copy variants.
 7. The switcher is unreachable in production: the production build contains 0 references to variant files or the switcher marker.
-8. Zero edits outside the target's file, its new sibling variant files, the one render site that hosts the switcher, and `.crisp/variants.json`. `.crisp/lessons.md` and the finish check's git-ignored `.crisp/render/` are logs and tool output, not edits.
-9. After the pick: `grep` for variant markers returns 0 lines, and `git diff --stat` against the start commit lists only the target's files.
+8. Zero edits outside the target's file, its new sibling variant files, the one render site that hosts the switcher, and `.crisp/variants.json`. `.crisp/lessons.md`, the finish check's git-ignored `.crisp/render/`, and the one `## History` line in `.crisp.md` are logs and tool output, not edits; no other `.crisp.md` change is allowed.
+9. After the pick: `grep` for variant markers returns 0 lines, and `git diff --stat` against the start commit lists only the target's files, plus `.crisp.md` (its one History line) and `.crisp/lessons.md` when a lesson was logged.
 10. Build passes at handover and after the pick.
 
 ## Stop conditions
@@ -153,7 +153,7 @@ Build report:
 **Guard proof:** production build, 0 hits for variant files and data-crisp-variants
 **Build:** pass
 
-Pick one: /crisp-variants pick <id>
+Next: /crisp-variants pick <id> - choose the variant to keep
 ```
 
 Pick report:
@@ -196,13 +196,13 @@ Append one line to `## History` in `.crisp.md` if it exists, after the pick. Dat
 **Finish check.** Before you say a built or changed page is done, measure it as the browser draws it. Screenshots go to `.crisp/render/`: tool output, git-ignored, and never counted as an edit outside this skill's scope.
 
 ```bash
-mkdir -p .crisp/render && printf '*\n' > .crisp/render/.gitignore && rm -f .crisp/render/*.png
+mkdir -p .crisp/render && { grep -qx '\*' .crisp/render/.gitignore 2>/dev/null || printf '*\n' >> .crisp/render/.gitignore; } && rm -f .crisp/render/*.png
 npx @laith-wallace/crisp render-check "<local url>" --width 1280,375 --shots .crisp/render
 ```
 
 - Exit 0: clean. Say so in the report.
 - Exit 2: findings. `page-overflow-x`, `overlapping-text`, `text-cut` and `text-spills` are bugs, never style choices. Fix them and run it again, at most 3 rounds.
-- Exit 3 (inconclusive), exit 1 (no URL, no Playwright, or the page did not load), or no local URL to give it: report `render-check: untested` with the reason. Never report the page as checked, and open no screenshots: this run took none.
+- Exit 3 (inconclusive), exit 1 (no URL, no Playwright, or the page did not load), or no local URL to give it: report `render-check: untested` with the reason. Never report the page as checked, and open no screenshots: an untested or inconclusive run proves nothing about the layout.
 
 Only after exit 0 or 2, open `.crisp/render/render-1280.png` and `.crisp/render/render-375.png` (the folder was emptied first, so both are from this run) and look at them once against the taste rules. A clean exit code proves the layout holds, not that the page has taste.
 <!-- /crisp:shared finish-check -->
@@ -267,7 +267,7 @@ Only after exit 0 or 2, open `.crisp/render/render-1280.png` and `.crisp/render/
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** or `Ready for` line, write this line there instead. Where the report ends with Handover lines, put it directly above them.
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. It is the report's only next-step line: where the report template above has a **Next:** field or a `Ready for /<command>` line, write this line there instead (a status line such as `Status: Ready for development` stays as it is). Where the report ends with Handover lines, put it directly above them.
 
 - READY TO COMPARE: `/crisp-variants pick <id>` once the user chooses - never choose for them
 - A variant was picked: `/crisp-proof` for the before and after
