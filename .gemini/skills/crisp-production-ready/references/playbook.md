@@ -27,7 +27,7 @@ Write it to the project root as `production-playbook.html`. Re-runs overwrite it
 
 ## Structure, in order
 
-1. **Verdict banner.** Product name, scope (or "Full product"), audit date, commit hash. One giant verdict: NOT READY / FIX FIRST / READY, with the binary rule spelled out under it ("2 CRITICAL findings block launch"). If the audit truncated, a TRUNCATED strip sits directly under the banner naming what went unchecked.
+1. **Verdict banner.** Product name, scope (or "Full product"), audit date, commit hash. One giant verdict: NOT READY / FIX FIRST / READY, with the binary rule spelled out under it ("2 CRITICAL findings block launch") and one `Next: <command> - <why>` line under that, from the Next step list in SKILL.md. If the audit truncated, a TRUNCATED strip sits directly under the banner naming what went unchecked.
 2. **Scoreboard.** One count tile per severity (colored number, label, "0" tiles render dimmed). Beside it, horizontal bars of findings per AREA. Below, the gates table (install / build / typecheck / lint / tests, each PASS or FAIL with a one-line note) and the pass ledger in a collapsed `<details>`.
 3. **How to use this playbook.** Three sentences, verbatim: "Work top to bottom. Finish and verify every card in a wave before starting the next, and re-run your build, typecheck, lint, and tests after each wave. Check off a card only after its Prove-it step passes."
 4. **The three waves.** Each wave is a numbered section with a title, a one-line mission, its progress bar, and its finding cards:

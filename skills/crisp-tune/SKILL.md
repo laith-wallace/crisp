@@ -146,7 +146,7 @@ Run on the baseline and on the result.
 4. No dial exceeds the register cap; every clamp is reported.
 5. Detector findings after <= detector findings before.
 6. Slop tells after <= slop tells before. A bolder run that adds a tell (gradient text, glow halo, hero pill) has failed that move; revert it.
-7. Zero edits outside the target's files.
+7. Zero edits outside the target's files, except the History line and `.crisp/lessons.md`.
 8. Zero changes to copy, IA, routes, anchor IDs, or tracked element labels. Exception: `simpler` moves 1, 3 and 7 may delete copy, because distilling is their purpose; every deletion is listed in the report.
 9. Build passes after the run.
 10. `bolder` and `quieter` never run in the same pass.
@@ -181,7 +181,7 @@ Run on the baseline and on the result.
 **Detector:** 4 -> 1   **Slop Check:** Fail (2 tells) -> Pass (0)
 **Off-token values added:** 0   **Build:** pass
 **Needs token:** <omit if none>
-**Next:** /crisp-proof for the before/after pair
+Next: <command> - <why>   (from the Next step list below)
 ```
 
 If the result regressed, the first line is `REGRESSED` and the table follows.
@@ -213,20 +213,20 @@ Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y
 **Finish check.** Before you say a built or changed page is done, measure it as the browser draws it:
 
 ```bash
-npx @laith-wallace/crisp render-check "<local url>" --width 1280,375
+npx @laith-wallace/crisp render-check "<local url>" --width 1280,375 --shots .crisp/render
 ```
 
 - Exit 0: clean. Say so in the report.
 - Exit 2: findings. `page-overflow-x`, `overlapping-text`, `text-cut` and `text-spills` are bugs, never style choices. Fix them and run it again, at most 3 rounds.
-- Exit 3, no local URL, or no Playwright: report `render-check: untested` with the reason. Never report the page as checked.
+- Exit 3 (inconclusive), exit 1 (no URL, no Playwright, or the page did not load), or no local URL to give it: report `render-check: untested` with the reason. Never report the page as checked.
 
-Then look at the 1280 and 375 screenshots yourself once, against the taste rules. A clean exit code proves the layout holds, not that the page has taste.
+Then open `.crisp/render/render-1280.png` and `.crisp/render/render-375.png` and look at them once against the taste rules. A clean exit code proves the layout holds, not that the page has taste.
 <!-- /crisp:shared finish-check -->
 
 ## Taste rules
 
 <!-- crisp:shared taste -->
-**Taste rules.** Apply these to everything this skill makes or judges. Each rule is a count, so a check can say pass or fail.
+**Taste rules.** Each rule is a count, so a check can say pass or fail. Rules 1 to 7 apply when this skill makes or judges a rendered UI (a screen, a page, a component). The copy tells apply to all copy, prose included. Where this skill states a stricter limit for the same pattern, the stricter limit wins.
 
 1. **One detail only this client has.** Each screen shows at least 1 detail taken from the brief or the product: its units, its terms, its real prices, hours or numbers. A screen that would fit any business in the category fails.
 2. **Real material first.** The client's own product, UI, photos and words lead. A stand-in (stock photo, mock data, coined name) is listed in the report as a stand-in. Zero stand-ins are presented as the client's own.
@@ -258,7 +258,7 @@ Then look at the 1280 and 375 screenshots yourself once, against the taste rules
 
 | Rule applied | Habit it breeds | Counter |
 |---|---|---|
-| No em dashes | Comma splices and nothing but full stops | Colons, brackets and semicolons where they fit |
+| No em dashes | Comma splices and nothing but full stops | Rewrite the sentence: split it in two, or join the parts with a plain word ("and", "so", "because") |
 | No "not X but Y" | "rather than", "instead of", "without the" | Count them together; state the positive |
 | No hype words | Calm words: quietly, steady, honest, practical | A fact in place of the adjective |
 | Avoid lists of three | Everything in pairs | List as many items as there are |
@@ -274,6 +274,7 @@ Then look at the 1280 and 375 screenshots yourself once, against the taste rules
 **Lessons log.** The pack learns the user's taste from their corrections.
 
 - **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
 - **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
   `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
   Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
@@ -282,6 +283,8 @@ Then look at the 1280 and 375 screenshots yourself once, against the taste rules
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found:
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
 
-- Then: `/crisp-review`
+- The tone is right: `/crisp-proof` for the before and after
+- The run surfaced other issues: `/crisp-review`
+- NO TOKENS: `/crisp-study .`

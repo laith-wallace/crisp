@@ -95,6 +95,7 @@ Fix in severity waves (1: CRITICAL+HIGH, 2: MEDIUM, 3: LOW+IMPROVEMENT), gating 
 **Lessons log.** The pack learns the user's taste from their corrections.
 
 - **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
 - **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
   `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
   Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
@@ -103,7 +104,7 @@ Fix in severity waves (1: CRITICAL+HIGH, 2: MEDIUM, 3: LOW+IMPROVEMENT), gating 
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found:
+This skill keeps its own ending rules (no closing summary in chat; TRUNCATED stays last). Put the `Next: <command> - <why>` line in the playbook's verdict banner, not in chat, picked from these by the verdict:
 
-- NOT READY or FIX FIRST: fix in waves, then run this skill again
-- READY: ship
+- NOT READY or FIX FIRST: `/crisp-loop` for the UI findings, then `/crisp-production-ready` again
+- READY: `/crisp-proof` for the PR evidence, then ship

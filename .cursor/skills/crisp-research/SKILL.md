@@ -300,7 +300,7 @@ Not taken: [layout, copy, logos, models - what stays theirs]
 [Any thin-results warnings go here]
 [Note if .crisp.md was absent - output is generic, not product-specific]
 
-- Ready for /feature-design
+Next: <command> - <why>   (from the Next step list below)
 ```
 
 ---
@@ -366,6 +366,7 @@ The output of `/crisp-research` is written to `.research.md`, which `/feature-de
 **Lessons log.** The pack learns the user's taste from their corrections.
 
 - **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
 - **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
   `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
   Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
@@ -374,8 +375,9 @@ The output of `/crisp-research` is written to `.research.md`, which `/feature-de
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found:
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
 
 - A feature: `/feature-design`
+- A 3D or immersive site: `/crisp-3d` (it reads `.research.md` and the REFERENCE BLEND)
 - A website with no look yet: `/crisp-worlds`
 - A website with a look: `/crisp-funnel` or `/crisp-redesign`

@@ -1,4 +1,4 @@
-**Taste rules.** Apply these to everything this skill makes or judges. Each rule is a count, so a check can say pass or fail.
+**Taste rules.** Each rule is a count, so a check can say pass or fail. Rules 1 to 7 apply when this skill makes or judges a rendered UI (a screen, a page, a component). The copy tells apply to all copy, prose included. Where this skill states a stricter limit for the same pattern, the stricter limit wins.
 
 1. **One detail only this client has.** Each screen shows at least 1 detail taken from the brief or the product: its units, its terms, its real prices, hours or numbers. A screen that would fit any business in the category fails.
 2. **Real material first.** The client's own product, UI, photos and words lead. A stand-in (stock photo, mock data, coined name) is listed in the report as a stand-in. Zero stand-ins are presented as the client's own.
@@ -30,7 +30,7 @@
 
 | Rule applied | Habit it breeds | Counter |
 |---|---|---|
-| No em dashes | Comma splices and nothing but full stops | Colons, brackets and semicolons where they fit |
+| No em dashes | Comma splices and nothing but full stops | Rewrite the sentence: split it in two, or join the parts with a plain word ("and", "so", "because") |
 | No "not X but Y" | "rather than", "instead of", "without the" | Count them together; state the positive |
 | No hype words | Calm words: quietly, steady, honest, practical | A fact in place of the adjective |
 | Avoid lists of three | Everything in pairs | List as many items as there are |

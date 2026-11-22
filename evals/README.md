@@ -32,7 +32,7 @@ Taste cases (the benchmark set). Each gives a short brief in `fixture/brief.md` 
 | `taste-overcorrection` | crisp-unslop (Detect) | Finds the substitute habits that bans breed |
 | `taste-feature-detail` | feature-design | Uses the client's own terms; a real empty state |
 
-Each graded case has a `skill-fired` indicator, `llm` rubrics for the must-find lists (split into chunks of 3 to 5 items so the judge stays stable), `llm` rubrics for the must-not-flag / fabrication checks, and free `regex` graders for binary outputs (pre-flight FAIL lines, `Grade: D`, `Suppressed by decisions: 1`, the Self-audit line, the Evidence line).
+Each regression case (the 7 non-taste graded cases) has a `skill-fired` indicator, `llm` rubrics for the must-find lists (split into chunks of 3 to 5 items so the judge stays stable), `llm` rubrics for the must-not-flag / fabrication checks, and free `regex` graders for binary outputs (pre-flight FAIL lines, `Grade: D`, `Suppressed by decisions: 1`, the Self-audit line, the Evidence line).
 
 Fixtures are copies. Six cases read theirs from a read-only `fixture/` folder (`context.add_dirs`). `decisions-suppression` needs `.crisp.md` at the project root, so its `fixture.sh` scaffold writes both files into the workspace; it only runs with `--scaffold`. If you change a file in `tests/fixtures/`, copy it into the matching `graded/*/fixture/` folder and the heredocs in `graded/decisions-suppression/fixture.sh`.
 
@@ -65,7 +65,7 @@ To also check that `decisions-suppression` never writes to `## Decisions`, grant
 
 ## Cost
 
-Every agent run and every `llm` judge vote is a real model call on your account. The full suite is 43 cases x 3 runs x 2 arms = 258 agent runs, plus 3 judge votes per `llm` grader per run (27 `llm` graders across the 7 graded cases). Triggering and negative cases use only free graders, so they cost just their agent runs. Set `--max-cost-usd` as a ceiling, use `--ablation none` to halve the cost when you don't need the delta, and use `--runs 1` while iterating (then confirm at 3 runs). Results land in `evals/results/<timestamp>/` (git-ignored).
+Every agent run and every `llm` judge vote is a real model call on your account. The full suite is 49 cases x 3 runs x 2 arms = 294 agent runs, plus 3 judge votes per `llm` grader per run (43 `llm` graders across the 12 graded cases: 27 in the regression cases, 16 in the taste cases). Triggering and negative cases use only free graders, so they cost just their agent runs. Set `--max-cost-usd` as a ceiling, use `--ablation none` to halve the cost when you don't need the delta, and use `--runs 1` while iterating (then confirm at 3 runs). Results land in `evals/results/<timestamp>/` (git-ignored).
 
 ## After a run
 

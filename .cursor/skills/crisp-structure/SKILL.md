@@ -192,6 +192,7 @@ Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y
 **Lessons log.** The pack learns the user's taste from their corrections.
 
 - **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
 - **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
   `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
   Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
@@ -200,6 +201,6 @@ Append one line to `## History` in `.crisp.md` if it exists. Date from `date +%Y
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found:
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
 
 - After the UI is built: `/crisp-review`

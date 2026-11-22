@@ -280,7 +280,7 @@ Compared against: [Perplexity / Claude.ai / Cursor / Notion AI / Vercel v0 - or 
 ## Taste rules
 
 <!-- crisp:shared taste -->
-**Taste rules.** Apply these to everything this skill makes or judges. Each rule is a count, so a check can say pass or fail.
+**Taste rules.** Each rule is a count, so a check can say pass or fail. Rules 1 to 7 apply when this skill makes or judges a rendered UI (a screen, a page, a component). The copy tells apply to all copy, prose included. Where this skill states a stricter limit for the same pattern, the stricter limit wins.
 
 1. **One detail only this client has.** Each screen shows at least 1 detail taken from the brief or the product: its units, its terms, its real prices, hours or numbers. A screen that would fit any business in the category fails.
 2. **Real material first.** The client's own product, UI, photos and words lead. A stand-in (stock photo, mock data, coined name) is listed in the report as a stand-in. Zero stand-ins are presented as the client's own.
@@ -312,7 +312,7 @@ Compared against: [Perplexity / Claude.ai / Cursor / Notion AI / Vercel v0 - or 
 
 | Rule applied | Habit it breeds | Counter |
 |---|---|---|
-| No em dashes | Comma splices and nothing but full stops | Colons, brackets and semicolons where they fit |
+| No em dashes | Comma splices and nothing but full stops | Rewrite the sentence: split it in two, or join the parts with a plain word ("and", "so", "because") |
 | No "not X but Y" | "rather than", "instead of", "without the" | Count them together; state the positive |
 | No hype words | Calm words: quietly, steady, honest, practical | A fact in place of the adjective |
 | Avoid lists of three | Everything in pairs | List as many items as there are |
@@ -328,6 +328,7 @@ Compared against: [Perplexity / Claude.ai / Cursor / Notion AI / Vercel v0 - or 
 **Lessons log.** The pack learns the user's taste from their corrections.
 
 - **Before you start:** when `.crisp/lessons.md` exists, read it. Apply every line tagged with this skill or with `all`.
+- **This file is always writable.** Appending to `.crisp/lessons.md` is allowed even in a skill that is otherwise read-only or limited to the target's files. It is the only such exception.
 - **When the user corrects or rejects your output:** append 1 line to `.crisp/lessons.md` (create it if needed) in this shape:
   `- YYYY-MM-DD | <skill or all> | <what was wrong> | <the rule that would have prevented it>`
   Write the rule as a count or a yes/no check, so a later run can test it. One correction, one line. Never log praise, and never log a line the user did not cause.
@@ -336,6 +337,6 @@ Compared against: [Perplexity / Claude.ai / Cursor / Notion AI / Vercel v0 - or 
 
 ## Next step
 
-End the report with one line, `Next: <command> - <why>`, picked from these by what this run found:
+End the report with one line, `Next: <command> - <why>`, picked from these by what this run found. Where the report template above has a **Next:** line, this is that line, never a second one:
 
 - After it is built: `/crisp-review`

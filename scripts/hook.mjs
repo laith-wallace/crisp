@@ -190,8 +190,8 @@ export function addedConfigIgnores(beforeJson, afterJson) {
   const parse = s => { try { return JSON.parse(s || '{}')?.detector ?? {}; } catch { return {}; } };
   const b = parse(beforeJson), a = parse(afterJson);
   const out = [];
-  for (const r of a.ignoreRules ?? []) if (!(b.ignoreRules ?? []).includes(r)) out.push({ rule: r, reason: '', where: 'ignoreRules (a whole rule, everywhere)' });
-  for (const f of a.ignoreFiles ?? []) if (!(b.ignoreFiles ?? []).includes(f)) out.push({ rule: f, reason: '', where: 'ignoreFiles (a whole file)' });
+  for (const r of a.ignoreRules ?? []) if (!(b.ignoreRules ?? []).includes(r)) out.push({ rule: r, broad: true, reason: '', where: 'ignoreRules (a whole rule, everywhere)' });
+  for (const f of a.ignoreFiles ?? []) if (!(b.ignoreFiles ?? []).includes(f)) out.push({ rule: f, broad: true, reason: '', where: 'ignoreFiles (a whole file)' });
   const val = e => (typeof e === 'string' ? e : e?.value);
   for (const [rule, list] of Object.entries(a.ignoreValues ?? {})) {
     const old = new Set((b.ignoreValues?.[rule] ?? []).map(val));
@@ -214,7 +214,15 @@ function suppressionProblems(files, root) {
     try { added.push(...addedConfigIgnores(headText(cfg), readFileSync(cfg, 'utf8'))); } catch { /* skip */ }
   }
   const problems = [];
-  const weak = added.filter(s => s.reason.length < MIN_REASON);
+  // ignoreRules and ignoreFiles hold plain strings, so they cannot carry a reason:
+  // they are the broadest suppressions, and need the user's OK instead.
+  const broad = added.filter(s => s.broad);
+  if (broad.length) {
+    problems.push(`${broad.length} broad ignore${broad.length === 1 ? '' : 's'} added to .crisp/config.json:\n` +
+      broad.slice(0, MAX_FINDINGS_SHOWN).map(s => `- ${s.rule} in ${s.where}`).join('\n') +
+      `\nThese silence a rule or a file everywhere. Remove them, or tell the user what they hide and get their OK.`);
+  }
+  const weak = added.filter(s => !s.broad && s.reason.length < MIN_REASON);
   if (weak.length) {
     problems.push(`${weak.length} suppression${weak.length === 1 ? '' : 's'} added without a reason of ${MIN_REASON}+ characters:\n` +
       weak.slice(0, MAX_FINDINGS_SHOWN).map(s => `- ${s.rule} in ${s.where}`).join('\n') +
@@ -231,7 +239,7 @@ function statePath(root, sessionId) {
   return join(tmpdir(), `crisp-gate-${key}.json`);
 }
 function readState(p) { try { return JSON.parse(readFileSync(p, 'utf8')); } catch { return { blocks: 0, lastKey: null }; } }
-function writeState(p, s) { try { writeFileSync(p, JSON.stringify(s)); } catch { /* state is best effort */ } }
+function writeState(p, s) { try { writeFileSync(p, JSON.stringify(s)); return true; } catch { return false; } }
 
 export async function runStop(payload) {
   const root = git(['rev-parse', '--show-toplevel'], process.cwd())?.trim();
@@ -258,7 +266,9 @@ export async function runStop(payload) {
   const key = JSON.stringify([blocking.map(f => `${f.id}|${f.file}|${f.line}`).sort(), problems]);
   if (payload?.stop_hook_active && key === state.lastKey) return null; // unchanged since the last block: the agent explains them
 
-  writeState(sp, { blocks: state.blocks + 1, lastKey: key });
+  // Without saved state the round cap and the same-findings pass cannot work,
+  // so block only the first stop of a turn: never more than the old one-block gate.
+  if (!writeState(sp, { blocks: state.blocks + 1, lastKey: key }) && payload?.stop_hook_active) return null;
   const round = `round ${state.blocks + 1} of ${MAX_ROUNDS}`;
   const parts = [];
   if (blocking.length) {

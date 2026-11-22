@@ -161,7 +161,7 @@ test('Stop blocks more than MAX_SUPPRESSIONS added suppressions', async () => {
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
-test('Stop blocks a config ignore added without a reason', async () => {
+test('Stop flags a broad config ignore for the user\'s OK', async () => {
   const dir = repo();
   try {
     await inRepo(dir, async () => {
@@ -169,7 +169,9 @@ test('Stop blocks a config ignore added without a reason', async () => {
       writeFileSync('.crisp/config.json', JSON.stringify({ detector: { ignoreRules: ['missing-alt-text'] } }));
       writeFileSync('page.html', `<main>\n${OLD_IMG}<p>ok</p>\n</main>\n`);
       const out = await runStop({ session_id: 'cfg' });
+      assert.match(out.reason, /1 broad ignore added/);
       assert.match(out.reason, /missing-alt-text in ignoreRules/);
+      assert.doesNotMatch(out.reason, /without a reason/);
     });
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
