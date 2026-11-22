@@ -50,10 +50,10 @@ Load `.crisp.md` if it exists. Its register and Named Rules decide which extract
 7. **Write the prose.** Fill the sections in the required order (see Output). Each section states the decision and why it works, in 2-6 sentences, then what to adapt and what not to carry over.
 8. **Lint and fix.**
    ```bash
-   npx @laith-wallace/crisp design-md lint DESIGN.md
+   npx @laith-wallace/crisp design-md lint <the --out path, DESIGN.md by default>
    ```
    Fix every `error` and every `warning`. An `info` finding may stay with a one-line reason in the report. Re-run until zero errors and zero warnings, maximum 3 runs; anything still failing goes under **Not fixed**.
-9. **Point to it.** If `.crisp.md` exists, add exactly one line under `## Design System`: `Tokens: DESIGN.md (studied from <source>, <date>)`. Date from `date +%Y-%m-%d`. Touch nothing else in `.crisp.md`.
+9. **Point to it.** If `.crisp.md` exists, add exactly one line under `## Design System`: `Tokens: <the --out path> (studied from <source>, <date>)`. Date from `date +%Y-%m-%d`. Touch nothing else in `.crisp.md`.
 
 ### Bank mode (`--bank`)
 

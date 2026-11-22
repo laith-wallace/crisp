@@ -76,7 +76,7 @@ Read `.crisp/variants.json` first; if it is missing, rebuild the list from `git 
     ```bash
     grep -rn "data-crisp-variants\|crisp-variant" <src dirs>                     # must print nothing
     grep -rnF "<each losing variant file's basename from .crisp/variants.json>" <src dirs>   # must print nothing
-    git diff --stat <start commit>; git status --porcelain --untracked-files=all # only the target's files, plus .crisp.md (History) and .crisp/lessons.md
+    git diff --stat <start commit> && git status --porcelain --untracked-files=all # only the target's files, plus .crisp.md (History) and .crisp/lessons.md
     ```
 12. **Re-run** the detector and the build on the kept file. Report the diff with the Pick report.
 
